@@ -11,8 +11,7 @@ class JobCard extends Model
 
     protected $fillable = [
         'job_no',
-        'customer_name',
-        'phone',
+        'customer_id',
         'item',
         'problem',
         'status',

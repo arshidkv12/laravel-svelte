@@ -13,20 +13,23 @@ return new class extends Migration
     {
         Schema::create('job_cards', function (Blueprint $table) {
             $table->id();
+            
+            $table->foreignId('customer_id')
+                ->constrained()
+                ->cascadeOnDelete();
+                
             $table->string('job_no')->unique();
-            $table->string('customer_name');
-            $table->string('phone', 20);
-
-            $table->string('item')->nullable(); // device / vehicle
+            $table->string('item')->nullable();  
             $table->text('problem')->nullable();
 
             $table->enum('status', [
-                'new',
+                'pending',
                 'in_progress',
-                'waiting_for_parts',
-                'ready',
-                'delivered'
-            ])->default('new');
+                'waiting_parts',
+                'completed',
+                'delivered',
+                'cancelled'
+            ])->default('pending');
 
             $table->decimal('estimated_cost', 10, 2)->nullable();
             $table->date('delivery_date')->nullable();
