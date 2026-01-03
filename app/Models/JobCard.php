@@ -43,4 +43,10 @@ class JobCard extends Model
             ? $this->created_at->format('d/m/Y h:i A')  
             : '-';
     }
+
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
 }

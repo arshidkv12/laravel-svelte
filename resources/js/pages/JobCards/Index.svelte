@@ -15,12 +15,16 @@
     data: Array<{
       id: number;
       job_no: string;
-      customer_name: string;
       phone: string;
       status: string;
       delivery_date: string;
       created_at_formatted: string;
       delivery_date_formatted: string;
+      customer: {
+        id: number;
+        name: string;
+        phone: string;
+      };
     }>;
     current_page: number;
     last_page: number;
@@ -129,8 +133,8 @@
               <tr class="last:border-b-0 cursor-pointer hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors">
                 <td class="p-4 font-medium text-gray-800">{job.job_no}</td>
                 <td class="p-4 text-gray-700">{job.created_at_formatted}</td>
-                <td class="p-4 text-gray-700">{job.customer_name}</td>
-                <td class="p-4 text-gray-700">{job.phone}</td>
+                <td class="p-4 text-gray-700">{job.customer.name}</td>
+                <td class="p-4 text-gray-700">{job.customer.phone}</td>
                 <td class="p-4">
                   <span class="px-2 py-1 rounded-full text-xs font-semibold {getStatusClasses(job.status)}">
                     {job.status.replaceAll('_', ' ')}
@@ -176,13 +180,13 @@
                   <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
-                  <span class="font-medium text-gray-900">{job.customer_name}</span>
+                  <span class="font-medium text-gray-900">{job.customer.name}</span>
                 </div>
                 <div class="flex items-center gap-2">
                   <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
-                  <span class="text-gray-700">{job.phone}</span>
+                  <span class="text-gray-700">{job.customer.phone}</span>
                 </div>
               </div>
 

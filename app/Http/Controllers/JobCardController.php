@@ -13,18 +13,21 @@ class JobCardController extends Controller
      */
     public function index(Request $request)
     {
-        $jobCards = JobCard::latest()
-            ->when($request->search, function ($q) use ($request) { 
+        $jobCards = JobCard::with('customer')
+            ->latest()
+            ->when($request->search, function ($q) use ($request) {
                 $q->where(function ($q) use ($request) {
                     $q->where('job_no', 'like', '%' . $request->search . '%')
-                    ->orWhere('customer_name', 'like', '%' . $request->search . '%');
+                    ->orWhereHas('customer', function ($q) use ($request) {
+                        $q->where('name', 'like', '%' . $request->search . '%')
+                            ->orWhere('phone', 'like', '%' . $request->search . '%');
+                    });
                 });
             })
-            ->when($request->status, fn($q) => $q->where('status', $request->status))
-            ->paginate(10)
+            ->when($request->status, fn ($q) => $q->where('status', $request->status))
+            ->paginate(25)
             ->withQueryString();
 
-            
         return Inertia::render('JobCards/Index', [
             'filters' => $request->only(['search', 'status']),
             'jobCards' => $jobCards,
@@ -43,7 +46,8 @@ class JobCardController extends Controller
      * Store new job card
      */
     public function store(Request $request)
-    {
+    {dd($request->all());
+
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
             'phone'         => 'required|string|max:20',

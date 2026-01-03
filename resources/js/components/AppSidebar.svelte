@@ -5,7 +5,7 @@
     import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
     import { type NavItem } from '@/types';
     import { Link } from '@inertiajs/svelte';
-    import { BookOpen, Folder, LayoutGrid, Clipboard } from 'lucide-svelte';
+    import { BookOpen, Folder, LayoutGrid, Clipboard, UsersIcon } from 'lucide-svelte';
     import AppLogo from './AppLogo.svelte';
 
     const mainNavItems: NavItem[] = [
@@ -13,6 +13,11 @@
             title: 'Dashboard',
             href: '/dashboard',
             icon: LayoutGrid,
+        },
+        {
+            title: 'Customers',
+            href: '/customers',
+            icon: UsersIcon,
         },
         {
             title: 'Job Cards',
