@@ -14,6 +14,13 @@
     import { Form, Link } from '@inertiajs/svelte';
     import { ArrowLeft, User, Phone, Mail, MapPin } from 'lucide-svelte';
 
+    export let customer: {
+        id: number;
+        name: string;
+        phone: string;
+        email?: string;
+        address?: string;
+    };
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -21,14 +28,18 @@
             href: '/customers',
         },
         {
-            title: 'Create Customer',
-            href: `/customers/create`,
-        }
+            title: customer.name,
+            href: `/customers/${customer.id}`,
+        },
+        {
+            title: 'Edit Customer',
+            href: `/customers/${customer.id}/edit`,
+        },
     ];
 </script>
 
 <svelte:head>
-    <title>Add - Customers</title>
+    <title>Edit {customer.name} - Customers</title>
 </svelte:head>
 
 <AppLayout {breadcrumbs}>
@@ -40,12 +51,21 @@
             <div class="mb-8">
                 <div class="flex items-center justify-between mb-6">
                     <div>
-                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Add Customer</h1>
-                        
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Edit Customer</h1>
+                        <div class="flex items-center gap-2">
+                            <div class="p-1.5 bg-gray-100 rounded">
+                                <User class="h-4 w-4 text-gray-600" />
+                            </div>
+                            <p class="text-sm text-gray-500">
+                                Editing: <span class="font-medium">{customer.name}</span>
+                                <span class="mx-2">•</span>
+                                ID: <span class="font-medium">#{customer.id.toString().padStart(4, '0')}</span>
+                            </p>
+                        </div>
                     </div>
                     
                     <Button 
-                        href={`/customers`}
+                        href={`/customers/${customer.id}`}
                         variant="outline" 
                         size="sm"
                         class="gap-2"
@@ -58,10 +78,10 @@
             </div>
 
             <!-- Edit Form -->
-            <Card class="border-0 border-gray-200 shadow-none">  
+            <Card class="border-0 border-gray-200 shadow-none max-w-lg">  
                 <Form 
-                    method="post" 
-                    action={route('customers.store')} 
+                    method="put" 
+                    action={route('customers.update', customer.id)} 
                     class="space-y-6"
                 >
                     {#snippet children({ errors, processing }: BaseFormSnippetProps)}
@@ -77,6 +97,7 @@
                         <Input 
                             name="name" 
                             id="name" 
+                            value={customer.name}
                             class="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                             autocomplete="name" 
                             placeholder="Enter customer full name"
@@ -95,6 +116,7 @@
                         <Input
                             id="phone"
                             name="phone"
+                            value={customer.phone || ''}
                             class="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                             type="tel"
                             placeholder="Enter mobile number"
@@ -113,6 +135,7 @@
                         <Input
                             id="email"
                             name="email"
+                            value={customer.email || ''}
                             class="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                             type="email"
                             placeholder="Enter email address"
@@ -131,6 +154,7 @@
                         <Textarea
                             id="address"
                             name="address"
+                            value={customer.address || ''}
                             class="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 min-h-[100px]"
                             placeholder="Enter customer address"
                         />
@@ -140,7 +164,7 @@
                     <!-- Form Actions -->
                     <div class="flex items-center justify-between pt-6 ">
                         <Button 
-                            href={`/customers/`}
+                            href={`/customers/${customer.id}`}
                             variant="outline" 
                             type="button"
                             class="gap-2"
@@ -150,6 +174,20 @@
                         </Button>
                         
                         <div class="flex items-center gap-3">
+                            <!-- <Button 
+                                type="button"
+                                variant="outline"
+                                class="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700"
+                                onclick={() => {
+                                    if (confirm('Are you sure you want to delete this customer?')) {
+                                        // $page.post(route('customers.destroy', customer.id), {
+                                        //     _method: 'delete'
+                                        // });
+                                    }
+                                }}
+                            >
+                                Delete Customer
+                            </Button> -->
                             
                             <Button 
                                 type="submit" 

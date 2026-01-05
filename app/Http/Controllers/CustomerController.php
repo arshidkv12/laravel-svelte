@@ -93,9 +93,13 @@ class CustomerController extends Controller
 
         $customer->update($validated);
 
+        Inertia::flash([
+            'message' => 'Customer updated successfully',
+            'type' => 'success'
+        ]);
+
         return redirect()
-            ->route('customers.show', $customer)
-            ->with('success', 'Customer updated successfully');
+            ->route('customers.show', $customer);
     }
 
     /**
