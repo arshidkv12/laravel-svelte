@@ -1,6 +1,6 @@
 <script lang="ts">
     import AppLayout from '@/layouts/AppLayout.svelte';
-    import { type BreadcrumbItem } from '@/types';
+    import { type Flash, type BreadcrumbItem } from '@/types';
     import { onMount } from 'svelte';
 
     import HeadingSmall from '@/components/HeadingSmall.svelte';
@@ -25,6 +25,8 @@
         Plus,
         ChevronRight
     } from 'lucide-svelte';
+    import { page } from '@inertiajs/svelte';
+    import { toast } from 'svelte-sonner';
 
     export let customer: {
         id: number;
@@ -55,6 +57,10 @@
     ];
 
     onMount(() => {
+        const flash = $page.flash as Flash;
+        if (flash.message && flash.type === 'success') {
+            toast.success(flash.message);
+        }
         if (customer.created_at) {
             const date = new Date(customer.created_at);
             formattedDate = date.toLocaleDateString('en-US', {

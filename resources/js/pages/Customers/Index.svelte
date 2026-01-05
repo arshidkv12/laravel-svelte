@@ -1,10 +1,12 @@
 <script lang="ts">
     import AppLayout from '@/layouts/AppLayout.svelte';
     import { type Flash, type BreadcrumbItem } from '@/types';
-    import { router } from '@inertiajs/svelte';
+    import { Link, router } from '@inertiajs/svelte';
     import { onMount } from 'svelte';
     import { page } from '@inertiajs/svelte'
     import { toast } from "svelte-sonner";
+    import { CalendarIcon, ChevronRight, MailIcon, PhoneIcon, SquarePen, UserIcon } from 'lucide-svelte';
+    import Button from '@/components/ui/button/button.svelte';
 
     export let customers: {
         data: Array<{
@@ -106,15 +108,61 @@
                 {/if}
 
                 {#each customers.data as customer}
-                <tr class="last:border-b-0 border-b hover:bg-gray-50 cursor-pointer">
-                    <td class="p-4 text-gray-700">{customer.created_at_formatted}</td>
-                    <td class="p-4 font-medium text-gray-800">{customer.name}</td>
-                    <td class="p-4 text-gray-700">{customer.phone}</td>
-                    <td class="p-4 text-gray-700">{customer.email ?? '-'}</td>
-                    <td class="p-4 text-right">
-                    <a href={`/customers/${customer.id}`} class="text-blue-600 font-medium hover:underline">
-                        View
-                    </a>
+               <tr class="last:border-b-0 border-b hover:bg-gray-50 cursor-pointer group">
+                    <td class="p-4 text-sm text-gray-700 font-medium">
+                        <div class="flex items-center gap-2">
+                            <div class="p-1.5 bg-gray-100 rounded">
+                                <CalendarIcon class="h-3 w-3 text-gray-500" />
+                            </div>
+                            {customer.created_at_formatted}
+                        </div>
+                    </td>
+                    <td class="p-4">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-blue-50 rounded">
+                                <UserIcon class="h-3.5 w-3.5 text-blue-600" />
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-900">{customer.name}</p>
+                                <p class="text-xs text-gray-500">ID: #{customer.id.toString().padStart(4, '0')}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="p-4">
+                        <div class="flex items-center gap-2">
+                            <PhoneIcon class="h-3.5 w-3.5 text-gray-400" />
+                            <span class="text-sm text-gray-700 font-medium">{customer.phone}</span>
+                        </div>
+                    </td>
+                    <td class="p-4">
+                        {#if customer.email}
+                            <div class="flex items-center gap-2">
+                                <MailIcon class="h-3.5 w-3.5 text-gray-400" />
+                                <span class="text-sm text-gray-700 font-medium truncate max-w-[180px]">{customer.email}</span>
+                            </div>
+                        {:else}
+                            <span class="text-sm text-gray-400 italic">—</span>
+                        {/if}
+                    </td>
+                    <td class="p-4">
+                        <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button
+                                href={`/customers/${customer.id}/edit`}
+                                variant="ghost" 
+                                size="sm"
+                                class="h-8 w-8 p-0"
+                            >
+                                <SquarePen class="h-3.5 w-3.5 text-gray-600" />
+                            </Button>
+                            <Button 
+                                href={`/customers/${customer.id}`}
+                                variant="ghost" 
+                                size="sm"
+                                class="h-8 w-8 p-0"
+                            >
+                                <ChevronRight class="h-3.5 w-3.5 text-gray-600" />
+                            </Button>
+                        </div>
                     </td>
                 </tr>
                 {/each}
