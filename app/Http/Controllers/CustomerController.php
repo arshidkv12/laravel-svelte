@@ -12,13 +12,13 @@ class CustomerController extends Controller
      * List all customers with optional search
      */
     public function index(Request $request)
-    {  
+    { 
         $customers = Customer::query()
             ->when($request->search, function ($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
                   ->orWhere('phone', 'like', '%' . $request->search . '%');
             })
-            ->orderBy('name')
+            ->orderBy('id', 'desc')
             ->paginate(25)
             ->withQueryString();
 
@@ -43,16 +43,20 @@ class CustomerController extends Controller
     {
         $validated = $request->validate([
             'name'  => 'required|string|max:255',
-            'phone' => 'required|string|max:10|unique:customers,phone',
+            'phone' => 'required|string|min:10|max:10|unique:customers,phone',
             'email' => 'nullable|email|max:255|unique:customers,email',
             'address' => 'nullable|string|max:500',
         ]);
 
         $customer = Customer::create($validated);
 
+        Inertia::flash([
+            'message' => 'Customer created successfully',
+            'type' => 'success'
+        ]);
+
         return redirect()
-            ->route('customers.index')
-            ->with('success', 'Customer created successfully');
+            ->route('customers.index');
     }
 
     /**

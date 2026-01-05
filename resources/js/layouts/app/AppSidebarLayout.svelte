@@ -5,6 +5,7 @@
     import AppSidebarHeader from '@/components/AppSidebarHeader.svelte';
     import type { BreadcrumbItemType } from '@/types';
     import type { Snippet } from 'svelte';
+    import { Toaster } from "@/components/ui/sonner/index.js";
 
     interface Props {
         breadcrumbs?: BreadcrumbItemType[];
@@ -16,6 +17,7 @@
 
 <AppShell variant="sidebar">
     <AppSidebar />
+    <Toaster richColors  position="top-right"/>
     <AppContent variant="sidebar" class="overflow-x-hidden">
         <AppSidebarHeader {breadcrumbs} />
         {@render children?.()}

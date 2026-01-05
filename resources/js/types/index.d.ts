@@ -37,3 +37,9 @@ export interface User {
 }
 
 export type BreadcrumbItemType = BreadcrumbItem;
+
+
+export type Flash = {
+    message?: string;
+    type?: 'success' | 'error' | 'info';
+};

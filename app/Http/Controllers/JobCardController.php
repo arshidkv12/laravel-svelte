@@ -12,7 +12,7 @@ class JobCardController extends Controller
      * List job cards
      */
     public function index(Request $request)
-    {
+    { 
         $jobCards = JobCard::with('customer')
             ->latest()
             ->when($request->search, function ($q) use ($request) {

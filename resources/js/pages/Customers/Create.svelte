@@ -10,7 +10,6 @@
     import { Label } from '@/components/ui/label';
     import type { BaseFormSnippetProps, ProfileFormSnippetProps } from '@/types/forms';
     import { Form, Link, page } from '@inertiajs/svelte';
-    import { fade } from 'svelte/transition';
 
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -40,7 +39,7 @@
 
                 <div class="grid gap-2">
                     <Label for="name">Name</Label>
-                    <Input name="name" class="mt-1 block w-full" autocomplete="name" placeholder="Full name" />
+                    <Input name="name" id="name" class="mt-1 block w-full" autocomplete="name" placeholder="Full name" />
                     <InputError class="mt-2" message={errors.name} />
                 </div>
 
@@ -80,7 +79,7 @@
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <Button type="submit" disabled={processing}>Submit</Button>
+                    <Button name='submit' type="submit" disabled={processing}>Submit</Button>
                 </div>
             {/snippet}
         </Form>

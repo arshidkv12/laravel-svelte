@@ -16,6 +16,17 @@ class Customer extends Model
         'address',
     ];
 
+    protected $appends = [
+        'created_at_formatted',
+    ];
+
+    public function getCreatedAtFormattedAttribute(): string
+    {
+        return $this->created_at
+            ? $this->created_at->format('d/m/Y h:i A')  
+            : '-';
+    }
+
     public function jobCards()
     {
         return $this->hasMany(JobCard::class);
