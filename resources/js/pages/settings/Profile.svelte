@@ -51,6 +51,7 @@
                         <Input
                             id="email"
                             name="email"
+                            type="email"
                             class="mt-1 block w-full"
                             defaultValue={user.email}
                             required

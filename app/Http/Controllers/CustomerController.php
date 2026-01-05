@@ -43,7 +43,7 @@ class CustomerController extends Controller
     {
         $validated = $request->validate([
             'name'  => 'required|string|max:255',
-            'phone' => 'required|string|max:20|unique:customers,phone',
+            'phone' => 'required|string|max:10|unique:customers,phone',
             'email' => 'nullable|email|max:255|unique:customers,email',
             'address' => 'nullable|string|max:500',
         ]);

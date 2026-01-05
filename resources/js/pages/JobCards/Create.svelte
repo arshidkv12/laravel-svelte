@@ -1,7 +1,7 @@
 <script lang="ts">
   import AppLayout from '@/layouts/AppLayout.svelte';
   import { type BreadcrumbItem } from '@/types';
-  import { router } from '@inertiajs/svelte';
+  import { Form, router } from '@inertiajs/svelte';
 
   const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -14,60 +14,6 @@
     },
   ];
 
-  // Form data
-  let form = {
-    customer_id: '',
-    customer_name: '',
-    job_no: '',
-    status: 'new',
-    delivery_date: '',
-    phone: '',
-    address: '',
-    problem: '',
-    note: ''
-  };
-
-  // Customers should be passed as a prop from Laravel
-  export let customers = [];
-
-  function submit() {
-    // Prepare the data to send
-    const formData = {
-      ...form,
-      // Ensure customer_id is sent as integer if selected
-      customer_id: form.customer_id ? parseInt(form.customer_id) : null,
-      // If new customer, send customer_name and phone
-      ...(form.customer_id === '' && form.customer_name ? {
-        customer_name: form.customer_name,
-        phone: form.phone,
-        address: form.address
-      } : {})
-    };
-
-    router.post('/job-cards', formData, {
-      onSuccess: () => {
-        // Reset form or redirect
-        router.visit('/job-cards');
-      },
-      onError: (errors) => {
-        console.error('Error creating job card:', errors);
-      }
-    });
-  }
-
-  function goBack() {
-    window.history.back();
-  }
-
-  // Function to format date for input field
-  function formatDateForInput(date: Date): string {
-    return date.toISOString().split('T')[0];
-  }
-
-  // Set default delivery date to tomorrow
-  let tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  $: form.delivery_date = form.delivery_date || formatDateForInput(tomorrow);
 </script>
 
 <svelte:head>
@@ -80,7 +26,6 @@
     <div class="flex items-center justify-between mb-6">
       <div class="flex items-center gap-3">
         <button
-          on:click={goBack}
           class="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors p-2 rounded-lg hover:bg-gray-100"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -94,7 +39,7 @@
 
     <!-- Form -->
     <div class="bg-white">
-      <form on:submit|preventDefault={submit} class="space-y-6">
+      <Form action="/job-cards" class="space-y-6">
         <!-- Customer Information -->
         <div class="space-y-4">
           <h2 class="text-lg font-semibold text-gray-900 border-b pb-2">Customer Information</h2>
@@ -260,7 +205,8 @@
             Create Job Card
           </button>
         </div>
-      </form>
+    </Form>
+
     </div>
   </div>
 </AppLayout>
