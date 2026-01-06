@@ -18,6 +18,7 @@
       data: Array<{
         id: number;
         job_no: string;
+        item:string;
         phone: string;
         status: string;
         delivery_date: string;

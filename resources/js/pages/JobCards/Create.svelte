@@ -11,7 +11,7 @@
     import { Input } from '@/components/ui/input';
     import { Textarea } from '@/components/ui/textarea';
     import { Label } from '@/components/ui/label';
-    import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
+    import * as Select from '@/components/ui/select';
     import { 
         ArrowLeft,
         Plus,
@@ -61,15 +61,15 @@
 
     // Filter customers based on search
     $effect(() => {
-        if (customerSearch.trim() === '') {
-            filteredCustomers = customers;
-        } else {
-            // filteredCustomers = customers.filter(customer =>
-            //     customer.name.toLowerCase().includes(customerSearch.toLowerCase()) ||
-            //     customer.phone?.includes(customerSearch) ||
-            //     customer.email?.toLowerCase().includes(customerSearch.toLowerCase())
-            // );
-        }
+        // if (customerSearch.trim() === '') {
+        //     filteredCustomers = customers;
+        // } else {
+        //     filteredCustomers = customers.filter(customer =>
+        //         customer.name.toLowerCase().includes(customerSearch.toLowerCase()) ||
+        //         customer.phone?.includes(customerSearch) ||
+        //         customer.email?.toLowerCase().includes(customerSearch.toLowerCase())
+        //     );
+        // }
     });
 
     // Pre-select customer from query params
@@ -286,7 +286,7 @@
                                                 {#each filteredCustomers as customer}
                                                     <button
                                                         type="button"
-                                                        on:click={() => selectCustomer(customer)}
+                                                        onclick={() => selectCustomer(customer)}
                                                         class="w-full p-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition-colors"
                                                     >
                                                         <div class="font-medium text-gray-900">{customer.name}</div>
