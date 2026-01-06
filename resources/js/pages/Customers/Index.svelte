@@ -110,7 +110,7 @@
                 {#each customers.data as customer}
                <tr class="last:border-b-0 border-b hover:bg-gray-50 cursor-pointer group">
                     <td class="p-4 text-sm text-gray-700 font-medium">
-                        <Link href={`/customers/${customer.id}`}>
+                        <Link href={`/customers/${customer.id}`} class="block -m-4 p-4">
                             <div class="flex items-center gap-2">
                                 <div class="p-1.5 bg-gray-100 rounded">
                                     <CalendarIcon class="h-3 w-3 text-gray-500" />
@@ -120,7 +120,7 @@
                         </Link>
                     </td>
                     <td class="p-4">
-                        <Link href={`/customers/${customer.id}`}>
+                        <Link href={`/customers/${customer.id}`} class="block -m-4 p-4">
                             <div class="flex items-center gap-3">
                                 <div class="p-2 bg-blue-50 rounded">
                                     <UserIcon class="h-3.5 w-3.5 text-blue-600" />
@@ -133,7 +133,7 @@
                         </Link>
                     </td>
                     <td class="p-4">
-                        <Link href={`/customers/${customer.id}`}>
+                        <Link href={`/customers/${customer.id}`} class="block -m-4 p-4">
                             <div class="flex items-center gap-2">
                                 <PhoneIcon class="h-3.5 w-3.5 text-gray-400" />
                                 <span class="text-sm text-gray-700 font-medium">{customer.phone}</span>
@@ -141,7 +141,7 @@
                         </Link>
                     </td>
                     <td class="p-4">
-                        <Link href={`/customers/${customer.id}`}>
+                        <Link href={`/customers/${customer.id}`} class="block -m-4 p-4">
                             {#if customer.email}
                                 <div class="flex items-center gap-2">
                                     <MailIcon class="h-3.5 w-3.5 text-gray-400" />

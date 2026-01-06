@@ -3,7 +3,6 @@
     import { type Flash, type BreadcrumbItem } from '@/types';
     import { onMount } from 'svelte';
 
-    import HeadingSmall from '@/components/HeadingSmall.svelte';
     import { Button } from '@/components/ui/button';
     import { Label } from '@/components/ui/label';
     import { Badge } from '@/components/ui/badge';
@@ -15,7 +14,7 @@
         Mail, 
         MapPin, 
         Calendar, 
-        Edit, 
+        SquarePen, 
         ArrowLeft,
         FileText,
         Receipt,
@@ -23,10 +22,14 @@
         Copy,
         Check,
         Plus,
-        ChevronRight
+        ChevronRight,
+
+        Trash2
+
     } from 'lucide-svelte';
     import { page } from '@inertiajs/svelte';
     import { toast } from 'svelte-sonner';
+    import DeleteConfirmDialog from '@/components/confirm/DeleteConfirmDialog.svelte';
 
     export let customer: {
         id: number;
@@ -101,37 +104,56 @@
         <div class="p-4 md:p-6  max-w-6xl mx-auto">
             <!-- Customer Header -->
             <div class="mb-8">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                    <div>
-                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{customer.name}</h1>
-                        <div class="flex items-center gap-4">
+                <div class="space-y-4 lg:space-y-0 lg:flex lg:items-center lg:justify-between mb-6">
+                    <div class="space-y-2">
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 truncate">{customer.name}</h1>
+                        <div class="flex flex-wrap items-center gap-2 md:gap-4">
                             <p class="text-sm text-gray-500">
-                                Customer ID: <span class="font-medium">#{customer.id.toString().padStart(4, '0')}</span>
+                                ID: <span class="font-medium">#{customer.id.toString().padStart(4, '0')}</span>
                             </p>
-                            <span class="text-gray-300">•</span>
+                            <span class="text-gray-300 hidden sm:inline">•</span>
                             <p class="text-sm text-gray-500">
-                                Member since: <span class="font-medium">{formattedDate || '—'}</span>
+                                Since: <span class="font-medium">{formattedDate || '—'}</span>
                             </p>
                         </div>
                     </div>
                     
-                    <div class="flex items-center gap-3">
-                        <Button 
-                            href={`/job-cards/new?customer_id=${customer.id}`}
-                            variant="default" 
-                            class="gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <div class="flex gap-2">
+                            <Button 
+                                href={`/job-cards/new?customer_id=${customer.id}`}
+                                variant="default" 
+                                class="gap-1 sm:gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm md:text-base flex-1 sm:flex-none"
+                            >
+                                <Plus class="h-4 w-4" />
+                                <span class="hidden sm:inline">New Job Card</span>
+                                <span class="sm:hidden">New Job</span>
+                            </Button>
+                            <Button 
+                                href={`/customers/${customer.id}/edit`} 
+                                variant="outline" 
+                                class="gap-1 sm:gap-2 text-sm md:text-base flex-1 sm:flex-none"
+                            >
+                                <SquarePen class="h-4 w-4" />
+                                Edit
+                            </Button>
+                        </div>
+                        
+                        <!-- <Button 
+                            variant="destructive" 
+                            class="gap-1 sm:gap-2 text-sm md:text-base cursor-pointer"
                         >
-                            <Plus class="h-4 w-4" />
-                            New Job Card
-                        </Button>
-                        <Button 
-                            href={`/customers/${customer.id}/edit`} 
-                            variant="outline" 
-                            class="gap-2"
-                        >
-                            <Edit class="h-4 w-4" />
-                            Edit
-                        </Button>
+                            <Trash2 class="h-4 w-4" />
+                            Delete
+                        </Button> -->
+                        <DeleteConfirmDialog
+                            onConfirm={async () => alert(5)}
+                            itemName={customer.name}
+                            title="Delete Customer"
+                            description={`This will permanently delete <b>${customer.name}</b> and all associated job cards. This action cannot be undone.`}
+                            buttonText="Delete"
+                            triggerClass="w-full xs:w-auto justify-center xs:justify-start"
+                        />
                     </div>
                 </div>
                 <Separator />
@@ -404,7 +426,7 @@
                             variant="secondary" 
                             class="gap-2"
                         >
-                            <Edit class="h-4 w-4" />
+                            <SquarePen class="h-4 w-4" />
                             Edit Customer
                         </Button>
                     </div>
