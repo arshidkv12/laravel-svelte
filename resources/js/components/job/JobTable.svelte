@@ -11,6 +11,7 @@
         data: Array<{
         id: number;
         job_no: string;
+        item: string;
         status: string;
         created_at_formatted: string;
         delivery_date_formatted?: string | null;
@@ -29,6 +30,7 @@
       <tr class="border-b">
         <th class="p-4 text-left font-medium text-gray-700">Job No</th>
         <th class="p-4 text-left font-medium text-gray-700">Date</th>
+        <th class="p-4 text-left font-medium text-gray-700">Item</th>
         <th class="p-4 text-left font-medium text-gray-700">Customer</th>
         <th class="p-4 text-left font-medium text-gray-700">Phone</th>
         <th class="p-4 text-left font-medium text-gray-700">Status</th>
@@ -50,14 +52,21 @@
         <tr class="group hover:bg-gray-50 border-b last:border-b-0 transition-colors">
           <!-- Job No -->
           <td class="p-4">
-            <div class="font-medium text-gray-900 text-sm">
+            <div class="font-medium text-gray-900 text-sm min-w-[100px]">
               {job.job_no}
             </div>
           </td>
 
           <!-- Date -->
-          <td class="p-4 text-sm text-gray-700">
+          <td class="p-4 text-sm text-gray-700 max-w-[100px]">
             {job.created_at_formatted}
+          </td>
+
+          <!-- Item -->
+          <td class="p-4 text-sm text-gray-700">
+            <div class="max-w-[150px] line-clamp-2">
+              {job.item} 
+            </div>
           </td>
 
           <!-- Customer -->
@@ -67,7 +76,7 @@
                 <User class="h-3.5 w-3.5 text-blue-600" />
               </div>
               <div class="min-w-0">
-                <div class="font-medium text-gray-900 truncate text-sm">
+                <div class="font-medium text-gray-900 max-w-[150px] truncate text-sm">
                   {job.customer.name}
                 </div>
                 <div class="text-xs text-gray-500">
@@ -107,15 +116,7 @@
 
           <!-- Actions -->
           <td class="p-4">
-            <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <Link
-                href={`/job-cards/${job.id}`}
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg"
-              >
-                <Eye class="h-4 w-4" />
-                View
-              </Link>
-
+            <div class="flex flex-col items-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
               <Link
                 href={`/job-cards/${job.id}/edit`}
                 class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg"
@@ -125,6 +126,7 @@
               </Link>
             </div>
           </td>
+
         </tr>
       {/each}
     </tbody>

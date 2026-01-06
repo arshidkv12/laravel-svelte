@@ -8,9 +8,10 @@
         status: string;
         created_at_formatted: string;
         delivery_date_formatted?: string | null;
+        item:string;
         customer: {
-        name: string;
-        phone?: string | null;
+          name: string;
+          phone?: string | null;
         };
     }>;
     };
@@ -47,6 +48,10 @@
           </span>
         </div>
 
+        <div class="space-y-2 font-medium text-gray-900">
+          {job.item}
+        </div>
+
         <!-- Customer -->
         <div class="space-y-2">
           <div class="flex items-center gap-2">
@@ -63,7 +68,7 @@
                 d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
               />
             </svg>
-            <span class="font-medium text-gray-900">
+            <span class="text-gray-900">
               {job.customer.name}
             </span>
           </div>
