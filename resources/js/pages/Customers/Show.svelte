@@ -27,7 +27,7 @@
         Trash2
 
     } from 'lucide-svelte';
-    import { page } from '@inertiajs/svelte';
+    import { Link, page, router } from '@inertiajs/svelte';
     import { toast } from 'svelte-sonner';
     import DeleteConfirmDialog from '@/components/confirm/DeleteConfirmDialog.svelte';
 
@@ -138,7 +138,9 @@
                             Delete
                         </Button> -->
                         <DeleteConfirmDialog
-                            onConfirm={async () => alert(5)}
+                            onConfirm={async () => router.delete(route('customers.destroy', customer.id), {
+                                preserveScroll: true})
+                            }
                             itemName={customer.name}
                             title="Delete Customer"
                             description={`This will permanently delete <b>${customer.name}</b> and all associated job cards. This action cannot be undone.`}
@@ -314,17 +316,19 @@
                         <CardContent class="space-y-5">
                             <!-- Job Cards -->
                             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg group hover:bg-gray-100 transition-colors cursor-pointer">
-                                <div class="flex items-center gap-3">
-                                    <div class="p-2 bg-blue-100 rounded-lg">
-                                        <Briefcase class="h-4 w-4 text-blue-600" />
+                                <Link href={`/customers/${customer.id}/job-cards`}>
+                                    <div class="flex items-center gap-3">
+                                        <div class="p-2 bg-blue-100 rounded-lg">
+                                            <Briefcase class="h-4 w-4 text-blue-600" />
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-500">Job Cards</p>
+                                            <p class="text-2xl font-bold text-gray-900">{stats.job_cards_count}</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p class="text-sm font-medium text-gray-500">Job Cards</p>
-                                        <p class="text-2xl font-bold text-gray-900">{stats?.job_cards_count}</p>
-                                    </div>
-                                </div>
+                                </Link>
                                 <Button 
-                                    href={`/job-cards?customer_id=${customer.id}`}
+                                    href={`/customers/${customer.id}/job-cards`}
                                     variant="ghost" 
                                     size="sm"
                                     class="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-all"
@@ -362,7 +366,7 @@
                                     </div>
                                     <div>
                                         <p class="text-sm font-medium text-gray-500">Total Invoiced</p>
-                                        <p class="text-2xl font-bold text-gray-900">{formatCurrency(stats?.total_invoiced)}</p>
+                                        <p class="text-2xl font-bold text-gray-900">{formatCurrency(stats?.total_invoiced || 0)}</p>
                                     </div>
                                 </div>
                             </div>
@@ -376,8 +380,8 @@
                                     <div>
                                         <p class="text-sm font-medium text-gray-500">Pending Invoices</p>
                                         <div class="flex items-center gap-2">
-                                            <p class="text-2xl font-bold text-gray-900">{stats?.pending_invoices}</p>
-                                            {#if stats?.pending_invoices > 0}
+                                            <p class="text-2xl font-bold text-gray-900">{stats.pending_invoices}</p>
+                                            {#if (stats?.pending_invoices || 0) > 0}
                                                 <Badge variant="destructive" class="text-xs">
                                                     Unpaid
                                                 </Badge>

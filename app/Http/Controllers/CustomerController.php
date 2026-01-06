@@ -159,8 +159,13 @@ class CustomerController extends Controller
     {
         $customer->delete();
 
+
+        Inertia::flash([
+            'message' => 'Customer deleted successfully',
+            'type' => 'success'
+        ]);
+
         return redirect()
-            ->route('customers.index')
-            ->with('success', 'Customer deleted successfully');
+            ->route('customers.index');
     }
 }

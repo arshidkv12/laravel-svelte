@@ -5,7 +5,7 @@
     import { onMount } from 'svelte';
     import { page } from '@inertiajs/svelte'
     import { toast } from "svelte-sonner";
-    import { CalendarIcon, ChevronRight, MailIcon, PhoneIcon, SquarePen, UserIcon } from 'lucide-svelte';
+    import { CalendarIcon, ChevronRight, Mail, MailIcon, MapPin, Phone, PhoneIcon, SquarePen, User, UserIcon } from 'lucide-svelte';
     import Button from '@/components/ui/button/button.svelte';
 
     export let customers: {
@@ -90,13 +90,13 @@
 
         <!-- Results Count -->
         {#if customers.total > 0}
-    <div class="flex items-center justify-between mb-4">
-        <p class="text-sm text-gray-500">
-            Showing <span class="font-medium">{customers.from}</span> to <span class="font-medium">{customers.to}</span> of{' '}
-            <span class="font-medium">{customers.total}</span> job cards
-        </p>
-    </div>
-{/if}
+            <div class="flex items-center justify-between mb-4">
+                <p class="text-sm text-gray-500">
+                    Showing <span class="font-medium">{customers.from}</span> to <span class="font-medium">{customers.to}</span> of{' '}
+                    <span class="font-medium">{customers.total}</span> job cards
+                </p>
+            </div>
+        {/if}
 
         <!-- Desktop Table -->
         {#if !isMobile}
@@ -193,39 +193,58 @@
         </div>
         {:else}
         <!-- Mobile Cards -->
-        <div class="space-y-4">
-            {#if customers.data.length === 0}
-            <div class="p-4 text-center text-gray-500 border rounded-lg">
-                No customers found
-            </div>
-            {/if}
-
+        <div class="space-y-3 sm:hidden">
             {#each customers.data as customer}
-            <div class="border rounded-xl shadow-sm hover:shadow-md transition-shadow bg-white">
-                <div class="p-4 space-y-3">
-                <div class="flex justify-between items-start">
-                    <div>
-                    <div class="font-semibold text-gray-900 text-lg">{customer.name}</div>
-                    <div class="text-sm text-gray-500 mt-1">{customer.created_at_formatted}</div>
-                    </div>
-                </div>
-
-                <div class="space-y-1 text-sm text-gray-700">
-                    <div>Phone: {customer.phone}</div>
-                    <div>Email: {customer.email ?? '-'}</div>
-                    <div>Address: {customer.address ?? '-'}</div>
-                </div>
-
-                <div class="pt-2 border-t flex justify-end">
-                    <a
+                <a 
                     href={`/customers/${customer.id}`}
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition text-sm"
-                    >
-                    View Details
-                    </a>
-                </div>
-                </div>
-            </div>
+                    class="block border border-gray-200 rounded-xl bg-white p-4 hover:bg-gray-50 transition-colors"
+                >
+                    <!-- Header with name and stats -->
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-blue-50 rounded-lg">
+                                <User class="h-4 w-4 text-blue-600" />
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">{customer.name}</h3>
+                                <p class="text-xs text-gray-500">ID: #{customer.id.toString().padStart(4, '0')}</p>
+                            </div>
+                        </div>
+                        <ChevronRight class="h-5 w-5 text-gray-400" />
+                    </div>
+                    
+                    <!-- Contact Info Grid -->
+                    <div class="grid grid-cols-1 gap-3 mb-4">
+                        <!-- Phone -->
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-1.5 text-xs text-gray-500">
+                                <Phone class="h-3.5 w-3.5" />
+                                Phone
+                            </div>
+                            <p class="text-sm text-gray-900 truncate">
+                                {customer.phone || '—'}
+                            </p>
+                        </div>
+                        
+                        <!-- Email -->
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-1.5 text-xs text-gray-500">
+                                <Mail class="h-3.5 w-3.5" />
+                                Email
+                            </div>
+                            <p class="text-sm text-gray-900 truncate">
+                                {customer.email || '—'}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Footer with date and stats -->
+                    <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+                        <span class="text-xs text-gray-500">
+                            Since {customer.created_at_formatted}
+                        </span>
+                    </div>
+                </a>
             {/each}
         </div>
         {/if}
