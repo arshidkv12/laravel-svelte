@@ -10,7 +10,7 @@
       },
     ];
 
-    import { Link, router } from '@inertiajs/svelte';
+    import { router } from '@inertiajs/svelte';
     import JobTable from '@/components/job/JobTable.svelte';
     import MobileJobTable from '@/components/job/MobileJobTable.svelte';
 
