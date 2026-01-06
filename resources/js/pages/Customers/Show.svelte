@@ -37,7 +37,7 @@
         phone?: string;
         email?: string;
         address?: string;
-        created_at?: string;
+        created_at_formatted?: string;
     };
 
     export let stats: {
@@ -47,7 +47,6 @@
         pending_invoices?: number;
     };
 
-    let formattedDate = '';
     let copyStatus: { [key: string]: boolean } = {
         phone: false,
         email: false,
@@ -63,14 +62,6 @@
         const flash = $page.flash as Flash;
         if (flash.message && flash.type === 'success') {
             toast.success(flash.message);
-        }
-        if (customer.created_at) {
-            const date = new Date(customer.created_at);
-            formattedDate = date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
         }
     });
 
@@ -113,7 +104,7 @@
                             </p>
                             <span class="text-gray-300 hidden sm:inline">•</span>
                             <p class="text-sm text-gray-500">
-                                Since: <span class="font-medium">{formattedDate || '—'}</span>
+                                Since: <span class="font-medium">{customer.created_at_formatted || '—'}</span>
                             </p>
                         </div>
                     </div>

@@ -19,6 +19,9 @@ Route::get('dashboard', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('job-cards', JobCardController::class);
     Route::resource('customers', CustomerController::class);
+    Route::get('/customers/{customer}/job-cards', [JobCardController::class, 'jobCardsByCustomer'])
+        ->name('customers.job-cards.index');
+    
 });
 
 require __DIR__ . '/settings.php';

@@ -64,10 +64,60 @@ class CustomerController extends Controller
      */
     public function show(Customer $customer)
     {
+        // Get customer with formatted created_at
+        $customerData = [
+            'id' => $customer->id,
+            'name' => $customer->name,
+            'phone' => $customer->phone,
+            'email' => $customer->email,
+            'address' => $customer->address,
+            'created_at_formatted' => $customer->created_at->format('M d, Y'),
+        ];
+        
+        // dd($customer->jobCards()->count());
+        $stats = [
+            'job_cards_count' => $customer->jobCards()->count(),
+            // 'invoices_count' => $customer->invoices()->count(),
+            // 'total_invoiced' => $customer->invoices()->sum('total_amount') ?? 0,
+            // 'pending_invoices' => $customer->invoices()->where('status', 'pending')->count(),
+            // 'paid_invoices' => $customer->invoices()->where('status', 'paid')->count(),
+            // 'overdue_invoices' => $customer->invoices()->where('status', 'overdue')->count(),
+        ];
+        
+        // Get recent job cards (optional - for a recent activity section)
+        $recentJobCards = $customer->jobCards()
+            ->latest()
+            ->limit(5)
+            ->get()
+            ->map(fn($jobCard) => [
+                'id' => $jobCard->id,
+                'job_number' => $jobCard->job_number,
+                'title' => $jobCard->title,
+                'status' => $jobCard->status,
+                'created_at' => $jobCard->created_at->format('M d, Y'),
+            ]);
+        
+        // Get recent invoices (optional)
+        // $recentInvoices = $customer->invoices()
+        //     ->latest()
+        //     ->limit(5)
+        //     ->get()
+        //     ->map(fn($invoice) => [
+        //         'id' => $invoice->id,
+        //         'invoice_number' => $invoice->invoice_number,
+        //         'total_amount' => $invoice->total_amount,
+        //         'status' => $invoice->status,
+        //         'due_date' => $invoice->due_date->format('M d, Y'),
+        //     ]);
+        
         return Inertia::render('Customers/Show', [
-            'customer' => $customer,
+            'customer' => $customerData,
+            'stats' => $stats,
+            // 'recentJobCards' => $recentJobCards,
+            // 'recentInvoices' => $recentInvoices,
         ]);
     }
+    
 
     /**
      * Show form to edit a customer
