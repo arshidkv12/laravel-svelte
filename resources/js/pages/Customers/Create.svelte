@@ -45,7 +45,7 @@
                     </div>
                     
                     <Button 
-                        href={`/customers`}
+                        onclick={(e) => {e.preventDefault(); history.back()}}
                         variant="outline" 
                         size="sm"
                         class="gap-2"
