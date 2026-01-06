@@ -19,4 +19,17 @@ export default defineConfig({
             '@': path.resolve(__dirname, './resources/js'),
         },
     },
+    //for mobile
+    // server: {
+    //     host: '0.0.0.0',
+    //     port: 5180,
+    //     strictPort: true,
+
+    //     cors: true, // ✅ ALLOW CORS
+
+    //     hmr: {
+    //     host: '10.140.191.1',
+    //     port: 5180,
+    //     },
+    // },
 });

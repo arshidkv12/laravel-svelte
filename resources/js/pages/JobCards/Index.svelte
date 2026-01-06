@@ -32,6 +32,9 @@
       current_page: number;
       last_page: number;
       links: any[];
+      total:number,
+      from: number;
+      to: number;
     };
 
     let search = '';
@@ -82,11 +85,12 @@
         class="border rounded px-3 py-2 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-blue-400"
       >
         <option value="">All Status</option>
-        <option value="new">New</option>
+        <option value="pending">Pending</option>
         <option value="in_progress">In Progress</option>
-        <option value="waiting_for_parts">Waiting for Parts</option>
-        <option value="ready">Ready</option>
+        <option value="waiting_parts">Waiting Parts</option>
+        <option value="completed">Completed</option>
         <option value="delivered">Delivered</option>
+        <option value="cancelled">Cancelled</option>
       </select>
       
       <a 
@@ -96,6 +100,17 @@
         + New Job
       </a>
     </div>
+
+
+    <!-- Results Count -->
+    {#if jobCards.total > 0}
+        <div class="flex items-center justify-between mb-4">
+            <p class="text-sm text-gray-500">
+                Showing <span class="font-medium">{jobCards.from}</span> to <span class="font-medium">{jobCards.to}</span> of{' '}
+                <span class="font-medium">{jobCards.total}</span> job cards
+            </p>
+        </div>
+    {/if}
 
     <!-- Conditional rendering based on screen size -->
     {#if !isMobile}
