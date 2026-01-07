@@ -187,7 +187,7 @@
                         </div>
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                             <div>
-                                <h1 class="text-2xl font-bold text-gray-900 print:text-lg">
+                                <h1 class="text-lg font-bold text-gray-900 print:text-lg">
                                     Job Card #{jobCard.id}: {jobCard.item}
                                 </h1>
                                 <p class="text-sm text-gray-500">
@@ -196,7 +196,6 @@
                             </div>
                             <div class="flex items-center gap-2">
                                 <Badge class={`px-3 py-1.5 ${getStatusInfo().badgeColor} font-medium`}>
-                                    <svelte:component this={getStatusInfo().icon} class="h-3.5 w-3.5 mr-1.5" />
                                     {getStatusInfo().label}
                                 </Badge>
                                 <div class="print:hidden">
@@ -254,11 +253,11 @@
                                     <MessageSquare class="h-4 w-4" />
                                     <span>Problem Description</span>
                                 </div>
-                                <div class="prose prose-sm max-w-none">
+                                <div class="prose prose-sm max-w-none bg-gray-50 p-3 rounded-md border">
                                     <p class="text-gray-700 whitespace-pre-line">{jobCard.problem}</p>
                                 </div>
                             </div>
-
+                            <Separator />
                             <!-- Financial & Timeline -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <!-- Estimated Cost -->
