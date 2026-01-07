@@ -26,11 +26,20 @@
         CircleX,
         Clock,
     } from 'lucide-svelte';
+
     import CustomerSelect from '@/components/customer/CustomerSelect.svelte';
     import type { BaseFormSnippetProps } from '@/types/forms';
     import InputError from '@/components/InputError.svelte';
 
     let customer_id = $state<number | null>(null);
+
+      
+    let { customers } = $props<{
+        customers:  Array<{
+          value: string;
+          label: string;
+        }>;
+    }>();
 
     $effect(() => {  
       const flash = $page.flash as Flash;
@@ -106,7 +115,7 @@
                                 Back to Jobs
                             </Button>
                         </div>
-                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900">
+                        <h1 class="text-lg font-bold text-gray-900">
                             Create New Job Card
                         </h1>
                         <p class="text-sm text-gray-500">
@@ -136,7 +145,8 @@
                             <!-- Customer Search/Select -->
                             <div class="space-y-2">
                                 <Label class="text-sm font-medium">Select Customer *</Label>
-                                <CustomerSelect bind:modelValue={customer_id} />
+                                <CustomerSelect initCustomers={customers}  bind:modelValue={customer_id} />
+                                <InputError class="mt-1" message={errors.customer_id} />
                             </div>
 
                             <!-- Quick Add Customer Button -->

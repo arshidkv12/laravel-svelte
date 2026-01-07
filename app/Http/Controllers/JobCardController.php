@@ -41,36 +41,46 @@ class JobCardController extends Controller
      */
     public function create(Request $request)
     {
-        return Inertia::render('JobCards/Create');
+        $q = $request->get('q');
+        $customer_id = $request->get('customer_id');
+        $customers = Customer::latest()
+            ->when($q, fn ($query) =>
+                $query->where('name', 'like', "%{$q}%")
+                    ->orWhere('phone', 'like', "%{$q}%")
+            )
+            ->when($customer_id, fn ($query) =>
+                $query->where('id', $customer_id)
+            )
+            ->limit(5)          
+            ->get()             
+            ->map(fn ($c) => [
+                'value' => $c->id,
+                'label' => "{$c->name} - {$c->phone}",
+            ]);
+
+        return Inertia::render('JobCards/Create', [
+            'customers' => $customers,
+        ]);
     }
 
     /**
      * Store new job card
      */
-    public function store1(Request $request)
-    {
-
-        $validated = $request->validate([
-            'item'          => 'required|string|max:255',
-            'problem'       => 'required|string',
-            'delivery_date' => 'nullable|date',
-            'estimated_cost'=> 'nullable|numeric',
-        ]);
-
-        JobCard::create($validated);
-
-        return redirect()
-            ->route('job-cards.index')
-            ->with('success', 'Job card created successfully');
-    }
-
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'customer_id'   => 'required',
             'item'          => 'required|string|max:255',
             'problem'       => 'required|string',
             'delivery_date' => 'nullable|date',
             'estimated_cost'=> 'nullable|numeric',
+        ], [
+            'customer_id.required'   => 'Please select a customer before submitting.',
+            'item.required'          => 'Please provide the name of the item.',
+            'item.max'               => 'The item name may not exceed 255 characters.',
+            'problem.required'       => 'Please describe the problem clearly.',
+            'delivery_date.date'     => 'Please enter a valid delivery date.',
+            'estimated_cost.numeric' => 'Estimated cost must be a valid number.',
         ]);
 
         

@@ -185,7 +185,7 @@ class CustomerController extends Controller
             ->get()
             ->map(fn ($c) => [
                 'value' => $c->id,
-                'label' => "{$c->name} ({$c->phone})",
+                'label' => "{$c->name} - {$c->phone}",
         ]);
     }
 }
