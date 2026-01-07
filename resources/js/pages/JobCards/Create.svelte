@@ -28,23 +28,24 @@
     } from 'lucide-svelte';
     import CustomerSelect from '@/components/customer/CustomerSelect.svelte';
     import type { BaseFormSnippetProps } from '@/types/forms';
+    import InputError from '@/components/InputError.svelte';
 
     let customer_id = $state<number | null>(null);
-    let isSubmitting = $state(false);
 
-    // Pre-select customer from query params
+    $effect(() => {  
+      const flash = $page.flash as Flash;
+      if (flash?.message) {
+          if (flash.type === 'success') {
+              toast.success(flash.message);
+          } else if (flash.type === 'error') {
+              toast.error(flash.message);
+          }
+      }
+    });
+
     onMount(() => {
         const urlParams = new URLSearchParams(window.location.search);
         customer_id = Number(urlParams.get('customer_id'));
-
-        const flash = $page.flash as Flash;
-        if (flash?.message) {
-            if (flash.type === 'success') {
-                toast.success(flash.message);
-            } else if (flash.type === 'error') {
-                toast.error(flash.message);
-            }
-        }
     });
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -172,8 +173,8 @@
                                     id="item"
                                     name="item"
                                     placeholder="e.g., iPhone 13, Laptop Dell XPS, Toyota Camry"
-                                    required
                                 />
+                                <InputError class="mt-1" message={errors.item} />
                             </div>
 
                             <!-- Problem Description -->
@@ -184,8 +185,8 @@
                                   name="problem"
                                   placeholder="Describe the problem, issue, or service required..."
                                   class="min-h-[200px]"
-                                  required
                               />
+                              <InputError class="mt-1" message={errors.problem} />
                             </div>
 
                             <!-- Status -->
@@ -248,9 +249,10 @@
                         <CardContent class="space-y-3">
                             <Button
                                 type="submit"
+                                disabled={processing}
                                 class="w-full gap-2 bg-blue-600 hover:bg-blue-700 text-white"
                             >
-                                {#if isSubmitting}
+                                {#if processing}
                                     <div class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
                                     Creating...
                                 {:else}

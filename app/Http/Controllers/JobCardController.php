@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\JobCard;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class JobCardController extends Controller
@@ -46,7 +47,7 @@ class JobCardController extends Controller
     /**
      * Store new job card
      */
-    public function store(Request $request)
+    public function store1(Request $request)
     {
 
         $validated = $request->validate([
@@ -58,6 +59,33 @@ class JobCardController extends Controller
 
         JobCard::create($validated);
 
+        return redirect()
+            ->route('job-cards.index')
+            ->with('success', 'Job card created successfully');
+    }
+
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'item'          => 'required|string|max:255',
+            'problem'       => 'required|string',
+            'delivery_date' => 'nullable|date',
+            'estimated_cost'=> 'nullable|numeric',
+        ]);
+
+        
+        if ($validator->fails()) {
+            Inertia::flash([
+                'message' => 'Please fix the errors.',
+                'type' => 'error'
+            ]);
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        JobCard::create($validator->validated());
+        
         return redirect()
             ->route('job-cards.index')
             ->with('success', 'Job card created successfully');

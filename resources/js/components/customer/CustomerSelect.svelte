@@ -83,10 +83,10 @@ function onSearchInput(e: Event) {
 </script>
 
 <Popover.Root bind:open>
-  <Popover.Trigger bind:ref={triggerRef}>
+  <Popover.Trigger bind:ref={triggerRef} class="w-full">
     <Button
       variant="outline"
-      class="w-full justify-between"
+      class="w-full justify-between "
       role="combobox"
       aria-expanded={open}
     >
@@ -104,7 +104,7 @@ function onSearchInput(e: Event) {
 
       <Command.List>
         {#if loading}
-          <Command.Loading>Searching...</Command.Loading>
+          <Command.Loading class="p-4">Searching...</Command.Loading>
         {/if}
 
         <Command.Empty>
