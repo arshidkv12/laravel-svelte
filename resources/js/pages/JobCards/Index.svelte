@@ -10,7 +10,7 @@
       },
     ];
 
-    import { router } from '@inertiajs/svelte';
+    import { Link, router } from '@inertiajs/svelte';
     import JobTable from '@/components/job/JobTable.svelte';
     import MobileJobTable from '@/components/job/MobileJobTable.svelte';
 
@@ -94,12 +94,12 @@
         <option value="cancelled">Cancelled</option>
       </select>
       
-      <a 
+      <Link 
         href="/job-cards/create" 
         class="px-4 py-2 bg-blue-600 text-white rounded shadow hover:bg-blue-700 transition w-full sm:w-auto text-center"
       >
         + New Job
-      </a>
+      </Link>
     </div>
 
 

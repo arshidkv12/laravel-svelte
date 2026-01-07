@@ -12,12 +12,12 @@
 
     export let customers: {
         data: Array<{
-        id: number;
-        name: string;
-        phone: string;
-        email?: string;
-        address?: string;
-        created_at_formatted: string;
+            id: number;
+            name: string;
+            phone: string;
+            email?: string;
+            address?: string;
+            created_at_formatted: string;
         }>;
         current_page: number;
         last_page: number;
@@ -82,12 +82,12 @@
             class="border rounded px-3 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
 
-        <a
+        <Link
             href="/customers/create"
             class="px-4 py-2 bg-blue-600 text-white rounded shadow hover:bg-blue-700 transition w-full sm:w-auto text-center"
         >
             + New Customer
-        </a>
+        </Link>
         </div>
 
         <!-- Results Count -->

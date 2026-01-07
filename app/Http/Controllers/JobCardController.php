@@ -38,7 +38,7 @@ class JobCardController extends Controller
     /**
      * Show create form
      */
-    public function create()
+    public function create(Request $request)
     {
         return Inertia::render('JobCards/Create');
     }
@@ -47,13 +47,11 @@ class JobCardController extends Controller
      * Store new job card
      */
     public function store(Request $request)
-    {dd($request->all());
+    {
 
         $validated = $request->validate([
-            'customer_name' => 'required|string|max:255',
-            'phone'         => 'required|string|max:20',
-            'item'          => 'nullable|string|max:255',
-            'problem'       => 'nullable|string',
+            'item'          => 'required|string|max:255',
+            'problem'       => 'required|string',
             'delivery_date' => 'nullable|date',
             'estimated_cost'=> 'nullable|numeric',
         ]);

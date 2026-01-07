@@ -168,4 +168,24 @@ class CustomerController extends Controller
         return redirect()
             ->route('customers.index');
     }
+
+    /**
+     * Search
+     */
+    public function search(Request $request)
+    {
+        $q = $request->get('q');
+
+        return Customer::query()
+            ->when($q, fn ($query) =>
+                $query->where('name', 'like', "%{$q}%")
+                    ->orWhere('phone', 'like', "%{$q}%")
+            )
+            ->limit(10)
+            ->get()
+            ->map(fn ($c) => [
+                'value' => $c->id,
+                'label' => "{$c->name} ({$c->phone})",
+        ]);
+    }
 }
