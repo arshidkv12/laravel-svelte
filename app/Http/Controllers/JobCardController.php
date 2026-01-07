@@ -107,8 +107,11 @@ class JobCardController extends Controller
      */
     public function show(JobCard $jobCard)
     {
+        $jobCard->load('customer');
+    
         return Inertia::render('JobCards/Show', [
             'jobCard' => $jobCard,
+            'customer' => $jobCard->customer,  
         ]);
     }
 
@@ -143,12 +146,13 @@ class JobCardController extends Controller
         //     'notes'          => 'nullable|string',
         // ]);
 
-         $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'customer_id' => 'required|exists:customers,id',
             'item'          => 'required|string|max:255',
             'problem'       => 'required|string',
             'delivery_date' => 'nullable|date',
             'estimated_cost'=> 'nullable|numeric',
+            'notes' => 'nullable|string',
         ], [
             'customer_id.required'   => 'Please select a customer before submitting.',
             'customer_id.exists'   => 'Please select a customer before submitting.',
