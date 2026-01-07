@@ -313,135 +313,135 @@
 
                     <!-- Customer Information -->
                     <Card class="border border-gray-200 shadow-sm">
-    <CardHeader>
-        <div class="flex items-center justify-between">
-            <CardTitle class="flex items-center gap-2">
-                <User class="h-5 w-5 text-blue-600" />
-                Customer Information
-            </CardTitle>
-            <Link href={`/customers/${customer.id}`}>
-                <Button variant="ghost" size="sm" class="gap-1">
-                    <User class="h-4 w-4" />
-                    View Profile
-                </Button>
-            </Link>
-        </div>
-    </CardHeader>
-    <CardContent>
-        <div class="space-y-4">
-            <!-- Customer Header -->
-            <div class="flex items-start justify-between">
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-900">{customer.name}</h3>
-                    <p class="text-sm text-gray-500">ID: #{customer.id}</p>
-                </div>
-                <Link href={`/customers/${customer.id}/edit`}>
-                    <Button variant="outline" size="sm" class="gap-2">
-                        <Edit class="h-4 w-4" />
-                        Edit
-                    </Button>
-                </Link>
-            </div>
-
-            <Separator />
-
-            <!-- Contact Information Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Left Column: Contact Details -->
-                <div class="space-y-4">
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-700 mb-3">Contact Details</h4>
-                        <div class="space-y-3">
-                            {#if customer.phone}
-                                <div class="flex items-center gap-3">
-                                    <div class="p-2 bg-blue-50 rounded-lg">
-                                        <Phone class="h-4 w-4 text-blue-600" />
-                                    </div>
+                        <CardHeader>
+                            <div class="flex items-center justify-between">
+                                <CardTitle class="flex items-center gap-2">
+                                    <User class="h-5 w-5 text-blue-600" />
+                                    Customer Information
+                                </CardTitle>
+                                <Link href={`/customers/${customer.id}`}>
+                                    <Button variant="ghost" size="sm" class="gap-1">
+                                        <User class="h-4 w-4" />
+                                        View Profile
+                                    </Button>
+                                </Link>
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            <div class="space-y-4">
+                                <!-- Customer Header -->
+                                <div class="flex items-start justify-between">
                                     <div>
-                                        <p class="text-sm text-gray-500">Phone</p>
-                                        <p class="font-medium text-gray-900">{customer.phone}</p>
+                                        <h3 class="text-lg font-semibold text-gray-900">{customer.name}</h3>
+                                        <p class="text-sm text-gray-500">ID: #{customer.id}</p>
+                                    </div>
+                                    <Link href={`/customers/${customer.id}/edit`}>
+                                        <Button variant="outline" size="sm" class="gap-2">
+                                            <Edit class="h-4 w-4" />
+                                            Edit
+                                        </Button>
+                                    </Link>
+                                </div>
+
+                                <Separator />
+
+                                <!-- Contact Information Grid -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <!-- Left Column: Contact Details -->
+                                    <div class="space-y-4">
+                                        <div>
+                                            <h4 class="text-sm font-medium text-gray-700 mb-3">Contact Details</h4>
+                                            <div class="space-y-3">
+                                                {#if customer.phone}
+                                                    <div class="flex items-center gap-3">
+                                                        <div class="p-2 bg-blue-50 rounded-lg">
+                                                            <Phone class="h-4 w-4 text-blue-600" />
+                                                        </div>
+                                                        <div>
+                                                            <p class="text-sm text-gray-500">Phone</p>
+                                                            <p class="font-medium text-gray-900">{customer.phone}</p>
+                                                        </div>
+                                                    </div>
+                                                {/if}
+
+                                                {#if customer.email}
+                                                    <div class="flex items-center gap-3">
+                                                        <div class="p-2 bg-blue-50 rounded-lg">
+                                                            <Mail class="h-4 w-4 text-blue-600" />
+                                                        </div>
+                                                        <div>
+                                                            <p class="text-sm text-gray-500">Email</p>
+                                                            <p class="font-medium text-gray-900 break-all">{customer.email}</p>
+                                                        </div>
+                                                    </div>
+                                                {/if}
+                                            </div>
+                                        </div>
+
+                                        <!-- Quick Stats (if you have them) -->
+                                        <!-- <div>
+                                            <h4 class="text-sm font-medium text-gray-700 mb-3">Job History</h4>
+                                            <div class="flex items-center gap-4">
+                                                <div class="text-center">
+                                                    <p class="text-2xl font-bold text-gray-900">5</p>
+                                                    <p class="text-xs text-gray-500">Total Jobs</p>
+                                                </div>
+                                                <div class="text-center">
+                                                    <p class="text-2xl font-bold text-green-600">3</p>
+                                                    <p class="text-xs text-gray-500">Completed</p>
+                                                </div>
+                                            </div>
+                                        </div> -->
+                                    </div>
+
+                                    <!-- Right Column: Address & Notes -->
+                                    <div class="space-y-4">
+                                        {#if customer.address}
+                                            <div>
+                                                <h4 class="text-sm font-medium text-gray-700 mb-3">Address</h4>
+                                                <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                                    <MapPin class="h-4 w-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                                                    <p class="text-sm text-gray-700 whitespace-pre-line">{customer.address}</p>
+                                                </div>
+                                            </div>
+                                        {/if}
+
+                                        <!-- Customer Notes (if you have this field) -->
+                                        {#if customer.notes}
+                                            <div>
+                                                <h4 class="text-sm font-medium text-gray-700 mb-3">Notes</h4>
+                                                <div class="p-3 bg-amber-50 border border-amber-100 rounded-lg">
+                                                    <p class="text-sm text-gray-700">{customer.notes}</p>
+                                                </div>
+                                            </div>
+                                        {/if}
                                     </div>
                                 </div>
-                            {/if}
 
-                            {#if customer.email}
-                                <div class="flex items-center gap-3">
-                                    <div class="p-2 bg-blue-50 rounded-lg">
-                                        <Mail class="h-4 w-4 text-blue-600" />
-                                    </div>
-                                    <div>
-                                        <p class="text-sm text-gray-500">Email</p>
-                                        <p class="font-medium text-gray-900 break-all">{customer.email}</p>
+                                <!-- Actions Row -->
+                                <div class="pt-4 border-t">
+                                    <div class="flex flex-wrap gap-2">
+                                        {#if customer.phone}
+                                            <a href={`tel:${customer.phone}`}>
+                                                <Button variant="outline" size="sm" class="gap-2">
+                                                    <Phone class="h-4 w-4" />
+                                                    Call
+                                                </Button>
+                                            </a>
+                                        {/if}
+                                        {#if customer.email}
+                                            <a href={`mailto:${customer.email}`}>
+                                                <Button variant="outline" size="sm" class="gap-2">
+                                                    <Mail class="h-4 w-4" />
+                                                    Email
+                                                </Button>
+                                            </a>
+                                        {/if}
                                     </div>
                                 </div>
-                            {/if}
-                        </div>
-                    </div>
-
-                    <!-- Quick Stats (if you have them) -->
-                    <!-- <div>
-                        <h4 class="text-sm font-medium text-gray-700 mb-3">Job History</h4>
-                        <div class="flex items-center gap-4">
-                            <div class="text-center">
-                                <p class="text-2xl font-bold text-gray-900">5</p>
-                                <p class="text-xs text-gray-500">Total Jobs</p>
                             </div>
-                            <div class="text-center">
-                                <p class="text-2xl font-bold text-green-600">3</p>
-                                <p class="text-xs text-gray-500">Completed</p>
-                            </div>
-                        </div>
-                    </div> -->
-                </div>
-
-                <!-- Right Column: Address & Notes -->
-                <div class="space-y-4">
-                    {#if customer.address}
-                        <div>
-                            <h4 class="text-sm font-medium text-gray-700 mb-3">Address</h4>
-                            <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                                <MapPin class="h-4 w-4 text-gray-400 mt-0.5 flex-shrink-0" />
-                                <p class="text-sm text-gray-700 whitespace-pre-line">{customer.address}</p>
-                            </div>
-                        </div>
-                    {/if}
-
-                    <!-- Customer Notes (if you have this field) -->
-                    {#if customer.notes}
-                        <div>
-                            <h4 class="text-sm font-medium text-gray-700 mb-3">Notes</h4>
-                            <div class="p-3 bg-amber-50 border border-amber-100 rounded-lg">
-                                <p class="text-sm text-gray-700">{customer.notes}</p>
-                            </div>
-                        </div>
-                    {/if}
-                </div>
-            </div>
-
-            <!-- Actions Row -->
-            <div class="pt-4 border-t">
-                <div class="flex flex-wrap gap-2">
-                    {#if customer.phone}
-                        <a href={`tel:${customer.phone}`}>
-                            <Button variant="outline" size="sm" class="gap-2">
-                                <Phone class="h-4 w-4" />
-                                Call
-                            </Button>
-                        </a>
-                    {/if}
-                    {#if customer.email}
-                        <a href={`mailto:${customer.email}`}>
-                            <Button variant="outline" size="sm" class="gap-2">
-                                <Mail class="h-4 w-4" />
-                                Email
-                            </Button>
-                        </a>
-                    {/if}
-                </div>
-            </div>
-        </div>
-    </CardContent>
-</Card>
+                        </CardContent>
+                    </Card>
                 </div>
 
                 <!-- Right Column - Actions & Timeline -->
