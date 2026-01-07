@@ -49,4 +49,18 @@ class JobCard extends Model
     {
         return $this->belongsTo(Customer::class);
     }
+
+
+
+    protected static function booted()
+    {
+        static::creating(function ($jobCard) {
+            $jobCard->job_no = 'JC-' . str_pad(
+                JobCard::max('id') + 1,
+                5,
+                '0',
+                STR_PAD_LEFT
+            );
+        });
+    }
 }

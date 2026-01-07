@@ -69,13 +69,14 @@ class JobCardController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'customer_id'   => 'required',
+            'customer_id' => 'required|exists:customers,id',
             'item'          => 'required|string|max:255',
             'problem'       => 'required|string',
             'delivery_date' => 'nullable|date',
             'estimated_cost'=> 'nullable|numeric',
         ], [
             'customer_id.required'   => 'Please select a customer before submitting.',
+            'customer_id.exists'   => 'Please select a customer before submitting.',
             'item.required'          => 'Please provide the name of the item.',
             'item.max'               => 'The item name may not exceed 255 characters.',
             'problem.required'       => 'Please describe the problem clearly.',

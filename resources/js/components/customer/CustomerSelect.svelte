@@ -99,7 +99,7 @@
       {selectedLabel || "Select a customer..."}
       <ChevronsUpDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
     </Button>
-    <Input type='text' name='customer_id'  bind:value={modelValue}/>
+    <Input type='hidden' name='customer_id'  bind:value={modelValue}/>
   </Popover.Trigger>
 
   <Popover.Content class="w-[320px] p-0" align="start">
