@@ -9,6 +9,7 @@
     import Button from '@/components/ui/button/button.svelte';
     import CustomerTable from '@/components/customer/CustomerTable.svelte';
     import MobileCustomerTable from '@/components/customer/MobileCustomerTable.svelte';
+    import { throttle } from 'lodash';
 
     export let customers: {
         data: Array<{
@@ -62,6 +63,8 @@
       { preserveState: true, replace: true }
     );
   }
+
+  const throttledApplyFilters = throttle(applyFilters, 300); 
 </script>
 
 <svelte:head>
@@ -78,7 +81,7 @@
             id="search-customers"
             placeholder="Search customer name / phone"
             bind:value={search}
-            on:input={applyFilters}
+            oninput={throttledApplyFilters}
             class="border rounded px-3 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
 
@@ -118,9 +121,9 @@
             {#each customers.links as link}
             <button
                 disabled={!link.url}
-                on:click={() =>
-                link.url &&
-                router.get(link.url, {}, { preserveState: true, preserveScroll: true, replace: true })
+                onclick={() =>
+                    link.url &&
+                    router.get(link.url, {}, { preserveState: true, preserveScroll: true, replace: true })
                 }
                 class="cursor-pointer px-3 py-1 text-sm border rounded
                 {link.active ? 'bg-black text-white border-black' : 'text-gray-700 hover:bg-gray-100'}

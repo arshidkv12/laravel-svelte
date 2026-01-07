@@ -117,8 +117,15 @@ class JobCardController extends Controller
      */
     public function edit(JobCard $jobCard)
     {
+        $customers = Customer::where('id', $jobCard->customer_id)
+                        ->get()
+                        ->map(fn ($c) => [
+                            'value' => $c->id,
+                            'label' => "{$c->name} - {$c->phone}",
+                        ]);
         return Inertia::render('JobCards/Edit', [
             'jobCard' => $jobCard,
+            'customers' => $customers
         ]);
     }
 
@@ -127,20 +134,47 @@ class JobCardController extends Controller
      */
     public function update(Request $request, JobCard $jobCard)
     {
-        $validated = $request->validate([
-            'status'         => 'required|in:new,in_progress,waiting_for_parts,ready,delivered',
-            'item'           => 'nullable|string|max:255',
-            'problem'        => 'nullable|string',
-            'delivery_date'  => 'nullable|date',
-            'estimated_cost' => 'nullable|numeric',
-            'notes'          => 'nullable|string',
-        ]);
+        // $validated = $request->validate([
+        //     'status'         => 'required|in:new,in_progress,waiting_for_parts,ready,delivered',
+        //     'item'           => 'nullable|string|max:255',
+        //     'problem'        => 'nullable|string',
+        //     'delivery_date'  => 'nullable|date',
+        //     'estimated_cost' => 'nullable|numeric',
+        //     'notes'          => 'nullable|string',
+        // ]);
 
-        $jobCard->update($validated);
+         $validator = Validator::make($request->all(), [
+            'customer_id' => 'required|exists:customers,id',
+            'item'          => 'required|string|max:255',
+            'problem'       => 'required|string',
+            'delivery_date' => 'nullable|date',
+            'estimated_cost'=> 'nullable|numeric',
+        ], [
+            'customer_id.required'   => 'Please select a customer before submitting.',
+            'customer_id.exists'   => 'Please select a customer before submitting.',
+            'item.required'          => 'Please provide the name of the item.',
+            'item.max'               => 'The item name may not exceed 255 characters.',
+            'problem.required'       => 'Please describe the problem clearly.',
+            'delivery_date.date'     => 'Please enter a valid delivery date.',
+            'estimated_cost.numeric' => 'Estimated cost must be a valid number.',
+        ]);
+          
+        if ($validator->fails()) {
+            Inertia::flash([
+                'message' => 'Please fix the errors.',
+                'type' => 'error'
+            ]);
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+        
+        $jobCard->update($validator->validated());
 
         return redirect()
-            ->route('job-cards.show', $jobCard)
-            ->with('success', 'Job card updated');
+            ->route('job-cards.index')
+            ->with('success', 'Job card updated successfully');
+
     }
 
     /**

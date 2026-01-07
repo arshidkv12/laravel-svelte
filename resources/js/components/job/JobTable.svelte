@@ -9,17 +9,17 @@
 
     export let jobCards: {
         data: Array<{
-        id: number;
-        job_no: string;
-        item: string;
-        status: string;
-        created_at_formatted: string;
-        delivery_date_formatted?: string | null;
-        customer: {
-            id: number;
-            name: string;
-            phone?: string | null;
-        };
+          id: number;
+          job_no: string;
+          item: string;
+          status: string;
+          created_at_formatted: string;
+          delivery_date_formatted?: string | null;
+          customer: {
+              id: number;
+              name: string;
+              phone?: string | null;
+          };
         }>;
     };
 </script>

@@ -82,7 +82,7 @@
         }, 300);
     }
 
-    onMount(()=>{
+    onMount(()=>{ 
         customers = initCustomers;
     });
 

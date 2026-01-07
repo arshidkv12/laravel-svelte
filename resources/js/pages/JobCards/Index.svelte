@@ -1,66 +1,86 @@
 <script lang="ts">
-    import AppLayout from '@/layouts/AppLayout.svelte';
-    import { type BreadcrumbItem } from '@/types';
-    import { onMount } from 'svelte';
+  import AppLayout from '@/layouts/AppLayout.svelte';
+  import { type Flash, type BreadcrumbItem } from '@/types';
+  import { onMount } from 'svelte';
+  import { Link, page, router } from '@inertiajs/svelte';
+  import JobTable from '@/components/job/JobTable.svelte';
+  import MobileJobTable from '@/components/job/MobileJobTable.svelte';
+  import { throttle } from 'lodash';
+  import { toast } from 'svelte-sonner';
 
-    const breadcrumbs: BreadcrumbItem[] = [
-      {
-        title: 'Job Cards',
-        href: '/job-cards',
-      },
-    ];
-
-    import { Link, router } from '@inertiajs/svelte';
-    import JobTable from '@/components/job/JobTable.svelte';
-    import MobileJobTable from '@/components/job/MobileJobTable.svelte';
-
-    export let jobCards: {
-      data: Array<{
-        id: number;
-        job_no: string;
-        item:string;
-        phone: string;
-        status: string;
-        delivery_date: string;
-        created_at_formatted: string;
-        delivery_date_formatted: string;
-        customer: {
-          id: number;
-          name: string;
-          phone: string;
-        };
-      }>;
-      current_page: number;
-      last_page: number;
-      links: any[];
-      total:number,
-      from: number;
-      to: number;
+  type JobCard = {
+    id: number;
+    job_no: string;
+    item: string;
+    phone: string;
+    status: string;
+    delivery_date: string;
+    created_at_formatted: string;
+    delivery_date_formatted: string;
+    customer: {
+      id: number;
+      name: string;
+      phone: string;
     };
+  };
 
-    let search = '';
-    let status = '';
-    let isMobile = false;
+  type JobCardsPagination = {
+    data: JobCard[];
+    current_page: number;
+    last_page: number;
+    links: any[];
+    total: number;
+    from: number;
+    to: number;
+  };
 
+  let { jobCards } = $props<{
+    jobCards: JobCardsPagination;
+  }>();
 
-    onMount(() => {
-      isMobile = window.innerWidth < 768;  
-      
-      const handleResize = () => {
-        isMobile = window.innerWidth < 768;
-      };
-      
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
-    });
+  let search = $state('');
+  let status = $state('');
+  let isMobile = $state(false);
 
-    function applyFilters() {
-      router.get(
-        '/job-cards',
-        { search, status },
-        { preserveState: true, replace: true }
-      );
+  $effect(() => {  
+    const flash = $page.flash as Flash;
+    if (flash?.message) {
+        if (flash.type === 'success') {
+            toast.success(flash.message);
+        } else if (flash.type === 'error') {
+            toast.error(flash.message);
+        }
     }
+  });
+
+
+  onMount(() => {
+    isMobile = window.innerWidth < 768;  
+    
+    const handleResize = () => {
+      isMobile = window.innerWidth < 768;
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  });
+
+  function applyFilters() {
+    router.get(
+      '/job-cards',
+      { search, status },
+      { preserveState: true, replace: true }
+    );
+  }
+
+  const throttledApplyFilters = throttle(applyFilters, 300); 
+
+  const breadcrumbs: BreadcrumbItem[] = [
+    {
+      title: 'Job Cards',
+      href: '/job-cards',
+    },
+  ];
 
 </script>
 
@@ -76,13 +96,13 @@
         type="text"
         placeholder="Search job / customer"
         bind:value={search}
-        on:change={applyFilters}
+        oninput={throttledApplyFilters}
         class="border rounded px-3 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-400"
       />
 
       <select
         bind:value={status}
-        on:change={applyFilters}
+        oninput={throttledApplyFilters}
         class="border rounded px-3 py-2 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-blue-400"
       >
         <option value="">All Status</option>
@@ -134,7 +154,7 @@
         {#each jobCards.links as link}
           <button
             disabled={!link.url}
-            on:click={() =>
+            onclick={() =>
               link.url &&
               router.get(
                 link.url,
