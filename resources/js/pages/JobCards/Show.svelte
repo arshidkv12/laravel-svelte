@@ -12,7 +12,6 @@
 
     import { 
         ArrowLeft,
-        Edit,
         Printer,
         User,
         Search,
@@ -30,8 +29,8 @@
         Mail,
         MapPin,
         Tag,
-        Hash,
         Package,
+        SquarePen,
     } from 'lucide-svelte';
 
     let { jobCard, customer } = $props<{
@@ -205,7 +204,7 @@
                                         size="sm"
                                         class="gap-2"
                                     >
-                                        <Edit class="h-4 w-4" />
+                                        <SquarePen class="h-4 w-4" />
                                         Edit
                                     </Button>
                                 </div>
@@ -336,7 +335,7 @@
                                     </div>
                                     <Link href={`/customers/${customer.id}/edit`}>
                                         <Button variant="outline" size="sm" class="gap-2">
-                                            <Edit class="h-4 w-4" />
+                                            <SquarePen class="h-4 w-4" />
                                             Edit
                                         </Button>
                                     </Link>
@@ -452,15 +451,15 @@
                         </CardHeader>
                         <CardContent class="space-y-3">
                             <Link href={`/job-cards/${jobCard.id}/edit`}>
-                                <Button class="w-full gap-2 bg-blue-600 hover:bg-blue-700 text-white mb-4">
-                                    <Edit class="h-4 w-4" />
+                                <Button class="w-full gap-2 bg-blue-600 hover:bg-blue-700 text-white mb-4 cursor-pointer">
+                                    <SquarePen class="h-4 w-4 " />
                                     Edit Job Card
                                 </Button>
                             </Link>
                             
                             <Button 
                                 variant="outline" 
-                                class="w-full gap-2"
+                                class="w-full gap-2 cursor-pointer"
                                 onclick={handlePrint}
                             >
                                 <Printer class="h-4 w-4" />
@@ -468,9 +467,11 @@
                             </Button>
 
                             <Link href="/job-cards">
-                                <Button variant="outline" class="w-full gap-2">
+                                <Button 
+                                    onclick={(e) => {e.preventDefault(); history.back()}}
+                                    variant="outline" class="w-full gap-2 cursor-pointer">
                                     <ArrowLeft class="h-4 w-4" />
-                                    Back to All Jobs
+                                    Back
                                 </Button>
                             </Link>
                         </CardContent>

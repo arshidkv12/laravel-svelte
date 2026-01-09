@@ -11,7 +11,7 @@
     import MobileCustomerTable from '@/components/customer/MobileCustomerTable.svelte';
     import { throttle } from 'lodash';
 
-    export let customers: {
+    type customers = {
         data: Array<{
             id: number;
             name: string;
@@ -29,42 +29,53 @@
         to:number
     };
 
-  const breadcrumbs: BreadcrumbItem[] = [
-    {
-      title: 'Customers',
-      href: '/customers',
-    },
-  ];
+    let { customers } = $props<{
+        customers: customers;
+    }>();
 
-  let search = '';
-  let isMobile = false;
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+        title: 'Customers',
+        href: '/customers',
+        },
+    ];
 
-  onMount(() => {
+    let search = $state('');
+    let isMobile = $state(false);
 
-    const flash = $page.flash as Flash;
-    if (flash.message && flash.type === 'success') {
-        toast.success(flash.message);
+
+    $effect(() => {   
+        const flash = $page.flash as Flash;
+        if (flash?.message) {  
+            if (flash.type === 'success') {
+                toast.success(flash.message);
+            } else if (flash.type === 'error') {
+                toast.error(flash.message);
+            }
+        }
+    });
+
+    onMount(() => {
+
+        isMobile = window.innerWidth < 768;
+
+        const handleResize = () => {
+        isMobile = window.innerWidth < 768;
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    });
+
+    function applyFilters() {
+        router.get(
+        '/customers',
+        { search },
+        { preserveState: true, replace: true }
+        );
     }
 
-    isMobile = window.innerWidth < 768;
-
-    const handleResize = () => {
-      isMobile = window.innerWidth < 768;
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  });
-
-  function applyFilters() {
-    router.get(
-      '/customers',
-      { search },
-      { preserveState: true, replace: true }
-    );
-  }
-
-  const throttledApplyFilters = throttle(applyFilters, 300); 
+    const throttledApplyFilters = throttle(applyFilters, 300); 
 </script>
 
 <svelte:head>

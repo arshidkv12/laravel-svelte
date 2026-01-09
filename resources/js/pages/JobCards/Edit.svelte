@@ -332,15 +332,14 @@
                                     {/if}
                                 </Button>
                                 
-                                <Link href={`/job-cards/${jobCard.id}`}>
-                                    <Button
-                                        variant="outline"
-                                        class="w-full gap-2"
-                                    >
-                                        <ArrowLeft class="h-4 w-4" />
-                                        Cancel
-                                    </Button>
-                                </Link>
+                                <Button
+                                    onclick={(e) => {e.preventDefault(); history.back()}}
+                                    variant="outline"
+                                    class="w-full gap-2 mb-4"
+                                >
+                                    <ArrowLeft class="h-4 w-4" />
+                                    Cancel
+                                </Button>
 
                                 <!-- Delete Button -->
                                 <Form 

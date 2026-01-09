@@ -96,10 +96,14 @@ class JobCardController extends Controller
         }
 
         JobCard::create($validator->validated());
+
+        Inertia::flash([
+            'message' => 'Job card created successfully',
+            'type' => 'success'
+        ]);
         
         return redirect()
-            ->route('job-cards.index')
-            ->with('success', 'Job card created successfully');
+            ->route('job-cards.index');
     }
 
     /**
@@ -175,9 +179,13 @@ class JobCardController extends Controller
         
         $jobCard->update($validator->validated());
 
+        Inertia::flash([
+            'message' => 'Job card updated successfully',
+            'type' => 'success'
+        ]);
+
         return redirect()
-            ->route('job-cards.index')
-            ->with('success', 'Job card updated successfully');
+            ->route('job-cards.index');
 
     }
 
