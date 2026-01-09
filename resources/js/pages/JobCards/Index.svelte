@@ -42,9 +42,9 @@
   let status = $state('');
   let isMobile = $state(false);
 
-  $effect(() => {  
+  $effect(() => {   
     const flash = $page.flash as Flash;
-    if (flash?.message) {
+    if (flash?.message) {  
         if (flash.type === 'success') {
             toast.success(flash.message);
         } else if (flash.type === 'error') {
