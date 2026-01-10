@@ -67,10 +67,10 @@
         }
     });
 
-    const breadcrumbs: BreadcrumbItem[] = [
+    const breadcrumbs: BreadcrumbItem[] = $derived([
         { title: 'Job Cards', href: '/job-cards' },
         { title: jobCard.item || `Job Card #${jobCard.id}`, href: `/job-cards/${jobCard.id}` },
-    ];
+    ]);
 
     const statusOptions = [
         { value: 'pending', label: 'Pending', icon: Clock, color: 'text-yellow-600 bg-yellow-50', badgeColor: 'bg-yellow-100 text-yellow-800' },

@@ -72,11 +72,11 @@
         status = jobCard.status;
     });
 
-    const breadcrumbs: BreadcrumbItem[] = [
+    const breadcrumbs: BreadcrumbItem[] = $derived([
         { title: 'Job Cards', href: '/job-cards' },
         { title: jobCard.item || 'Job Card', href: `/job-cards/${jobCard.id}` },
         { title: 'Edit Job Card', href: `/job-cards/${jobCard.id}/edit` },
-    ];
+    ]);
 
     const statusOptions = [
         { value: 'pending', label: 'Pending', icon: Clock, color: 'text-yellow-600 bg-yellow-50' },
@@ -256,7 +256,7 @@
                                             {/each}
                                         </SelectContent>
                                     </Select> 
-                                    <InputError class="mt-1" message={errors.status} />
+                                    <InputError class="mt-1" message={errors.status} /> -->
                                 </div>
 
                                 <!-- Estimated Cost & Delivery Date -->

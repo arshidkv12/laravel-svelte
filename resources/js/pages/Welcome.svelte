@@ -487,17 +487,17 @@
             <li><a href="#features" class="hover:text-white">Features</a></li>
             <li><a href="#how-it-works" class="hover:text-white">How It Works</a></li>
             <li><a href="#pricing" class="hover:text-white">Pricing</a></li>
-            <li><a href="#" class="hover:text-white">API</a></li>
+            <li><a href="/" class="hover:text-white">API</a></li>
           </ul>
         </div>
         
         <div>
           <h3 class="font-semibold mb-4">Company</h3>
           <ul class="space-y-2 text-gray-400">
-            <li><a href="#" class="hover:text-white">About</a></li>
-            <li><a href="#" class="hover:text-white">Blog</a></li>
-            <li><a href="#" class="hover:text-white">Careers</a></li>
-            <li><a href="#" class="hover:text-white">Contact</a></li>
+            <li><a href="#/" class="hover:text-white">About</a></li>
+            <li><a href="#/" class="hover:text-white">Blog</a></li>
+            <li><a href="#/" class="hover:text-white">Careers</a></li>
+            <li><a href="#/" class="hover:text-white">Contact</a></li>
           </ul>
         </div>
         
