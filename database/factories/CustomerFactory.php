@@ -20,6 +20,7 @@ class CustomerFactory extends Factory
     public function definition(): array
     {
         return [
+            'user_id' => 1,
             'name' => $this->faker->name(),
             'phone' => $this->faker->numerify('9#########'),
             'email' => $this->faker->optional()->safeEmail(),

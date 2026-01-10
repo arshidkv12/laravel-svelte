@@ -17,6 +17,7 @@ class JobCardFactory extends Factory
     {
         return [
             'job_no' => 'JC-' . $this->faker->unique()->numberBetween(1000, 9999),
+            'user_id' => 1,
 
             // If customer_id not passed, create one automatically
             'customer_id' => Customer::factory(),

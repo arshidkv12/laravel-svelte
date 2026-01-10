@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\OwnerScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class JobCard extends Model
 {
@@ -51,16 +53,31 @@ class JobCard extends Model
     }
 
 
-
     protected static function booted()
     {
         static::creating(function ($jobCard) {
             $jobCard->job_no = 'JC-' . str_pad(
-                JobCard::max('id') + 1,
+                JobCard::max('id') + rand(1, 10000),
                 5,
                 '0',
                 STR_PAD_LEFT
             );
+            if (Auth::check() && empty($jobCard->user_id)) {
+                $jobCard->user_id = Auth::id();
+            }
         });
+
+        static::created(function ($jobCard) {
+            $jobCard->job_no = 'JC-' . str_pad(
+                $jobCard->id,
+                5,
+                '0',
+                STR_PAD_LEFT
+            );
+
+            $jobCard->saveQuietly();
+        });
+        
+        static::addGlobalScope(new OwnerScope);
     }
 }

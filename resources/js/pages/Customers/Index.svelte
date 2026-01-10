@@ -107,7 +107,7 @@
             <div class="flex items-center justify-between mb-4">
                 <p class="text-sm text-gray-500">
                     Showing <span class="font-medium">{customers.from}</span> to <span class="font-medium">{customers.to}</span> of{' '}
-                    <span class="font-medium">{customers.total}</span> job cards
+                    <span class="font-medium">{customers.total}</span> customers
                 </p>
             </div>
         {/if}

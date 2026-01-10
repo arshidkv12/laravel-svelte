@@ -188,7 +188,7 @@
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                             <div>
                                 <h1 class="text-lg font-bold text-gray-900 print:text-lg">
-                                    Job Card #{jobCard.id}: {jobCard.item}
+                                    Job Card #{jobCard.job_no}
                                 </h1>
                                 <p class="text-sm text-gray-500">
                                     Created on {formatDate(jobCard.created_at)}

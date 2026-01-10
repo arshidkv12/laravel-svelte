@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\OwnerScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Customer extends Model
 {
@@ -30,6 +32,17 @@ class Customer extends Model
     public function jobCards()
     {
         return $this->hasMany(JobCard::class);
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($jobCard) {
+            if (Auth::check() && empty($jobCard->user_id)) {
+                $jobCard->user_id = Auth::id();
+            }
+        });
+
+        static::addGlobalScope(new OwnerScope);
     }
 }
 
