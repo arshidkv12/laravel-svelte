@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Button } from "@/components/ui/button";
+  import { Button, buttonVariants } from "@/components/ui/button";
   import {
     AlertDialog,
     AlertDialogContent,
@@ -12,6 +12,7 @@
     AlertDialogTrigger
   } from "@/components/ui/alert-dialog";
   import { Trash2 } from "lucide-svelte";
+    import { cn } from "@/lib/utils";
   
   export let onConfirm: () => Promise<void>;
   export let title = "Confirm Deletion";
@@ -20,6 +21,7 @@
   export let buttonText = "Delete";
   export let triggerClass = "";
   export let disabled = false;
+  export let btnSize: "sm" | "default" | "lg" | "icon" | "icon-sm" | "icon-lg" = 'sm';
   
   let isDeleting = false;
   let isOpen = false;
@@ -36,16 +38,13 @@
 </script>
 
 <AlertDialog bind:open={isOpen}>
-  <AlertDialogTrigger>
-    <Button 
-      variant="destructive" 
-      class={`gap-1 sm:gap-2 text-sm md:text-base cursor-pointer ${triggerClass}`}
+  <AlertDialogTrigger 
+    class={cn(`gap-1 sm:gap-2 text-sm md:text-base cursor-pointer ${triggerClass}`, 
+      buttonVariants({ variant: "destructive", size: btnSize }))} 
       {disabled}
-      size="sm"
     >
       <Trash2 class="h-4 w-4" />
       {buttonText}
-    </Button>
   </AlertDialogTrigger>
   <AlertDialogContent class="sm:max-w-md">
     <AlertDialogHeader>

@@ -145,7 +145,7 @@
                             title="Delete Customer"
                             description={`This will permanently delete <b>${customer.name}</b> and all associated job cards. This action cannot be undone.`}
                             buttonText="Delete"
-                            triggerClass="w-full xs:w-auto justify-center xs:justify-start"
+                            triggerClass="xs:w-auto justify-center xs:justify-start"
                         />
                     </div>
                 </div>

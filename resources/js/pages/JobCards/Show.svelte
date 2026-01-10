@@ -2,7 +2,7 @@
     import AppLayout from '@/layouts/AppLayout.svelte';
     import { type Flash, type BreadcrumbItem } from '@/types';
     import { onMount } from 'svelte';
-    import { Form, Link, page } from '@inertiajs/svelte';
+    import { Form, Link, page, router } from '@inertiajs/svelte';
     import { toast } from 'svelte-sonner';
 
     import { Button } from '@/components/ui/button';
@@ -32,6 +32,7 @@
         Package,
         SquarePen,
     } from 'lucide-svelte';
+    import DeleteConfirmDialog from '@/components/confirm/DeleteConfirmDialog.svelte';
 
     let { jobCard, customer } = $props<{
         jobCard: {
@@ -175,13 +176,13 @@
                     <div class="space-y-1">
                         <div class="flex items-center gap-3 print:hidden">
                             <Button 
-                                href="/job-cards"
+                                onclick={(e) => {e.preventDefault(); history.back()}}
                                 variant="ghost" 
                                 size="sm"
                                 class="p-0 h-auto"
                             >
                                 <ArrowLeft class="h-4 w-4 mr-2" />
-                                Back to Jobs
+                                Back
                             </Button>
                         </div>
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -198,15 +199,16 @@
                                     {getStatusInfo().label}
                                 </Badge>
                                 <div class="print:hidden">
-                                    <Button 
-                                        href={`/job-cards/${jobCard.id}/edit`}
-                                        variant="outline"
-                                        size="sm"
-                                        class="gap-2"
-                                    >
-                                        <SquarePen class="h-4 w-4" />
-                                        Edit
-                                    </Button>
+                                    <Link href={`/job-cards/${jobCard.id}/edit`} >
+                                        <Button 
+                                            variant="outline"
+                                            size="sm"
+                                            class="gap-2 cursor-pointer"
+                                        >
+                                            <SquarePen class="h-4 w-4" />
+                                            Edit
+                                        </Button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
@@ -466,14 +468,22 @@
                                 Print Job Card
                             </Button>
 
-                            <Link href="/job-cards">
-                                <Button 
-                                    onclick={(e) => {e.preventDefault(); history.back()}}
-                                    variant="outline" class="w-full gap-2 cursor-pointer">
-                                    <ArrowLeft class="h-4 w-4" />
-                                    Back
-                                </Button>
-                            </Link>
+                            <Button 
+                                onclick={(e) => {e.preventDefault(); history.back()}}
+                                variant="outline" class="w-full gap-2 cursor-pointer">
+                                <ArrowLeft class="h-4 w-4" />
+                                Back
+                            </Button>
+                            <DeleteConfirmDialog
+                                onConfirm={async () => router.delete(route('customers.destroy', customer.id), {
+                                    preserveScroll: true})
+                                }
+                                itemName={customer.name}
+                                title="Delete Customer"
+                                description={`This will permanently delete <b>${customer.name}</b> and all associated job cards. This action cannot be undone.`}
+                                buttonText="Delete"
+                                triggerClass="w-full xs:w-auto justify-center xs:justify-start"
+                            />
                         </CardContent>
                     </Card>
 

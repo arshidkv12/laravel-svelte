@@ -5,8 +5,6 @@
     import { onMount } from 'svelte';
     import { page } from '@inertiajs/svelte'
     import { toast } from "svelte-sonner";
-    import { CalendarIcon, ChevronRight, Mail, MailIcon, MapPin, Phone, PhoneIcon, SquarePen, User, UserIcon } from 'lucide-svelte';
-    import Button from '@/components/ui/button/button.svelte';
     import CustomerTable from '@/components/customer/CustomerTable.svelte';
     import MobileCustomerTable from '@/components/customer/MobileCustomerTable.svelte';
     import { throttle } from 'lodash';
