@@ -82,6 +82,16 @@
     },
   ];
 
+  $effect(() => {
+    if (status !== undefined) {
+      router.get(
+        '/job-cards',
+        { search, status },
+        { preserveState: true, replace: true }
+      );
+    }
+  });
+
 </script>
 
 <svelte:head>
@@ -102,7 +112,6 @@
 
       <select
         bind:value={status}
-        oninput={throttledApplyFilters}
         class="border rounded px-3 py-2 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-blue-400"
       >
         <option value="">All Status</option>
