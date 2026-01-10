@@ -475,12 +475,12 @@
                                 Back
                             </Button>
                             <DeleteConfirmDialog
-                                onConfirm={async () => router.delete(route('customers.destroy', customer.id), {
+                                onConfirm={async () => router.delete(route('job-cards.destroy', jobCard.id), {
                                     preserveScroll: true})
                                 }
-                                itemName={customer.name}
-                                title="Delete Customer"
-                                description={`This will permanently delete <b>${customer.name}</b> and all associated job cards. This action cannot be undone.`}
+                                itemName={jobCard.item}
+                                title="Delete Job Card"
+                                description={`This will permanently delete <b>#${jobCard.job_no}</b>. This action cannot be undone.`}
                                 buttonText="Delete"
                                 triggerClass="w-full xs:w-auto justify-center xs:justify-start"
                             />

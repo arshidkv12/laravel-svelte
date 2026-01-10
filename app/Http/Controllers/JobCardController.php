@@ -310,4 +310,22 @@ class JobCardController extends Controller
         ]);
     }
 
+
+     /**
+     * Delete a JobCard
+     */
+    public function destroy(JobCard $jobCard)
+    {
+        $jobCard->delete();
+
+
+        Inertia::flash([
+            'message' => 'Job card deleted successfully',
+            'type' => 'success'
+        ]);
+
+        return redirect()
+            ->route('job-cards.index');
+    }
+
 }
