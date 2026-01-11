@@ -320,7 +320,7 @@
                                     Customer Information
                                 </CardTitle>
                                 <Link href={`/customers/${customer.id}`}>
-                                    <Button variant="ghost" size="sm" class="gap-1">
+                                    <Button variant="ghost" size="sm" class="gap-1 cursor-pointer">
                                         <User class="h-4 w-4" />
                                         View Profile
                                     </Button>
@@ -336,7 +336,7 @@
                                         <p class="text-sm text-gray-500">ID: #{customer.id}</p>
                                     </div>
                                     <Link href={`/customers/${customer.id}/edit`}>
-                                        <Button variant="outline" size="sm" class="gap-2">
+                                        <Button variant="outline" size="sm" class="gap-2 cursor-pointer">
                                             <SquarePen class="h-4 w-4" />
                                             Edit
                                         </Button>

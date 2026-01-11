@@ -4,6 +4,7 @@
     import { onMount } from 'svelte';
     import { Form, Link, page } from '@inertiajs/svelte';
     import { toast } from 'svelte-sonner';
+    import CreateCustomerModal from '@/components/customer/CreateCustomerModal.svelte';
 
     import { Button } from '@/components/ui/button';
     import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -32,7 +33,7 @@
     import InputError from '@/components/InputError.svelte';
 
     let customer_id = $state<number | null>(null);
-
+    let customerDialogOpen = $state(false);
       
     let { customers } = $props<{
         customers:  Array<{
@@ -92,6 +93,9 @@
 </svelte:head>
 
 <AppLayout {breadcrumbs}>
+    <CreateCustomerModal
+      bind:open={customerDialogOpen}
+    />
     <div class="min-h-screen bg-gray-50">
       <Form 
         method="post" 
@@ -151,7 +155,7 @@
 
                             <!-- Quick Add Customer Button -->
                             <div class="pt-2">
-                              <Link href="/customers/create">
+                              <Link on:click={(e)=> {e.preventDefault();customerDialogOpen=true}}>
                                 <Button 
                                     variant="outline"
                                     class="w-full gap-2"
