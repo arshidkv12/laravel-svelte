@@ -321,7 +321,7 @@
                                 <Button
                                     type="submit"
                                     disabled={processing}
-                                    class="w-full gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+                                    class="w-full gap-2 bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
                                 >
                                     {#if processing}
                                         <div class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
@@ -335,7 +335,7 @@
                                 <Button
                                     onclick={(e) => {e.preventDefault(); history.back()}}
                                     variant="outline"
-                                    class="w-full gap-2 mb-4"
+                                    class="w-full gap-2 mb-4 cursor-pointer"
                                 >
                                     <ArrowLeft class="h-4 w-4" />
                                     Cancel
@@ -354,7 +354,7 @@
                                     <Button
                                         type="submit"
                                         variant="destructive"
-                                        class="w-full gap-2"
+                                        class="w-full gap-2 cursor-pointer"
                                     >
                                         <Trash2 class="h-4 w-4" />
                                         Delete Job Card

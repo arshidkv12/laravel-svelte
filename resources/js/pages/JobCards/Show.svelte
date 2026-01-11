@@ -179,7 +179,7 @@
                                 onclick={(e) => {e.preventDefault(); history.back()}}
                                 variant="ghost" 
                                 size="sm"
-                                class="p-0 h-auto"
+                                class="p-0 h-auto cursor-pointer"
                             >
                                 <ArrowLeft class="h-4 w-4 mr-2" />
                                 Back
@@ -423,7 +423,7 @@
                                     <div class="flex flex-wrap gap-2">
                                         {#if customer.phone}
                                             <a href={`tel:${customer.phone}`}>
-                                                <Button variant="outline" size="sm" class="gap-2">
+                                                <Button variant="outline" size="sm" class="gap-2 cursor-pointer">
                                                     <Phone class="h-4 w-4" />
                                                     Call
                                                 </Button>
@@ -431,7 +431,7 @@
                                         {/if}
                                         {#if customer.email}
                                             <a href={`mailto:${customer.email}`}>
-                                                <Button variant="outline" size="sm" class="gap-2">
+                                                <Button variant="outline" size="sm" class="gap-2 cursor-pointer">
                                                     <Mail class="h-4 w-4" />
                                                     Email
                                                 </Button>

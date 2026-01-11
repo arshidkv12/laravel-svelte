@@ -65,10 +65,10 @@
                     </div>
                     
                     <Button 
-                        href={`/customers/${customer.id}`}
+                        onclick={()=>history.back()}
                         variant="outline" 
                         size="sm"
-                        class="gap-2"
+                        class="gap-2 cursor-pointer"
                     >
                         <ArrowLeft class="h-4 w-4" />
                         Cancel
@@ -164,10 +164,10 @@
                     <!-- Form Actions -->
                     <div class="flex items-center justify-between pt-6 ">
                         <Button 
-                            href={`/customers/${customer.id}`}
+                            onclick={()=>history.back()}
                             variant="outline" 
                             type="button"
-                            class="gap-2"
+                            class="gap-2 cursor-pointer"
                         >
                             <ArrowLeft class="h-4 w-4" />
                             Cancel
