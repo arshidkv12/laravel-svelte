@@ -207,6 +207,17 @@ class JobCardController extends Controller
 
         $files = $request->post('upload-files');
 
+        $existingFiles = $jobCard->files()
+                        ->pluck('file_name')
+                        ->toArray(); 
+        $deletedFiles = array_diff($existingFiles, (array) $files);
+        
+        if (!empty($deletedFiles)) {
+            $jobCard->files()
+                ->whereIn('file_name', $deletedFiles)
+                ->delete();
+        }
+
         foreach ((array) $files as $fileName) {
 
             JobCardFile::firstOrCreate(
@@ -226,7 +237,7 @@ class JobCardController extends Controller
         ]);
 
         return redirect()
-            ->route('job-cards.index');
+            ->route('job-cards.show', $jobCard);
 
     }
 

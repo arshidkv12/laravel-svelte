@@ -28,6 +28,7 @@
         Clock,
         Save,
         Trash2,
+        SquarePen,
     } from 'lucide-svelte';
 
     import CustomerSelect from '@/components/customer/CustomerSelect.svelte';
@@ -138,13 +139,13 @@
                         <div class="space-y-1">
                             <div class="flex items-center gap-3">
                                 <Button 
-                                    href="/job-cards"
+                                    onclick={()=> history.back()}
                                     variant="ghost" 
                                     size="sm"
                                     class="p-0 h-auto"
                                 >
                                     <ArrowLeft class="h-4 w-4 mr-2" />
-                                    Back to Jobs
+                                    Back  
                                 </Button>
                             </div>
                             <h1 class="text-lg font-bold text-gray-900">
@@ -324,6 +325,36 @@
                                 files={jobCardFiles}
                             />
                         </Card>
+
+                        <!-- Bottom Actions -->
+                        <div class="mt-8 pt-6 border-t border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <Button 
+                                    onclick={()=>history.back()}
+                                    variant="outline" 
+                                    class="gap-2"
+                                >
+                                    <ArrowLeft class="h-4 w-4" />
+                                    Back 
+                                </Button>
+                                
+                                <div class="flex items-center gap-3">
+                                    <Button
+                                        type="submit"
+                                        disabled={processing}
+                                        class="w-full gap-2 bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
+                                    >
+                                        {#if processing}
+                                            <div class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                                            Saving...
+                                        {:else}
+                                            <Save class="h-4 w-4" />
+                                            Save Changes
+                                        {/if}
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
 
