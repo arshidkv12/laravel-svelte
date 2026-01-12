@@ -7,7 +7,7 @@
 
     let { 
         images = [],
-        title = "Image Gallery",
+        title = "Images",
         description = "View images related to this job card"
     } = $props<{
         images?: Array<{
@@ -82,7 +82,7 @@
                                 openLightbox(index);
                             }
                         }}
-                        class="relative w-full aspect-square overflow-hidden rounded-lg border border-gray-200 hover:border-blue-400 transition-all duration-200 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 group bg-transparent p-0 text-left"
+                        class=" cursor-pointer relative w-full aspect-square overflow-hidden rounded-lg border border-gray-200 hover:border-blue-400 transition-all duration-200 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 group bg-transparent p-0 text-left"
                         aria-label={`Open image ${image.name || index + 1} in lightbox`}
                     >
                         <div class="relative w-full h-full">
