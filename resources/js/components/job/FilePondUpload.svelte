@@ -14,8 +14,7 @@
 
     let pond;
     let name = 'upload-files[]';
-    let { csrf_token, disableFormSubmit = $bindable() } = $props();
-    let files = $state([]);
+    let { csrf_token, disableFormSubmit = $bindable(), files = $bindable() } = $props();
     let labelFileProcessingError = $state('Error during upload');
     let labelFileProcessingDefaultError = 'Error during upload';
 
@@ -70,11 +69,12 @@
                 },
                 onload: (res) => res
             },
+            load: '/uploads/images/',
             revert: {
                 url: '/upload-job-files',
                 method: 'DELETE',
                 headers: {
-                    'X-CSRF-TOKEN': csrf_token
+                  'X-CSRF-TOKEN': csrf_token
                 }
             }
         }}

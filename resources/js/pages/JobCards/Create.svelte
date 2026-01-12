@@ -36,6 +36,7 @@
     let customer_id = $state<number | null>(null);
     let customerDialogOpen = $state(false);
     let disableFormSubmit = $state(false);
+    let jobCardFiles = $state([]);
       
     let { customers, csrf_token } = $props<{
         customers:  Array<{
@@ -45,16 +46,14 @@
     }>();
 
     $effect(() => {  
-        
-        console.log("f--"+disableFormSubmit)
-      const flash = $page.flash as Flash;
-      if (flash?.message) {
-          if (flash.type === 'success') {
-              toast.success(flash.message);
-          } else if (flash.type === 'error') {
-              toast.error(flash.message);
-          }
-      }
+        const flash = $page.flash as Flash;
+        if (flash?.message) {
+            if (flash.type === 'success') {
+                toast.success(flash.message);
+            } else if (flash.type === 'error') {
+                toast.error(flash.message);
+            }
+        }
     });
 
     onMount(() => {
@@ -258,7 +257,7 @@
 
                     <!-- file upload -->
                      <Card class="p-4">
-                        <FilePondUpload {csrf_token} bind:disableFormSubmit={disableFormSubmit}/>
+                        <FilePondUpload bind:files={jobCardFiles} {csrf_token} bind:disableFormSubmit={disableFormSubmit}/>
                      </Card>
                 </div>
 

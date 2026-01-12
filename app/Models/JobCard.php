@@ -52,6 +52,11 @@ class JobCard extends Model
         return $this->belongsTo(Customer::class);
     }
 
+    public function files()
+    {
+        return $this->hasMany(JobCardFile::class, 'job_id');
+    }
+
 
     protected static function booted()
     {

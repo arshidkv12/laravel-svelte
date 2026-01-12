@@ -41,7 +41,7 @@ class UploadController extends Controller
 
         $filename = $user_id . '-' . Str::uuid() . '.' . $file->getClientOriginalExtension();
 
-        $destination = public_path('uploads/tmp');
+        $destination = public_path('uploads/images');
 
         if (!file_exists($destination)) {
             mkdir($destination, 0755, true);

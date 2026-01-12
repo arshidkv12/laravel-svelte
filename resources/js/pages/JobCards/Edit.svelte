@@ -33,11 +33,13 @@
     import CustomerSelect from '@/components/customer/CustomerSelect.svelte';
     import type { BaseFormSnippetProps } from '@/types/forms';
     import InputError from '@/components/InputError.svelte';
+    import FilePondUpload from '@/components/job/FilePondUpload.svelte';
 
     let customer_id = $state<number | null>(null);
     let status = $state<string>('pending');
+    let disableFormSubmit = $state(false);
 
-    let { jobCard, customers } = $props<{
+    let { jobCard, customers, csrf_token, jobCardFiles } = $props<{
         jobCard: {
             id: number;
             customer_id: number;
@@ -53,6 +55,11 @@
         customers: Array<{
             value: string;
             label: string;
+        }>;
+        csrf_token: string;
+        jobCardFiles: Array<{
+            id: number;
+            file_name: string;
         }>;
     }>();
 
@@ -308,6 +315,16 @@
                                 </div>
                             </CardContent>
                         </Card>
+
+                        <!-- file upload -->
+                        <Card class="p-4">
+                            <FilePondUpload 
+                                {csrf_token} 
+                                bind:disableFormSubmit={disableFormSubmit}
+                                files={jobCardFiles}
+                            />
+                        </Card>
+
                     </div>
 
                     <!-- Right Column - Actions & Summary -->

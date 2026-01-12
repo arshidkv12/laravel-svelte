@@ -100,7 +100,6 @@ class JobCardController extends Controller
 
         $jobCard = JobCard::create($validator->validated());
 
-       
         $files = $request->post('upload-files');
         $uploadDir = public_path('uploads');
         $destinationDir = $uploadDir . DIRECTORY_SEPARATOR . 'images';
@@ -109,22 +108,18 @@ class JobCardController extends Controller
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $destinationDir));
         }
 
-        foreach ((array) $files as $fileName) {
-            $sourcePath = $uploadDir . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $fileName;
-            $targetPath = $destinationDir . DIRECTORY_SEPARATOR . $fileName;
+        $now = now();
 
-            if (!file_exists($sourcePath)) {
-                continue;
-            }
+        $rows = collect((array) $files)->map(fn ($fileName) => [
+            'job_id'    => $jobCard->id,
+            'user_id'   => Auth::id(),
+            'file_name' => $fileName,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ])->toArray();
 
-            rename($sourcePath, $targetPath);
+        JobCardFile::insert($rows);
 
-            JobCardFile::create([
-                'job_id' =>  $jobCard->id,
-                'user_id' => Auth::id(),
-                'file_name' => $fileName,
-            ]);
-        }
 
         Inertia::flash([
             'message' => 'Job card created successfully',
@@ -159,9 +154,19 @@ class JobCardController extends Controller
                             'value' => $c->id,
                             'label' => "{$c->name} - {$c->phone}",
                         ]);
+
+        $jobCardFiles  = $jobCard->files->map(fn ($file) => [
+                'source' => $file->file_name,
+                'options' => ['type' => 'local']
+            ]
+        );
+
         return Inertia::render('JobCards/Edit', [
             'jobCard' => $jobCard,
-            'customers' => $customers
+            'customers' => $customers,
+            'jobCardFiles' => $jobCardFiles,
+            'csrf_token' => csrf_token()
+
         ]);
     }
 
@@ -170,14 +175,6 @@ class JobCardController extends Controller
      */
     public function update(Request $request, JobCard $jobCard)
     {
-        // $validated = $request->validate([
-        //     'status'         => 'required|in:new,in_progress,waiting_for_parts,ready,delivered',
-        //     'item'           => 'nullable|string|max:255',
-        //     'problem'        => 'nullable|string',
-        //     'delivery_date'  => 'nullable|date',
-        //     'estimated_cost' => 'nullable|numeric',
-        //     'notes'          => 'nullable|string',
-        // ]);
 
         $validator = Validator::make($request->all(), [
             'customer_id' => 'required|exists:customers,id',
@@ -207,6 +204,21 @@ class JobCardController extends Controller
         }
         
         $jobCard->update($validator->validated());
+
+        $files = $request->post('upload-files');
+
+        foreach ((array) $files as $fileName) {
+
+            JobCardFile::firstOrCreate(
+                [
+                    'job_id'    => $jobCard->id,
+                    'file_name' => $fileName,
+                ],
+                [
+                    'user_id' => Auth::id(),
+                ]
+            );
+        }
 
         Inertia::flash([
             'message' => 'Job card updated successfully',
