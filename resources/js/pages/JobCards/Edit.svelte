@@ -332,7 +332,7 @@
                                 <Button 
                                     onclick={()=>history.back()}
                                     variant="outline" 
-                                    class="gap-2"
+                                    class="gap-2 cursor-pointer"
                                 >
                                     <ArrowLeft class="h-4 w-4" />
                                     Back 
