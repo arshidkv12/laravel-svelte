@@ -33,6 +33,7 @@
         SquarePen,
     } from 'lucide-svelte';
     import DeleteConfirmDialog from '@/components/confirm/DeleteConfirmDialog.svelte';
+    import ImageGallery from '@/components/job/ImageGallery.svelte';
 
     let { jobCard, customer } = $props<{
         jobCard: {
@@ -442,6 +443,11 @@
                             </div>
                         </CardContent>
                     </Card>
+
+                    <ImageGallery
+                        images={jobCard.files || []}
+                    />
+
                 </div>
 
                 <!-- Right Column - Actions & Timeline -->
@@ -572,6 +578,7 @@
                                 </div>
                             </div>
                         </CardContent>
+
                     </Card>
 
                     <!-- Print Footer (only visible when printing) -->

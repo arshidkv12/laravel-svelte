@@ -136,7 +136,8 @@ class JobCardController extends Controller
     public function show(JobCard $jobCard)
     {
         $jobCard->load('customer');
-    
+        $jobCard->load('files');
+
         return Inertia::render('JobCards/Show', [
             'jobCard' => $jobCard,
             'customer' => $jobCard->customer,  
