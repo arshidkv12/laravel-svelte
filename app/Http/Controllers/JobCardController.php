@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\JobCard;
+use App\Models\JobCardFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class JobCardController extends Controller
 {
@@ -60,6 +62,7 @@ class JobCardController extends Controller
 
         return Inertia::render('JobCards/Create', [
             'customers' => $customers,
+            'csrf_token' => csrf_token()
         ]);
     }
 
@@ -95,7 +98,33 @@ class JobCardController extends Controller
                 ->withInput();
         }
 
-        JobCard::create($validator->validated());
+        $jobCard = JobCard::create($validator->validated());
+
+       
+        $files = $request->post('upload-files');
+        $uploadDir = public_path('uploads');
+        $destinationDir = $uploadDir . DIRECTORY_SEPARATOR . 'images';
+
+        if (!is_dir($destinationDir) && !mkdir($destinationDir, 0755, true) && !is_dir($destinationDir)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $destinationDir));
+        }
+
+        foreach ((array) $files as $fileName) {
+            $sourcePath = $uploadDir . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $fileName;
+            $targetPath = $destinationDir . DIRECTORY_SEPARATOR . $fileName;
+
+            if (!file_exists($sourcePath)) {
+                continue;
+            }
+
+            rename($sourcePath, $targetPath);
+
+            JobCardFile::create([
+                'job_id' =>  $jobCard->id,
+                'user_id' => Auth::id(),
+                'file_name' => $fileName,
+            ]);
+        }
 
         Inertia::flash([
             'message' => 'Job card created successfully',

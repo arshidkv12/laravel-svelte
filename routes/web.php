@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\JobCardController;
+use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -25,6 +26,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('customers', CustomerController::class);
     Route::get('/customers/{customer}/job-cards', [JobCardController::class, 'jobCardsByCustomer'])
         ->name('customers.job-cards.index');
+    Route::post('/upload-job-files', [UploadController::class, 'store'])
+        ->name('upload.store');
+    Route::delete('/upload-job-files', [UploadController::class, 'destroy'])
+        ->name('upload.destroy');
     
 });
 

@@ -31,11 +31,13 @@
     import CustomerSelect from '@/components/customer/CustomerSelect.svelte';
     import type { BaseFormSnippetProps } from '@/types/forms';
     import InputError from '@/components/InputError.svelte';
+    import FilePondUpload from '@/components/job/FilePondUpload.svelte';
 
     let customer_id = $state<number | null>(null);
     let customerDialogOpen = $state(false);
+    let disableFormSubmit = $state(false);
       
-    let { customers } = $props<{
+    let { customers, csrf_token } = $props<{
         customers:  Array<{
           value: string;
           label: string;
@@ -43,6 +45,8 @@
     }>();
 
     $effect(() => {  
+        
+        console.log("f--"+disableFormSubmit)
       const flash = $page.flash as Flash;
       if (flash?.message) {
           if (flash.type === 'success') {
@@ -158,7 +162,7 @@
                               <Link on:click={(e)=> {e.preventDefault();customerDialogOpen=true}}>
                                 <Button 
                                     variant="outline"
-                                    class="w-full gap-2"
+                                    class="w-full gap-2 cursor-pointer"
                                 >
                                     <Plus class="h-4 w-4" />
                                     Add New Customer
@@ -251,6 +255,11 @@
                             </div>
                         </CardContent>
                     </Card>
+
+                    <!-- file upload -->
+                     <Card class="p-4">
+                        <FilePondUpload {csrf_token} bind:disableFormSubmit={disableFormSubmit}/>
+                     </Card>
                 </div>
 
                 <!-- Right Column - Actions & Summary -->
@@ -263,12 +272,15 @@
                         <CardContent class="space-y-3">
                             <Button
                                 type="submit"
-                                disabled={processing}
-                                class="w-full gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+                                disabled={processing || disableFormSubmit}
+                                class="w-full gap-2 bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
                             >
                                 {#if processing}
                                     <div class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
                                     Creating...
+                                {:else if disableFormSubmit}
+                                    <Plus class="h-4 w-4" />                                    
+                                    Create Job Card
                                 {:else}
                                     <Plus class="h-4 w-4" />
                                     Create Job Card
@@ -278,7 +290,7 @@
                             <Link href="/job-cards">
                               <Button
                                   variant="outline"
-                                  class="w-full gap-2"
+                                  class="w-full gap-2 cursor-pointer"
                               >
                                   <ArrowLeft class="h-4 w-4" />
                                   Cancel

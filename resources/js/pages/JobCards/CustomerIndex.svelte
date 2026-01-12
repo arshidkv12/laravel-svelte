@@ -275,7 +275,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <!-- Search -->
                         <div class="space-y-2">
-                            <label class="text-sm font-medium text-gray-700">Search</label>
+                            <label for="search-customer" class="text-sm font-medium text-gray-700">Search</label>
                             <div class="relative">
                                 <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                                 <Input
@@ -286,6 +286,7 @@
                                     onkeypress={(e) => {
                                         if (e.key === 'Enter') applyFilters();
                                     }}
+                                    id="search-customer"
                                 />
                             </div>
                         </div>

@@ -64,6 +64,11 @@
         "lightningcss-linux-x64-gnu": "^1.30.2"
     },
     "dependencies": {
-        "lodash": "^4.17.21"
+        "filepond": "^4.32.11",
+        "filepond-plugin-file-validate-type": "^1.2.9",
+        "filepond-plugin-image-exif-orientation": "^1.0.11",
+        "filepond-plugin-image-preview": "^4.6.12",
+        "lodash": "^4.17.21",
+        "svelte-filepond": "^0.2.2"
     }
 }
