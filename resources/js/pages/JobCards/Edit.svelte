@@ -11,7 +11,7 @@
     import { Input } from '@/components/ui/input';
     import { Textarea } from '@/components/ui/textarea';
     import { Label } from '@/components/ui/label';
-    // import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+    import * as Select from "@/components/ui/select/index.js";
 
     import { 
         ArrowLeft,
@@ -35,6 +35,7 @@
     import type { BaseFormSnippetProps } from '@/types/forms';
     import InputError from '@/components/InputError.svelte';
     import FilePondUpload from '@/components/job/FilePondUpload.svelte';
+    import StatusIcon from '@/components/job/StatusIcon.svelte';
 
     let customer_id = $state<number | null>(null);
     let status = $state<string>('pending');
@@ -115,9 +116,27 @@
         });
     }
 
-    function getStatusInfo() {
-        return statusOptions.find(s => s.value === status) || statusOptions[0];
-    }
+    let statusInfo = $state<{
+        icon: any;
+        value: string;
+        label: string;
+        color: string;
+    }>({ 
+        icon: false, 
+        value: '', 
+        label: '', 
+        color: '' 
+    });
+
+    $effect(() => {
+        statusInfo = statusOptions.find(s => s.value === status) || statusOptions[0];
+    });
+
+    let getSelectedStatus = $derived({
+        icon: !!statusInfo.icon,
+        value: statusInfo.value,
+        label: statusInfo.label
+    });
 </script>
 
 <svelte:head>
@@ -240,31 +259,32 @@
                                 <!-- Status -->
                                 <div class="space-y-2">
                                     <Label for="status" class="text-sm font-medium">Status</Label>
-                                    <!-- <Select bind:value={status} name="status">
-                                        <SelectTrigger>
-                                            <SelectValue>
-                                                <div class="flex items-center gap-2">
-                                                    {#if getStatusInfo().icon}
-                                                        <svelte:component this={getStatusInfo().icon} class="h-4 w-4" />
-                                                    {/if}
-                                                    <span>{getStatusInfo().label}</span>
-                                                </div>
-                                            </SelectValue>
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {#each statusOptions as option}
-                                                <SelectItem value={option.value}>
-                                                    <div class="flex items-center gap-2">
-                                                        {#if option.icon}
-                                                            <svelte:component this={option.icon} class="h-4 w-4" />
-                                                        {/if}
-                                                        <span>{option.label}</span>
-                                                    </div>
-                                                </SelectItem>
-                                            {/each}
-                                        </SelectContent>
-                                    </Select> 
-                                    <InputError class="mt-1" message={errors.status} /> -->
+                                    <Select.Root type="single" name="status" bind:value={status}>
+                                        <Select.Trigger class="w-[180px]">
+                                            <div class="flex items-center gap-2">
+                                                {#if getSelectedStatus.icon}
+                                                    <StatusIcon status={getSelectedStatus.value} />
+                                                {/if}
+                                                <span>{getSelectedStatus.label}</span>
+                                            </div>
+                                        </Select.Trigger>
+                                        <Select.Content>
+                                            <Select.Group>
+                                                <Select.Label>Status</Select.Label>
+                                                {#each statusOptions as option}
+                                                    <Select.SelectItem value={option.value}>
+                                                        <div class="flex items-center gap-2">
+                                                            {#if option.icon}
+                                                                <StatusIcon status={statusInfo.value} />
+                                                            {/if}
+                                                            <span>{option.label}</span>
+                                                        </div>
+                                                    </Select.SelectItem>
+                                                {/each}
+                                            </Select.Group>
+                                        </Select.Content>
+                                    </Select.Root>
+                                    <InputError class="mt-1" message={errors.status} />
                                 </div>
 
                                 <!-- Estimated Cost & Delivery Date -->
@@ -431,7 +451,7 @@
                                     <div class="flex justify-between text-sm">
                                         <span class="text-gray-500">Status:</span>
                                         <span class="font-medium text-gray-900">
-                                            {getStatusInfo().label}
+                                            {statusInfo.label}
                                         </span>
                                     </div>
                                     <div class="flex justify-between text-sm">

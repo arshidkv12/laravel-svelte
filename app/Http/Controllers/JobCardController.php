@@ -184,6 +184,7 @@ class JobCardController extends Controller
             'delivery_date' => 'nullable|date',
             'estimated_cost'=> 'nullable|numeric',
             'notes' => 'nullable|string',
+            'status' => 'nullable|string',
         ], [
             'customer_id.required'   => 'Please select a customer before submitting.',
             'customer_id.exists'   => 'Please select a customer before submitting.',
