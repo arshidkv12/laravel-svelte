@@ -122,7 +122,7 @@
         label: string;
         color: string;
     }>({ 
-        icon: false, 
+        icon: null, 
         value: '', 
         label: '', 
         color: '' 
@@ -275,7 +275,7 @@
                                                     <Select.SelectItem value={option.value}>
                                                         <div class="flex items-center gap-2">
                                                             {#if option.icon}
-                                                                <StatusIcon status={statusInfo.value} />
+                                                                <StatusIcon status={option.value} />
                                                             {/if}
                                                             <span>{option.label}</span>
                                                         </div>
