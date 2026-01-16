@@ -1,5 +1,6 @@
 <?php
 
+use App\JobCardStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -26,14 +27,7 @@ return new class extends Migration
             $table->string('item')->nullable();  
             $table->text('problem')->nullable();
 
-            $table->enum('status', [
-                'pending',
-                'in_progress',
-                'waiting_parts',
-                'completed',
-                'delivered',
-                'cancelled'
-            ])->default('pending');
+            $table->string('status')->default(JobCardStatus::Pending->value);
 
             $table->decimal('estimated_cost', 10, 2)->nullable();
             $table->date('delivery_date')->nullable();

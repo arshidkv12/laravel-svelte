@@ -36,12 +36,20 @@
     import InputError from '@/components/InputError.svelte';
     import FilePondUpload from '@/components/job/FilePondUpload.svelte';
     import StatusIcon from '@/components/job/StatusIcon.svelte';
+    import { type JobStatus } from '@/lib/helper/status';
 
     let customer_id = $state<number | null>(null);
     let status = $state<string>('pending');
     let disableFormSubmit = $state(false);
 
-    let { jobCard, customers, csrf_token, jobCardFiles } = $props<{
+    type JobStatusOption = {
+        value: string;
+        label: string;
+        icon: string;
+        color: string;
+    };
+
+    let { jobCard, customers, csrf_token, jobCardFiles, jobStatusOptions } = $props<{
         jobCard: {
             id: number;
             customer_id: number;
@@ -63,6 +71,7 @@
             id: number;
             file_name: string;
         }>;
+        jobStatusOptions: JobStatusOption[]
     }>();
 
     $effect(() => {  
@@ -87,16 +96,6 @@
         { title: 'Edit Job Card', href: `/job-cards/${jobCard.id}/edit` },
     ]);
 
-    const statusOptions = [
-        { value: 'pending', label: 'Pending', icon: Clock, color: 'text-yellow-600 bg-yellow-50' },
-        { value: 'diagnosis', label: 'Diagnosis', icon: Search, color: 'text-blue-600 bg-blue-50' },
-        { value: 'repairing', label: 'Repairing', icon: Wrench, color: 'text-orange-600 bg-orange-50' },
-        { value: 'completed', label: 'Completed', icon: CircleCheckBig, color: 'text-green-600 bg-green-50' },
-        { value: 'delivered', label: 'Delivered', icon: CircleCheckBig, color: 'text-emerald-600 bg-emerald-50' },
-        { value: 'cancelled', label: 'Cancelled', icon: CircleX, color: 'text-red-600 bg-red-50' },
-        { value: 'on_hold', label: 'On Hold', icon: CircleAlert, color: 'text-gray-600 bg-gray-50' }
-    ];
-
     function formatCurrency(value: string | null): string {
         if (!value) return '$0.00';
         const num = parseFloat(value.replace(/[^\d.-]/g, ''));
@@ -116,20 +115,15 @@
         });
     }
 
-    let statusInfo = $state<{
-        icon: any;
-        value: string;
-        label: string;
-        color: string;
-    }>({ 
-        icon: null, 
+    let statusInfo = $state<JobStatusOption>({ 
+        icon: '', 
         value: '', 
         label: '', 
         color: '' 
     });
 
     $effect(() => {
-        statusInfo = statusOptions.find(s => s.value === status) || statusOptions[0];
+        statusInfo = jobStatusOptions.find((s:JobStatusOption)=> s.value === status) || jobStatusOptions[0];
     });
 
     let getSelectedStatus = $derived({
@@ -263,7 +257,7 @@
                                         <Select.Trigger class="w-[180px]">
                                             <div class="flex items-center gap-2">
                                                 {#if getSelectedStatus.icon}
-                                                    <StatusIcon status={getSelectedStatus.value} />
+                                                    <StatusIcon status={getSelectedStatus.value as JobStatus} />
                                                 {/if}
                                                 <span>{getSelectedStatus.label}</span>
                                             </div>
@@ -271,7 +265,7 @@
                                         <Select.Content>
                                             <Select.Group>
                                                 <Select.Label>Status</Select.Label>
-                                                {#each statusOptions as option}
+                                                {#each jobStatusOptions as option}
                                                     <Select.SelectItem value={option.value}>
                                                         <div class="flex items-center gap-2">
                                                             {#if option.icon}

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\JobCardStatus;
 use App\Models\Customer;
 use App\Models\JobCard;
 use App\Models\JobCardFile;
@@ -166,6 +167,7 @@ class JobCardController extends Controller
             'jobCard' => $jobCard,
             'customers' => $customers,
             'jobCardFiles' => $jobCardFiles,
+            'jobStatusOptions' => JobCardStatus::options(),
             'csrf_token' => csrf_token()
 
         ]);

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\JobCardStatus;
 use App\Models\Scopes\OwnerScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -25,6 +26,7 @@ class JobCard extends Model
     protected $casts = [
         'delivery_date' => 'date',
         'estimated_cost' => 'decimal:2',
+        'status' => JobCardStatus::class
     ];
 
     protected $appends = [

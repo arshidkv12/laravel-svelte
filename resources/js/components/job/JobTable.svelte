@@ -4,7 +4,7 @@
     import Phone from 'lucide-svelte/icons/phone';
     import Eye from 'lucide-svelte/icons/eye';
     import SquarePen from 'lucide-svelte/icons/square-pen';
-    import { getJobStatusClasses } from '@/lib/helper/status';
+    import { getJobStatusClasses, type JobStatus } from '@/lib/helper/status';
     import StatusIcon from './StatusIcon.svelte';
     import { Button } from '../ui/button';
     import { ChevronRight } from 'lucide-svelte';
@@ -115,7 +115,7 @@
                 class={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${getJobStatusClasses(job.status)}`}
               >
                 <StatusIcon
-                  status={job.status}
+                  status={job.status as JobStatus}
                   className="h-4 w-4"
                 />
                 {job.status.replaceAll('_', ' ')}

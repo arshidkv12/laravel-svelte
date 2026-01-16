@@ -1,30 +1,32 @@
 <script lang="ts">
   import Clock from 'lucide-svelte/icons/clock';
-  import CheckCircle from 'lucide-svelte/icons/check-circle';
-  import XCircle from 'lucide-svelte/icons/x-circle';
-  import Package from 'lucide-svelte/icons/package';
-  import AlertCircle from 'lucide-svelte/icons/alert-circle';
+  import Search from 'lucide-svelte/icons/search';
+  import Wrench from 'lucide-svelte/icons/wrench';
+  import CircleCheckBig from 'lucide-svelte/icons/circle-check-big';
+  import CircleX from 'lucide-svelte/icons/circle-x';
+  import CircleAlert from 'lucide-svelte/icons/circle-alert';
+  import { type JobStatus } from '@/lib/helper/status'; 
 
-  export let status: string;
-  export let className = 'h-3 w-3';
+  const statusIcons = new Map<JobStatus, any>([
+    ['pending', Clock],
+    ['repairing', Wrench],
+    ['completed', CircleCheckBig],
+    ['delivered', CircleCheckBig],
+    ['cancelled', CircleX],
+    ['on_hold', CircleAlert],
+  ] as [JobStatus, any][]); 
 
-  const statusIcons = {
-    pending: Clock,
-    in_progress: Clock,
-    waiting_parts: AlertCircle,
-    completed: CheckCircle,
-    delivered: Package,
-    cancelled: XCircle,
-  } as const;
+  let { 
+    status, 
+    className = 'h-3 w-3' 
+  } = $props<{
+    status: JobStatus;
+    className?: string;
+  }>();
 
-  type Status = keyof typeof statusIcons;
-
-  const isValidStatus = (s: string): s is Status => s in statusIcons;
+  const IconComponent = $derived(statusIcons.get(status));
 </script>
 
-{#if isValidStatus(status)}
-  <svelte:component
-    this={statusIcons[status]}
-    class={className}
-  />
+{#if IconComponent}
+  <IconComponent class={className} />
 {/if}
