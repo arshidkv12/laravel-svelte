@@ -35,7 +35,14 @@
     import DeleteConfirmDialog from '@/components/confirm/DeleteConfirmDialog.svelte';
     import ImageGallery from '@/components/job/ImageGallery.svelte';
 
-    let { jobCard, customer } = $props<{
+    type JobStatusOption = {
+        value: string;
+        label: string;
+        icon: string;
+        color: string;
+    };
+
+    let { jobCard, customer, jobStatusOptions} = $props<{
         jobCard: {
             id: number;
             customer_id: number;
@@ -55,6 +62,7 @@
             phone: string | null;
             address: string | null;
         };
+        jobStatusOptions: JobStatusOption[]
     }>();
 
     $effect(() => {  
@@ -73,18 +81,8 @@
         { title: jobCard.item || `Job Card #${jobCard.id}`, href: `/job-cards/${jobCard.id}` },
     ]);
 
-    const statusOptions = [
-        { value: 'pending', label: 'Pending', icon: Clock, color: 'text-yellow-600 bg-yellow-50', badgeColor: 'bg-yellow-100 text-yellow-800' },
-        { value: 'diagnosis', label: 'Diagnosis', icon: Search, color: 'text-blue-600 bg-blue-50', badgeColor: 'bg-blue-100 text-blue-800' },
-        { value: 'repairing', label: 'Repairing', icon: Wrench, color: 'text-orange-600 bg-orange-50', badgeColor: 'bg-orange-100 text-orange-800' },
-        { value: 'completed', label: 'Completed', icon: CircleCheckBig, color: 'text-green-600 bg-green-50', badgeColor: 'bg-green-100 text-green-800' },
-        { value: 'delivered', label: 'Delivered', icon: CircleCheckBig, color: 'text-emerald-600 bg-emerald-50', badgeColor: 'bg-emerald-100 text-emerald-800' },
-        { value: 'cancelled', label: 'Cancelled', icon: CircleX, color: 'text-red-600 bg-red-50', badgeColor: 'bg-red-100 text-red-800' },
-        { value: 'on_hold', label: 'On Hold', icon: CircleAlert, color: 'text-gray-600 bg-gray-50', badgeColor: 'bg-gray-100 text-gray-800' }
-    ];
-
     function getStatusInfo() {
-        return statusOptions.find(s => s.value === jobCard.status) || statusOptions[0];
+        return jobStatusOptions.find((s:JobStatusOption)=> s.value === jobCard.status) || jobStatusOptions[0];
     }
 
     function formatCurrency(value: string | null): string {
@@ -196,7 +194,7 @@
                                 </p>
                             </div>
                             <div class="flex items-center gap-2">
-                                <Badge class={`px-3 py-1.5 ${getStatusInfo().badgeColor} font-medium`}>
+                                <Badge class={`px-3 py-1.5 ${getStatusInfo().color} font-medium`}>
                                     {getStatusInfo().label}
                                 </Badge>
                                 <div class="print:hidden">

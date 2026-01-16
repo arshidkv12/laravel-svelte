@@ -9,13 +9,15 @@
 
   const statusIcons = new Map<JobStatus, any>([
     ['pending', Clock],
-    ['repairing', Wrench],
+    ['in_progress', Wrench],
+    ['waiting_parts', CircleAlert],
     ['completed', CircleCheckBig],
     ['delivered', CircleCheckBig],
     ['cancelled', CircleX],
-    ['on_hold', CircleAlert],
-  ] as [JobStatus, any][]); 
+    ['on_hold', CircleAlert],   
+  ] as [JobStatus, any][]);
 
+ 
   let { 
     status, 
     className = 'h-3 w-3' 

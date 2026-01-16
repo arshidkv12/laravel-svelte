@@ -4,7 +4,8 @@ export type JobStatus =
   | 'waiting_parts'
   | 'completed'
   | 'delivered'
-  | 'cancelled';
+  | 'cancelled'
+  | 'on_hold'; 
 
 export function getJobStatusClasses(status: string): string {
   switch (status) {

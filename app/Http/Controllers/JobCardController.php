@@ -142,6 +142,7 @@ class JobCardController extends Controller
         return Inertia::render('JobCards/Show', [
             'jobCard' => $jobCard,
             'customer' => $jobCard->customer,  
+            'jobStatusOptions' => JobCardStatus::options(),
         ]);
     }
 
