@@ -6,6 +6,7 @@ use App\JobCardStatus;
 use App\Models\Customer;
 use App\Models\JobCard;
 use App\Models\JobCardFile;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
@@ -139,10 +140,21 @@ class JobCardController extends Controller
         $jobCard->load('customer');
         $jobCard->load('files');
 
+        $diffDays = null;
+        if($jobCard->delivery_date){
+            $delivery = Carbon::parse($jobCard->delivery_date)->startOfDay();
+            $today = Carbon::today();
+
+            $diffDays = (int) ceil(
+                $today->diffInSeconds($delivery, false) / 86400
+            );
+        }
+
         return Inertia::render('JobCards/Show', [
             'jobCard' => $jobCard,
             'customer' => $jobCard->customer,  
             'jobStatusOptions' => JobCardStatus::options(),
+            'deliveryDiffDays' => $diffDays,
         ]);
     }
 

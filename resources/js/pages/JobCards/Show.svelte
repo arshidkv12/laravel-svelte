@@ -14,15 +14,9 @@
         ArrowLeft,
         Printer,
         User,
-        Search,
         Calendar,
         Briefcase,
         DollarSign,
-        Wrench,
-        CircleAlert,
-        CircleCheckBig,
-        CircleX,
-        Clock,
         FileText,
         MessageSquare,
         Phone,
@@ -42,7 +36,7 @@
         color: string;
     };
 
-    let { jobCard, customer, jobStatusOptions} = $props<{
+    let { jobCard, customer, jobStatusOptions, deliveryDiffDays} = $props<{
         jobCard: {
             id: number;
             customer_id: number;
@@ -62,7 +56,8 @@
             phone: string | null;
             address: string | null;
         };
-        jobStatusOptions: JobStatusOption[]
+        jobStatusOptions: JobStatusOption[],
+        deliveryDiffDays: number
     }>();
 
     $effect(() => {  
@@ -124,13 +119,7 @@
     function getDaysUntilDelivery(): string {
         if (!jobCard.delivery_date) return 'No date set';
         
-        const delivery = new Date(jobCard.delivery_date);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        delivery.setHours(0, 0, 0, 0);
-        
-        const diffTime = delivery.getTime() - today.getTime();
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        const diffDays = deliveryDiffDays;
         
         if (diffDays === 0) return 'Today';
         if (diffDays === 1) return 'Tomorrow';
@@ -141,15 +130,12 @@
 
     function getDeliveryStatus(): { text: string; color: string } {
         if (!jobCard.delivery_date) return { text: 'Not scheduled', color: 'text-gray-600' };
+  
+        const diffDays = deliveryDiffDays;
         
-        const delivery = new Date(jobCard.delivery_date);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        delivery.setHours(0, 0, 0, 0);
-        
-        const diffTime = delivery.getTime() - today.getTime();
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        
+        if(jobCard.status === 'delivered'){
+            return { text: '', color: 'text-orange-600' }
+        }
         if (diffDays < 0 && jobCard.status !== 'delivered') {
             return { text: 'Overdue', color: 'text-red-600' };
         } else if (diffDays === 0) {
