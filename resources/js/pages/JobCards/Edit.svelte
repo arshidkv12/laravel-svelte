@@ -20,15 +20,10 @@
         Search,
         Calendar,
         Briefcase,
-        DollarSign,
         Wrench,
-        CircleAlert,
         CircleCheckBig,
-        CircleX,
-        Clock,
         Save,
         Trash2,
-        SquarePen,
     } from 'lucide-svelte';
 
     import CustomerSelect from '@/components/customer/CustomerSelect.svelte';
@@ -190,7 +185,7 @@
                             <CardContent class="space-y-4">
                                 <!-- Customer Search/Select -->
                                 <div class="space-y-2">
-                                    <Label class="text-sm font-medium">Select Customer *</Label>
+                                    <p class="text-sm font-medium">Select Customer *</p>
                                     <CustomerSelect 
                                         initCustomers={customers} 
                                         bind:modelValue={customer_id} 
@@ -254,7 +249,7 @@
                                 <div class="space-y-2">
                                     <Label for="status" class="text-sm font-medium">Status</Label>
                                     <Select.Root type="single" name="status" bind:value={status}>
-                                        <Select.Trigger class="w-[180px]">
+                                        <Select.Trigger id="status" class="w-[180px] cursor-pointer">
                                             <div class="flex items-center gap-2">
                                                 {#if getSelectedStatus.icon}
                                                     <StatusIcon status={getSelectedStatus.value as JobStatus} />
@@ -264,7 +259,6 @@
                                         </Select.Trigger>
                                         <Select.Content>
                                             <Select.Group>
-                                                <Select.Label>Status</Select.Label>
                                                 {#each jobStatusOptions as option}
                                                     <Select.SelectItem value={option.value}>
                                                         <div class="flex items-center gap-2">
@@ -287,7 +281,6 @@
                                     <div class="space-y-2">
                                         <Label for="estimated_cost" class="text-sm font-medium">Estimated Cost</Label>
                                         <div class="relative">
-                                            <DollarSign class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                                             <Input
                                                 id="estimated_cost"
                                                 name="estimated_cost"
@@ -296,7 +289,6 @@
                                                 min="0"
                                                 value={jobCard.estimated_cost || ''}
                                                 placeholder="0.00"
-                                                class="pl-10"
                                             />
                                         </div>
                                     </div>

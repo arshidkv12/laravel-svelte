@@ -151,12 +151,25 @@ class JobCardController extends Controller
      */
     public function edit(JobCard $jobCard)
     {
-        $customers = Customer::where('id', $jobCard->customer_id)
-                        ->get()
-                        ->map(fn ($c) => [
-                            'value' => $c->id,
-                            'label' => "{$c->name} - {$c->phone}",
-                        ]);
+        $customer = Customer::where('id', $jobCard->customer_id)
+            ->get()
+            ->map(fn ($c) => [
+                'value' => $c->id,
+                'label' => "{$c->name} - {$c->phone}",
+            ]);
+
+        $customers = Customer::latest()
+            ->limit(5)          
+            ->get()             
+            ->map(fn ($c) => [
+                'value' => $c->id,
+                'label' => "{$c->name} - {$c->phone}",
+            ]);
+
+        $customers = $customer
+            ->merge($customers)
+            ->unique('value')
+            ->values();        
 
         $jobCardFiles  = $jobCard->files->map(fn ($file) => [
                 'source' => $file->file_name,

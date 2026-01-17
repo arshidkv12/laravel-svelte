@@ -5,7 +5,7 @@
 
     import * as Command from "@/components/ui/command";
     import * as Popover from "@/components/ui/popover";
-    import { Button } from "@/components/ui/button";
+    import { Button, buttonVariants } from "@/components/ui/button";
     import { cn } from "@/lib/utils";
     import Input from "../ui/input/input.svelte";
 
@@ -89,16 +89,9 @@
 </script>
 
 <Popover.Root bind:open>
-  <Popover.Trigger bind:ref={triggerRef} class="w-full">
-    <Button
-      variant="outline"
-      class="w-full justify-between "
-      role="combobox"
-      aria-expanded={open}
-    >
-      {selectedLabel || "Select a customer..."}
+  <Popover.Trigger class={cn(buttonVariants({ variant: "outline"}), "w-full justify-between")}>
+      <span>{selectedLabel || "Select a customer..."}</span>
       <ChevronsUpDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-    </Button>
     <Input type='hidden' name='customer_id'  bind:value={modelValue}/>
   </Popover.Trigger>
 

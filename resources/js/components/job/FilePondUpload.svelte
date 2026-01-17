@@ -40,7 +40,7 @@
     function handleUpdateFiles(event) {}
 </script>
 
-<div class="app">
+<div>
     <FilePond
         bind:this={pond}
         bind:files={files}
