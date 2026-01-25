@@ -1,42 +1,43 @@
 <script lang="ts">
-  import AppLayout from '@/layouts/AppLayout.svelte';
-  import { type Flash, type BreadcrumbItem } from '@/types';
-  import { onMount } from 'svelte';
-  import { Link, page, router } from '@inertiajs/svelte';
-  import JobTable from '@/components/job/JobTable.svelte';
-  import MobileJobTable from '@/components/job/MobileJobTable.svelte';
-  import { throttle } from 'lodash';
-  import { toast } from 'svelte-sonner';
+    import AppLayout from '@/layouts/AppLayout.svelte';
+    import { type Flash, type BreadcrumbItem } from '@/types';
+    import { onMount } from 'svelte';
+    import { Link, page, router } from '@inertiajs/svelte';
+    import JobTable from '@/components/job/JobTable.svelte';
+    import MobileJobTable from '@/components/job/MobileJobTable.svelte';
+    import { throttle } from 'lodash';
+    import { toast } from 'svelte-sonner';
+    import Pagination from '@/components/general/Pagination.svelte';
 
-  type JobCard = {
-    id: number;
-    job_no: string;
-    item: string;
-    phone: string;
-    status: string;
-    delivery_date: string;
-    created_at_formatted: string;
-    delivery_date_formatted: string;
-    customer: {
+    type JobCard = {
       id: number;
-      name: string;
+      job_no: string;
+      item: string;
       phone: string;
+      status: string;
+      delivery_date: string;
+      created_at_formatted: string;
+      delivery_date_formatted: string;
+      customer: {
+        id: number;
+        name: string;
+        phone: string;
+      };
     };
-  };
 
-  type JobCardsPagination = {
-    data: JobCard[];
-    current_page: number;
-    last_page: number;
-    links: any[];
-    total: number;
-    from: number;
-    to: number;
-  };
+    type JobCardsPagination = {
+      data: JobCard[];
+      current_page: number;
+      last_page: number;
+      links: any[];
+      total: number;
+      from: number;
+      to: number;
+    };
 
-  let { jobCards } = $props<{
-    jobCards: JobCardsPagination;
-  }>();
+    let { jobCards } = $props<{
+      jobCards: JobCardsPagination;
+    }>();
 
   let search = $state('');
   let status = $state('');
@@ -152,43 +153,10 @@
     {/if}
 
     <!-- Pagination -->
-    <div class="flex flex-col sm:flex-row items-center justify-between pt-4 gap-4">
-      <!-- Info -->
-      <div class="text-sm text-gray-600">
-        Page {jobCards.current_page} of {jobCards.last_page}
-      </div>
-
-      <!-- Links -->
-      <div class="flex flex-wrap gap-1 justify-center">
-        {#each jobCards.links as link}
-          <button
-            disabled={!link.url}
-            onclick={() =>
-              link.url &&
-              router.get(
-                link.url,
-                {},
-                {
-                  preserveState: true,
-                  preserveScroll: true,  
-                  replace: true
-                }
-              )
-            }
-            class="
-              cursor-pointer
-              px-3 py-1 text-sm border rounded
-              {link.active
-                ? 'bg-black text-white border-black'
-                : 'text-gray-700 hover:bg-gray-100'}
-              disabled:opacity-50
-              disabled:cursor-not-allowed
-            "
-          >
-            {@html link.label}
-          </button>
-        {/each}
-      </div>
-    </div>
+    <Pagination links={jobCards.links}  
+      currentPage={jobCards.current_page} 
+      lastPage={jobCards.last_page}
+    />
+    
   </div>
 </AppLayout>

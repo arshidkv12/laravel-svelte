@@ -1,10 +1,8 @@
 <script lang="ts">
     import AppLayout from '@/layouts/AppLayout.svelte';
     import { type Flash, type BreadcrumbItem } from '@/types';
-    import { onMount } from 'svelte';
-    import { Form, Link, page, router } from '@inertiajs/svelte';
+    import { Link, page, router } from '@inertiajs/svelte';
     import { toast } from 'svelte-sonner';
-
     import { Button } from '@/components/ui/button';
     import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
     import { Separator } from '@/components/ui/separator';
@@ -76,9 +74,8 @@
         { title: jobCard.item || `Job Card #${jobCard.id}`, href: `/job-cards/${jobCard.id}` },
     ]);
 
-    function getStatusInfo() {
-        return jobStatusOptions.find((s:JobStatusOption)=> s.value === jobCard.status) || jobStatusOptions[0];
-    }
+    let getStatusInfo = $derived(jobStatusOptions.find((s:JobStatusOption)=> s.value === jobCard.status) || jobStatusOptions[0]);
+    
 
     function formatCurrency(value: string | null): string {
         if (!value) return '$0.00';
@@ -180,8 +177,8 @@
                                 </p>
                             </div>
                             <div class="flex items-center gap-2">
-                                <Badge class={`px-3 py-1.5 ${getStatusInfo().color} font-medium`}>
-                                    {getStatusInfo().label}
+                                <Badge class={`px-3 py-1.5 ${getStatusInfo.color} font-medium`}>
+                                    {getStatusInfo.label}
                                 </Badge>
                                 <div class="print:hidden">
                                     <Link href={`/job-cards/${jobCard.id}/edit`} >
@@ -229,7 +226,7 @@
                                         <Tag class="h-4 w-4" />
                                         <span>Status</span>
                                     </div>
-                                    <p class="font-medium text-gray-900">{getStatusInfo().label}</p>
+                                    <p class="font-medium text-gray-900">{getStatusInfo.label}</p>
                                 </div>
                             </div>
 
@@ -490,7 +487,7 @@
                                 </div>
                                 <div class="flex justify-between text-sm">
                                     <span class="text-gray-500">Status:</span>
-                                    <span class="font-medium text-gray-900">{getStatusInfo().label}</span>
+                                    <span class="font-medium text-gray-900">{getStatusInfo.label}</span>
                                 </div>
                                 <div class="flex justify-between text-sm">
                                     <span class="text-gray-500">Created:</span>

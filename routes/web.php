@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\JobCardController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -30,7 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('upload.store');
     Route::delete('/upload-job-files', [UploadController::class, 'destroy'])
         ->name('upload.destroy');
-    
+    Route::resource('products', ProductController::class); 
 });
 
 require __DIR__ . '/settings.php';

@@ -30,7 +30,7 @@ enum JobCardStatus: string
         return match ($this) {
             self::Pending         => 'text-yellow-600 bg-yellow-50',
             self::InProgress      => 'text-orange-600 bg-orange-50',     
-            self::WaitingParts    => 'text-blue-600 bg-blue-50',         
+            self::WaitingParts    => 'bg-orange-100 text-orange-800',         
             self::Completed       => 'text-green-600 bg-green-50',
             self::Delivered       => 'text-emerald-600 bg-emerald-50',
             self::Cancelled       => 'text-red-600 bg-red-50',
