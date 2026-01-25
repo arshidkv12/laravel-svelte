@@ -7,11 +7,12 @@
     import { Badge } from '@/components/ui/badge';
     import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
     import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
-    import { Search, Plus, Edit, Eye, MoreVertical, Filter, Download } from 'lucide-svelte';
+    import { Search, Plus, SquarePen, Eye, EllipsisVertical, Funnel, Download } from 'lucide-svelte';
     import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
     import { type Pagination, type Product } from '@/types/products';
     import { Link } from '@inertiajs/svelte';
     import PaginationUi from '@/components/general/Pagination.svelte';
+    import TextLink from '@/components/TextLink.svelte';
 
     export let filters: { search?: string; status?: string };
     export let products: {
@@ -141,7 +142,7 @@
                     </Select> -->
 
                     <Button variant="outline" onclick={resetFilters} class="gap-2">
-                        <Filter class="h-4 w-4" />
+                        <Funnel class="h-4 w-4" />
                         Clear Filters
                     </Button>
                 </div>
@@ -163,124 +164,113 @@
                 </Button>
             </CardHeader>
             <CardContent>
-                <div class="rounded-md border">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead class="w-12">ID</TableHead>
-                                <TableHead>Product Name</TableHead>
-                                <TableHead>SKU</TableHead>
-                                <TableHead>Price</TableHead>
-                                <TableHead>Stock</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Created</TableHead>
-                                <TableHead class="w-20">Actions</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {#each products.data as product (product.id)}
-                                <TableRow class="hover:bg-muted/50">
-                                    <TableCell class="font-medium">{product.id}</TableCell>
-                                    <TableCell>
-                                        <div class="flex items-center gap-3">
-                                            {#if product.image}
-                                                <img 
-                                                    src={product.image} 
-                                                    alt={product.name}
-                                                    class="w-10 h-10 rounded-md object-cover"
-                                                />
-                                            {:else}
-                                                <div class="w-10 h-10 rounded-md bg-muted flex items-center justify-center">
-                                                    <span class="text-xs text-muted-foreground">No image</span>
+                <div class="rounded-md border overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow class="bg-gray-50">
+                                    <TableHead class="pl-4 min-w-[120px]">Created</TableHead>
+                                    <TableHead class="min-w-[180px]">Product Name</TableHead>
+                                    <TableHead class="min-w-[100px]">Price</TableHead>
+                                    <TableHead class="text-center min-w-[80px]">Stock</TableHead>
+                                    <TableHead class="min-w-[100px]">Status</TableHead>
+                                    <TableHead class="w-20 text-center">Actions</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {#each products.data as product (product.id)}
+                                    <TableRow class="hover:bg-muted/50">
+                                        <TableCell class="pl-4">
+                                            <Link href={`/products/${product.id}`}>
+                                                <div class="text-muted-foreground">
+                                                    {product.created_at_formatted}
                                                 </div>
-                                            {/if}
-                                            <div>
-                                                <p class="font-medium">{product.name}</p>
-                                                <p class="text-xs text-muted-foreground line-clamp-1">{product.description}</p>
-                                            </div>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <code class="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">
-                                            {product.sku || 'N/A'}
-                                        </code>
-                                    </TableCell>
-                                    <TableCell class="font-medium">
-                                        ${product.price || '0.00'}
-                                    </TableCell>
-                                    <TableCell>
-                                        <span class:low-stock={product.stock < 10} class:text-red-500={product.stock === 0}>
-                                            {product.stock}
-                                        </span>
-                                        {#if product.stock < 10 && product.stock > 0}
-                                            <span class="text-xs text-amber-600 ml-1">(Low)</span>
-                                        {:else if product.stock === 0}
-                                            <span class="text-xs text-red-600 ml-1">(Out)</span>
-                                        {/if}
-                                    </TableCell>
-                                    <TableCell>
-                                        <Badge >
-                                            {product.status || 'draft'}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell class="text-muted-foreground">
-                                        {new Date(product.created_at).toLocaleDateString()}
-                                    </TableCell>
-                                    <TableCell>
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger >
-                                                <Button variant="ghost" size="sm">
-                                                    <MoreVertical class="h-4 w-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                <Link href={`/products/${product.id}`}>
-                                                    <DropdownMenuItem>
-                                                        <Eye class="mr-2 h-4 w-4" />
-                                                        View
-                                                    </DropdownMenuItem>
-                                                </Link>
-                                                <Link href={`/products/${product.id}/edit`}>
-                                                    <DropdownMenuItem>
-                                                        <Edit class="mr-2 h-4 w-4" />
-                                                        Edit
-                                                    </DropdownMenuItem>
-                                                </Link>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </TableCell>
-                                </TableRow>
-                            {:else}
-                                <TableRow>
-                                    <TableCell   class="text-center py-8">
-                                        <div class="flex flex-col items-center gap-2">
-                                            <div class="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-                                                <Search class="h-6 w-6 text-muted-foreground" />
-                                            </div>
-                                            <div>
-                                                <p class="font-medium">No products found</p>
-                                                <p class="text-muted-foreground text-sm">
-                                                    {filters.search ? 'Try adjusting your search or filters' : 'Get started by adding your first product'}
-                                                </p>
-                                            </div>
-                                            {#if filters.search}
-                                                <Button variant="outline" size="sm" onclick={resetFilters}>
-                                                    Clear search
-                                                </Button>
-                                            {:else}
-                                                <Link href="/products/create">
-                                                    <Button size="sm">
-                                                        <Plus class="mr-2 h-4 w-4" />
-                                                        Add Product
+                                            </Link>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Link href={`/products/${product.id}`}>
+                                                <div class="max-w-[250px] whitespace-normal">
+                                                    <p class="font-medium line-clamp-2" title={product.name}>
+                                                        {product.name}
+                                                    </p>
+                                                </div>
+                                            </Link>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Link href={`/products/${product.id}`}>
+                                                <div class="font-medium">
+                                                    <span class="md:hidden text-sm">Price: </span>
+                                                    {product.price || '-'}
+                                                </div>
+                                            </Link>
+                                        </TableCell>
+                                        <TableCell class="text-center">
+                                            <Link href={`/products/${product.id}`}>
+                                                <div>
+                                                    <span class="md:hidden text-sm">Stock: </span>
+                                                    {product.quantity}
+                                                </div>
+                                            </Link>
+                                        </TableCell>
+                                        <TableCell>
+                                            {product.status ? 'Active' : 'Disabled'}
+                                        </TableCell>
+                                        <TableCell class="text-center">
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger >
+                                                    <Button variant="ghost" size="sm">
+                                                        <EllipsisVertical class="h-4 w-4" />
                                                     </Button>
-                                                </Link>
-                                            {/if}
-                                        </div>
-                                    </TableCell>
-                                </TableRow>
-                            {/each}
-                        </TableBody>
-                    </Table>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                    <Link href={`/products/${product.id}`}>
+                                                        <DropdownMenuItem>
+                                                            <Eye class="mr-2 h-4 w-4" />
+                                                            View
+                                                        </DropdownMenuItem>
+                                                    </Link>
+                                                    <Link href={`/products/${product.id}/edit`}>
+                                                        <DropdownMenuItem>
+                                                            <SquarePen class="mr-2 h-4 w-4" />
+                                                            Edit
+                                                        </DropdownMenuItem>
+                                                    </Link>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </TableCell>
+                                    </TableRow>
+                                {:else}
+                                    <TableRow>
+                                        <TableCell colspan={6} class="text-center py-8 px-4">
+                                            <div class="flex flex-col items-center gap-3 max-w-md mx-auto">
+                                                <div class="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                                                    <Search class="h-6 w-6 text-muted-foreground" />
+                                                </div>
+                                                <div class="text-center">
+                                                    <p class="font-medium">No products found</p>
+                                                    <p class="text-muted-foreground text-sm mt-1">
+                                                        {filters.search ? 'Try adjusting your search or filters' : 'Get started by adding your first product'}
+                                                    </p>
+                                                </div>
+                                                {#if filters.search}
+                                                    <Button variant="outline" size="sm" onclick={resetFilters}>
+                                                        Clear search
+                                                    </Button>
+                                                {:else}
+                                                    <Link href="/products/create">
+                                                        <Button size="sm">
+                                                            <Plus class="mr-2 h-4 w-4" />
+                                                            Add Product
+                                                        </Button>
+                                                    </Link>
+                                                {/if}
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                {/each}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </div>
 
                 <!-- Pagination -->

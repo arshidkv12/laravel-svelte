@@ -24,7 +24,10 @@ class Product extends Model
         'status' => 'boolean'
     ];
 
-    protected $appends = ['image_url'];
+    protected $appends = [
+        'image_url', 
+        'created_at_formatted'
+    ];
 
     public function getImageUrlAttribute()
     {
@@ -39,6 +42,13 @@ class Product extends Model
             return '';
         }
         return asset('img/img-placeholder.jpg');
+    }
+
+    public function getCreatedAtFormattedAttribute(): string
+    {
+        return $this->created_at
+            ? $this->created_at->format('d/m/Y h:i A')  
+            : '-';
     }
 
     protected static function booted()

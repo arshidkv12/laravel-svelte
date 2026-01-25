@@ -4,11 +4,12 @@ export interface Product {
     description?: string;
     sku?: string;
     price: number;
-    stock: number;
+    quantity: number;
     status: 'active' | 'inactive' | 'draft';
     image?: string;
     created_at: string;
     updated_at: string;
+    created_at_formatted: string;
 }
 
 export interface Pagination {
