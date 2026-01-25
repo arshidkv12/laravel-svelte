@@ -70,7 +70,7 @@ class JobCard extends Model
                 STR_PAD_LEFT
             );
             if (Auth::check() && empty($jobCard->user_id)) {
-                $jobCard->user_id = 0;
+                $jobCard->user_id = Auth::id();
             }
         });
 
@@ -87,5 +87,4 @@ class JobCard extends Model
         
         static::addGlobalScope(new OwnerScope);
     }
-
 }
