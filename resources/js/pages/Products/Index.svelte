@@ -213,7 +213,9 @@
                                             </Link>
                                         </TableCell>
                                         <TableCell>
-                                            {product.status ? 'Active' : 'Inactive'}
+                                            <Link href={`/products/${product.id}`}>
+                                                {product.status ? 'Active' : 'Inactive'}
+                                            </Link>
                                         </TableCell>
                                         <TableCell class="text-center">
                                             <DropdownMenu>

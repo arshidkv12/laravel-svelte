@@ -45,7 +45,7 @@ class ProductController extends Controller
             'status'      => 'boolean',
         ],
         [
-            'status.boolean'         => 'Please select status',
+            'status.boolean' => 'Please select status',
         ]);
 
         return Product::create($data);
@@ -54,7 +54,7 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        return $product;
+        return Inertia::render('Products/Create', $product);
     }
 
     /**
