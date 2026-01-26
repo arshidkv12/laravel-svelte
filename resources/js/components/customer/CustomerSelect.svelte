@@ -9,7 +9,7 @@
     import { cn } from "@/lib/utils";
     import Input from "../ui/input/input.svelte";
 
-    let { modelValue = $bindable(), initCustomers } = $props();
+    let { modelValue = $bindable(), initCustomers = $bindable() } = $props();
 
     type Customer = {
         value: number;
@@ -19,13 +19,15 @@
     let open = $state(false);
     let triggerRef: HTMLButtonElement | null = $state(null);
     let loading = $state(false);
-    let customers = $state<Customer[]>([]);
 
-    const value = $derived(modelValue ?? null);
+    const value = $derived(Number(modelValue) ?? null);
+    
+    let customers = $derived(initCustomers);
 
     const selectedLabel = $derived(
         customers.find((c: Customer) => c.value === value)?.label || ""
     );
+
 
     function close() {
         open = false;
@@ -81,11 +83,6 @@
             searchCustomers(q);
         }, 300);
     }
-
-    onMount(()=>{ 
-        customers = initCustomers;
-    });
-
 </script>
 
 <Popover.Root bind:open>
@@ -108,7 +105,8 @@
         {/if}
 
         <Command.Empty>
-          {loading ? "Searching..." : "No customer found."}
+          {loading ? "Searching..." : ""}
+          {!loading && customers.length < 1 ? "No customer found." : ""}
         </Command.Empty>
 
         <Command.Group>

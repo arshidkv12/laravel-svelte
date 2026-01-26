@@ -34,17 +34,13 @@
     import InputError from '@/components/InputError.svelte';
     import FilePondUpload from '@/components/job/FilePondUpload.svelte';
 
-    let customer_id = $state<number | null>(null);
     let customerDialogOpen = $state(false);
     let disableFormSubmit = $state(false);
     let jobCardFiles = $state([]);
       
-    let { customers, csrf_token } = $props<{
-        customers:  Array<{
-          value: string;
-          label: string;
-        }>;
-    }>();
+    let { customers, csrf_token, initCustomerId } = $props();
+
+    let customer_id = $derived(initCustomerId);
 
     $effect(() => {  
         const flash = $page.flash as Flash;
@@ -56,12 +52,7 @@
             }
         }
     });
-
-    onMount(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        customer_id = Number(urlParams.get('customer_id'));
-    });
-
+    
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Job Cards', href: '/job-cards' },
         { title: 'Create Job Card', href: '/job-cards/create' },
@@ -75,7 +66,8 @@
 
 <AppLayout {breadcrumbs}>
     <CreateCustomerModal
-      bind:open={customerDialogOpen}
+        pageUrl='/job-cards/create'
+        bind:open={customerDialogOpen}
     />
     <div class="min-h-screen bg-gray-50">
       <Form 
@@ -167,7 +159,7 @@
                                 <Input
                                     id="item"
                                     name="item"
-                                    placeholder="e.g., iPhone 13, Laptop Dell XPS, Toyota Camry"
+                                    placeholder="e.g., Toyota Camry"
                                 />
                                 <InputError class="mt-1" message={errors.item} />
                             </div>
@@ -192,7 +184,6 @@
                                 <div class="space-y-2">
                                     <Label for="estimated_cost" class="text-sm font-medium">Estimated Cost</Label>
                                     <div class="relative">
-                                        <DollarSign class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                                         <Input
                                             id="estimated_cost"
                                             name="estimated_cost"
@@ -200,7 +191,6 @@
                                             step="0.01"
                                             min="0"
                                             placeholder="0.00"
-                                            class="pl-10"
                                         />
                                     </div>
                                 </div>
@@ -274,7 +264,7 @@
                 <!-- Right Column - Actions & Summary -->
                 <div class="space-y-6">
                     <!-- Actions Card -->
-                    <Card class="border border-gray-200 shadow-sm">
+                    <Card class="hidden lg:block border border-gray-200 shadow-sm">
                         <CardHeader>
                             <CardTitle>Actions</CardTitle>
                         </CardHeader>
@@ -309,7 +299,7 @@
                     </Card>
 
                     <!-- Summary Card -->
-                    <Card class="border border-gray-200 shadow-sm">
+                    <!-- <Card class="border border-gray-200 shadow-sm">
                         <CardHeader>
                             <CardTitle>Summary</CardTitle>
                         </CardHeader>
@@ -318,34 +308,34 @@
                                 <div class="flex justify-between text-sm">
                                     <span class="text-gray-500">Customer:</span>
                                     <span class="font-medium text-gray-900">
-                                        <!-- {selectedCustomer ? selectedCustomer.name : 'Not selected'} -->
+                                        {selectedCustomer ? selectedCustomer.name : 'Not selected'}
                                     </span>
                                 </div>
                                 <div class="flex justify-between text-sm">
                                     <span class="text-gray-500">Status:</span>
                                     <span class="font-medium text-gray-900">
-                                        <!-- {statusOptions.find(s => s.value === form.status)?.label || 'Pending'} -->
+                                        {statusOptions.find(s => s.value === form.status)?.label || 'Pending'}
                                     </span>
                                 </div>
                                 <div class="flex justify-between text-sm">
                                     <span class="text-gray-500">Estimated Cost:</span>
                                     <span class="font-medium text-gray-900">
-                                        <!-- {form.estimated_cost ? formatCurrency(form.estimated_cost) : '$0.00'} -->
+                                        {form.estimated_cost ? formatCurrency(form.estimated_cost) : '$0.00'}
                                     </span>
                                 </div>
                                 <div class="flex justify-between text-sm">
                                     <span class="text-gray-500">Delivery Date:</span>
                                     <span class="font-medium text-gray-900">
-                                        <!-- {form.delivery_date ? new Date(form.delivery_date).toLocaleDateString('en-US', { 
+                                        {form.delivery_date ? new Date(form.delivery_date).toLocaleDateString('en-US', { 
                                             month: 'short', 
                                             day: 'numeric', 
                                             year: 'numeric' 
-                                        }) : 'Not set'} -->
+                                        }) : 'Not set'}
                                     </span>
                                 </div>
                             </div>
                         </CardContent>
-                    </Card>
+                    </Card> -->
 
                     <!-- Quick Tips -->
                     <Card class="border border-gray-200 shadow-sm">

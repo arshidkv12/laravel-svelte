@@ -63,6 +63,7 @@ class JobCardController extends Controller
             ]);
 
         return Inertia::render('JobCards/Create', [
+            'initCustomerId' => $customer_id,
             'customers' => $customers,
             'csrf_token' => csrf_token()
         ]);

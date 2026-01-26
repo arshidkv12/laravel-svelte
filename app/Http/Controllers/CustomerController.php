@@ -55,6 +55,10 @@ class CustomerController extends Controller
             'type' => 'success'
         ]);
 
+        if(!empty($request->pageUrl)){
+            return redirect($request->pageUrl . '/?customer_id=' . $customer->id);
+        }
+
         return redirect()
             ->back();
     }

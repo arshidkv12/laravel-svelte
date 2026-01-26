@@ -29,8 +29,8 @@
     import FilePondUpload from '@/components/job/FilePondUpload.svelte';
     import StatusIcon from '@/components/job/StatusIcon.svelte';
     import { type JobStatus } from '@/lib/helper/status';
+    import CreateCustomerModal from '@/components/customer/CreateCustomerModal.svelte';
 
-    let customer_id = $state<number | null>(null);
     let status = $state<string>('pending');
     let disableFormSubmit = $state(false);
 
@@ -41,7 +41,9 @@
         color: string;
     };
 
-    let { jobCard, customers, csrf_token, jobCardFiles, jobStatusOptions } = $props();
+    let { jobCard, customers, csrf_token, jobCardFiles, jobStatusOptions, initCustomerId } = $props();
+    let customerDialogOpen = $state(false);
+    let customer_id = $derived(jobCard.customer_id);
 
     $effect(() => {  
         const flash = $page.flash as Flash;
@@ -55,7 +57,6 @@
     });
 
     onMount(() => { 
-        customer_id = jobCard.customer_id;
         status = jobCard.status;
     });
 
@@ -107,6 +108,10 @@
 </svelte:head>
 
 <AppLayout {breadcrumbs}>
+    <CreateCustomerModal
+        pageUrl={`/job-cards/${jobCard.id}/edit`}
+        bind:open={customerDialogOpen}
+    />
     <div class="min-h-screen bg-gray-50">
         <Form 
             method="put" 
@@ -170,7 +175,7 @@
 
                                 <!-- Quick Add Customer Button -->
                                 <div class="pt-2">
-                                    <Link href="/customers/create">
+                                    <Link on:click={(e)=> {e.preventDefault();customerDialogOpen=true}}>
                                         <Button 
                                             variant="outline"
                                             class="w-full gap-2"

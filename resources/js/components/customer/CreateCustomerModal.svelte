@@ -19,10 +19,12 @@
 
     let {
         open = $bindable(false),
+        pageUrl = '',
         onSuccess = () => {},
         onError = () => {}
     }: {
-        open: boolean
+        open: boolean,
+        pageUrl: string,
         onSuccess?: () => void
         onError?: (error: any) => void
     } = $props()
@@ -52,6 +54,7 @@
                 preserveScroll
                 class="space-y-6"
                 onSuccess={()=>open=false}
+                transform={data => ({ ...data, pageUrl: pageUrl })}
             >
                 {#snippet children({ errors, processing }: BaseFormSnippetProps)}
                 
