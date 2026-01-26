@@ -14,28 +14,35 @@
     import { Form, Link } from '@inertiajs/svelte';
     import { ArrowLeft, User, Phone, Mail, MapPin } from 'lucide-svelte';
 
-    export let customer: {
-        id: number;
-        name: string;
-        phone: string;
-        email?: string;
-        address?: string;
-    };
+    interface Props {
+        customer: {
+            id: number;
+            name: string;
+            phone: string;
+            email?: string;
+            address?: string;
+        }
+    }
 
-    const breadcrumbs: BreadcrumbItem[] = [
+    let { customer }: Props = $props();
+    let customerName = $derived(customer.name);
+
+    const breadcrumbs: BreadcrumbItem[] = $derived([
         {
             title: 'Customers',
             href: '/customers',
         },
         {
-            title: customer.name,
+            title: 'Customer',
             href: `/customers/${customer.id}`,
         },
         {
             title: 'Edit Customer',
             href: `/customers/${customer.id}/edit`,
         },
-    ];
+    ]);
+
+
 </script>
 
 <svelte:head>
@@ -57,8 +64,6 @@
                                 <User class="h-4 w-4 text-gray-600" />
                             </div>
                             <p class="text-sm text-gray-500">
-                                Editing: <span class="font-medium">{customer.name}</span>
-                                <span class="mx-2">•</span>
                                 ID: <span class="font-medium">#{customer.id.toString().padStart(4, '0')}</span>
                             </p>
                         </div>
@@ -97,7 +102,7 @@
                         <Input 
                             name="name" 
                             id="name" 
-                            value={customer.name}
+                            defaultValue={customer.name}
                             class="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                             autocomplete="name" 
                             placeholder="Enter customer full name"
@@ -116,7 +121,7 @@
                         <Input
                             id="phone"
                             name="phone"
-                            value={customer.phone || ''}
+                            defaultValue={customer.phone || ''}
                             class="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                             type="tel"
                             placeholder="Enter mobile number"
@@ -135,7 +140,7 @@
                         <Input
                             id="email"
                             name="email"
-                            value={customer.email || ''}
+                            defaultValue={customer.email || ''}
                             class="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                             type="email"
                             placeholder="Enter email address"
@@ -154,7 +159,7 @@
                         <Textarea
                             id="address"
                             name="address"
-                            value={customer.address || ''}
+                            defaultValue={customer.address || ''}
                             class="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 min-h-[100px]"
                             placeholder="Enter customer address"
                         />

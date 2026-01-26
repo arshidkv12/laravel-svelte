@@ -369,8 +369,8 @@
                                 <div class="p-4 bg-blue-50 rounded-lg">
                                     <h4 class="font-medium text-blue-900 mb-2">Status Guide</h4>
                                     <ul class="text-sm text-blue-800 space-y-1">
-                                        <li>• <span class="font-medium">Active:</span> Available for purchase</li>
-                                        <li>• <span class="font-medium">Inactive:</span> Hidden</li>
+                                        <li>• <span class="font-medium">Active:</span> Available for sale</li>
+                                        <li>• <span class="font-medium">Inactive:</span> Not Available for sale</li>
                                     </ul>
                                 </div>
                             </div>

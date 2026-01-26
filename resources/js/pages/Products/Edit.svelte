@@ -11,28 +11,15 @@
     import { Form, Link, router } from '@inertiajs/svelte';
     import SingleSelect from '@/components/general/SingleSelect.svelte';
     import { type BaseFormSnippetProps } from '@/types/forms';
+    import { onMount } from 'svelte';
 
     let imagePreview = $state('');
     let fileInput: HTMLInputElement;
 
-    let { product } = $props<{
-        product: {
-            id: number;
-            name: string;
-            sku: string;
-            description: string;
-            image: string;
-            barcode: string;
-            price: number;
-            tax: number;
-            quantity: number;
-            status: number;
-        }
-    }>();
+    let { product } = $props();
 
     let form = $state({
         name: '',
-        sku: '',
         description: '',
         image: null as File | null,
         barcode: '',
@@ -42,7 +29,10 @@
         status: '1',
     });
 
-    form = product;
+    onMount(()=>{
+        form = product;
+        form.status = product.status ? '1' : '0';
+    });
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -114,9 +104,9 @@
             <!-- Header -->
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 class="text-2xl font-bold tracking-tight text-gray-900">Create Product</h1>
+                    <h1 class="text-2xl font-bold tracking-tight text-gray-900">Edit Product</h1>
                     <p class="text-sm text-gray-600 mt-1">
-                        Add a new product to your inventory
+                        Update your inventory product
                     </p>
                 </div>
                 <div class="flex items-center gap-2">
@@ -164,7 +154,7 @@
                                 <Input
                                     id="name"
                                     name="name"
-                                    bind:value={form.name}
+                                    defaultValue={product.name}
                                     placeholder="Enter product name"
                                     class={errors.name ? 'border-red-500' : ''}
                                 />
@@ -190,7 +180,7 @@
                                 <Textarea
                                     id="description"
                                     name="description"
-                                    bind:value={form.description}
+                                    defaultValue={form.description}
                                     placeholder="Describe your product..."
                                     rows={3}
                                 />
@@ -218,6 +208,7 @@
                                         step="0.01"
                                         min="0"
                                         placeholder="0.00"
+                                        defaultValue={product.price}
                                         bind:value={form.price}
                                         class={errors.price ? 'border-red-500' : ''}
                                     />
@@ -391,8 +382,8 @@
                                 <div class="p-4 bg-blue-50 rounded-lg">
                                     <h4 class="font-medium text-blue-900 mb-2">Status Guide</h4>
                                     <ul class="text-sm text-blue-800 space-y-1">
-                                        <li>• <span class="font-medium">Active:</span> Available for purchase</li>
-                                        <li>• <span class="font-medium">Inactive:</span> Hidden</li>
+                                        <li>• <span class="font-medium">Active:</span> Available for sale</li>
+                                        <li>• <span class="font-medium">Inactive:</span> Not Available for sale</li>
                                     </ul>
                                 </div>
                             </div>

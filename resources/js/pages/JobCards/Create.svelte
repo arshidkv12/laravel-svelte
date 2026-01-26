@@ -234,7 +234,8 @@
                     </Card>
 
                     <!-- file upload -->
-                    <Card class="p-4">
+                    <Card class="p-4 md:p-6">
+                        <p class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50">Images</p>
                         <FilePondUpload bind:files={jobCardFiles} {csrf_token} bind:disableFormSubmit={disableFormSubmit}/>
                     </Card>
 

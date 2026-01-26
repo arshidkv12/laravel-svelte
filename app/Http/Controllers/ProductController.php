@@ -91,7 +91,7 @@ class ProductController extends Controller
         ]);
 
         return redirect()
-            ->route('customers.show', $product);
+            ->route('products.show', $product);
     }
 
     public function destroy(Product $product)

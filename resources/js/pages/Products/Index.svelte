@@ -213,7 +213,7 @@
                                             </Link>
                                         </TableCell>
                                         <TableCell>
-                                            {product.status ? 'Active' : 'Disabled'}
+                                            {product.status ? 'Active' : 'Inactive'}
                                         </TableCell>
                                         <TableCell class="text-center">
                                             <DropdownMenu>

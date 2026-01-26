@@ -16,10 +16,8 @@
         ArrowLeft,
         Plus,
         User,
-        Search,
         Calendar,
         Briefcase,
-        Wrench,
         CircleCheckBig,
         Save,
         Trash2,
@@ -63,7 +61,7 @@
 
     const breadcrumbs: BreadcrumbItem[] = $derived([
         { title: 'Job Cards', href: '/job-cards' },
-        { title: jobCard.item || 'Job Card', href: `/job-cards/${jobCard.id}` },
+        { title: 'Job Card', href: `/job-cards/${jobCard.id}` },
         { title: 'Edit Job Card', href: `/job-cards/${jobCard.id}/edit` },
     ]);
 
@@ -203,7 +201,7 @@
                                     <Input
                                         id="item"
                                         name="item"
-                                        value={jobCard.item}
+                                        defaultValue={jobCard.item}
                                         placeholder="e.g., Toyota Camry"
                                     />
                                     <InputError class="mt-1" message={errors.item} />
@@ -215,7 +213,7 @@
                                     <Textarea
                                         id="problem"
                                         name="problem"
-                                        value={jobCard.problem}
+                                        defaultValue={jobCard.problem}
                                         placeholder="Describe the problem, issue, or service required..."
                                         class="min-h-[200px]"
                                     />
@@ -264,7 +262,7 @@
                                                 type="number"
                                                 step="0.01"
                                                 min="0"
-                                                value={jobCard.estimated_cost || ''}
+                                                defaultValue={jobCard.estimated_cost || ''}
                                                 placeholder="0.00"
                                             />
                                         </div>
@@ -279,7 +277,7 @@
                                                 id="delivery_date"
                                                 name="delivery_date"
                                                 type="date"
-                                                value={jobCard.delivery_date ? jobCard.delivery_date.split('T')[0] : ''}
+                                                defaultValue={jobCard.delivery_date ? jobCard.delivery_date.split('T')[0] : ''}
                                                 class="pl-10"
                                             />
                                         </div>
@@ -292,16 +290,18 @@
                                     <Textarea
                                         id="notes"
                                         name="notes"
-                                        value={jobCard.notes || ''}
+                                        defaultValue={jobCard.notes || ''}
                                         placeholder="Any internal notes, special instructions, or observations..."
                                         rows={3}
+                                        class="min-h-[150px]"
                                     />
                                 </div>
                             </CardContent>
                         </Card>
 
                         <!-- file upload -->
-                        <Card class="p-4">
+                        <Card class="p-4 md:p-6">
+                            <p class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50">Images</p>
                             <FilePondUpload 
                                 {csrf_token} 
                                 bind:disableFormSubmit={disableFormSubmit}

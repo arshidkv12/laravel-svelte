@@ -16,7 +16,7 @@
         {#each items as item (item.title)}
             <SidebarMenuItem>
                 <Link href={item.href} class="block w-full">
-                    <SidebarMenuButton isActive={item.href === $page.url}>
+                    <SidebarMenuButton isActive={$page.url.startsWith(item.href)}>
                         {#snippet tooltipContent()}
                             {item.title}
                         {/snippet}
