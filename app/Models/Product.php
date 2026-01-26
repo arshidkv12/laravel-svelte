@@ -12,6 +12,7 @@ class Product extends Model
     protected $fillable = [
         'name',
         'description',
+        'sku',
         'image',
         'barcode',
         'price',
@@ -54,5 +55,11 @@ class Product extends Model
     protected static function booted()
     {
         static::addGlobalScope(new OwnerScope);
+
+        static::creating(function ($jobCard) {
+            if (Auth::check() && empty($jobCard->user_id)) {
+                $jobCard->user_id = Auth::id();
+            }
+        });
     }
 }

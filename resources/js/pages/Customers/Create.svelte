@@ -13,7 +13,6 @@
     import { Form, Link } from '@inertiajs/svelte';
     import { ArrowLeft, User, Phone, Mail, MapPin } from 'lucide-svelte';
 
-
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Customers',

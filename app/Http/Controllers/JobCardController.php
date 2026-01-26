@@ -195,7 +195,6 @@ class JobCardController extends Controller
             'jobCardFiles' => $jobCardFiles,
             'jobStatusOptions' => JobCardStatus::options(),
             'csrf_token' => csrf_token()
-
         ]);
     }
 
@@ -205,7 +204,7 @@ class JobCardController extends Controller
     public function update(Request $request, JobCard $jobCard)
     {
 
-        $validator = Validator::make($request->all(), [
+        $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'item'          => 'required|string|max:255',
             'problem'       => 'required|string',
@@ -222,18 +221,8 @@ class JobCardController extends Controller
             'delivery_date.date'     => 'Please enter a valid delivery date.',
             'estimated_cost.numeric' => 'Estimated cost must be a valid number.',
         ]);
-          
-        if ($validator->fails()) {
-            Inertia::flash([
-                'message' => 'Please fix the errors.',
-                'type' => 'error'
-            ]);
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
         
-        $jobCard->update($validator->validated());
+        $jobCard->update($validated);
 
         $files = $request->post('upload-files');
 

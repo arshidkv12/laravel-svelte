@@ -4,7 +4,6 @@
     import { onMount } from 'svelte';
     import { Form, Link, page } from '@inertiajs/svelte';
     import { toast } from 'svelte-sonner';
-
     import { Button } from '@/components/ui/button';
     import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
     import { Separator } from '@/components/ui/separator';
@@ -44,30 +43,7 @@
         color: string;
     };
 
-    let { jobCard, customers, csrf_token, jobCardFiles, jobStatusOptions } = $props<{
-        jobCard: {
-            id: number;
-            customer_id: number;
-            item: string;
-            problem: string;
-            estimated_cost: string | null;
-            delivery_date: string | null;
-            notes: string | null;
-            status: string;
-            created_at: string;
-            updated_at: string;
-        };
-        customers: Array<{
-            value: string;
-            label: string;
-        }>;
-        csrf_token: string;
-        jobCardFiles: Array<{
-            id: number;
-            file_name: string;
-        }>;
-        jobStatusOptions: JobStatusOption[]
-    }>();
+    let { jobCard, customers, csrf_token, jobCardFiles, jobStatusOptions } = $props();
 
     $effect(() => {  
         const flash = $page.flash as Flash;
@@ -137,7 +113,8 @@
         <Form 
             method="put" 
             action={route('job-cards.update', jobCard.id)} 
-            class="space-y-6">
+            class="space-y-6"
+        >
             {#snippet children({ errors, processing }: BaseFormSnippetProps)}
             
             <div class="p-4 md:p-6 mx-auto">
@@ -227,7 +204,7 @@
                                         id="item"
                                         name="item"
                                         value={jobCard.item}
-                                        placeholder="e.g., iPhone 13, Laptop Dell XPS, Toyota Camry"
+                                        placeholder="e.g., Toyota Camry"
                                     />
                                     <InputError class="mt-1" message={errors.item} />
                                 </div>

@@ -66,30 +66,7 @@
         { title: 'Job Cards', href: '/job-cards' },
         { title: 'Create Job Card', href: '/job-cards/create' },
     ];
-
-    const statusOptions = [
-        { value: 'pending', label: 'Pending', icon: Clock, color: 'text-yellow-600 bg-yellow-50' },
-        { value: 'diagnosis', label: 'Diagnosis', icon: Search, color: 'text-blue-600 bg-blue-50' },
-        { value: 'repairing', label: 'Repairing', icon: Wrench, color: 'text-orange-600 bg-orange-50' },
-        { value: 'completed', label: 'Completed', icon: CircleCheckBig, color: 'text-green-600 bg-green-50' },
-        { value: 'delivered', label: 'Delivered', icon: CircleCheckBig, color: 'text-emerald-600 bg-emerald-50' },
-        { value: 'cancelled', label: 'Cancelled', icon: CircleX, color: 'text-red-600 bg-red-50' },
-        { value: 'on_hold', label: 'On Hold', icon: CircleAlert, color: 'text-gray-600 bg-gray-50' }
-    ];
-
-    function formatCurrency(value: string): string {
-        const num = parseFloat(value.replace(/[^\d.-]/g, ''));
-        if (isNaN(num)) return '$0.00';
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD'
-        }).format(num);
-    }
-
-  async function handleSubmit() {
-
     
-  }
 </script>
 
 <svelte:head>

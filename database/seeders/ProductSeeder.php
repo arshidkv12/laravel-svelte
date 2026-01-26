@@ -22,17 +22,19 @@ class ProductSeeder extends Seeder
         }
 
         foreach ($users as $user) {
-            Product::withoutGlobalScopes()->create([
-                'user_id'     => $user->id,
-                'name'        => 'Sample Product ' . $user->id,
-                'description' => 'Demo product for user ' . $user->id,
-                'image'       => null,
-                'barcode'     => 'BC-' . uniqid(),
-                'price'       => rand(100, 500),
-                'tax'         => rand(0, 18),
-                'quantity'    => rand(1, 50),
-                'status'      => true,
-            ]);
+            for ($i = 1; $i <= 100; $i++) {
+                Product::withoutGlobalScopes()->create([
+                    'user_id'     => $user->id,
+                    'name'        => 'Sample Product ' . $user->id,
+                    'description' => 'Demo product for user ' . $user->id,
+                    'image'       => null,
+                    'barcode'     => 'BC-' . uniqid(),
+                    'price'       => rand(100, 500),
+                    'tax'         => rand(0, 18),
+                    'quantity'    => rand(1, 50),
+                    'status'      => true,
+                ]);
+            }
         }
     }
 }

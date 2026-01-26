@@ -1,7 +1,7 @@
 <script lang="ts">
     import AppLayout from '@/layouts/AppLayout.svelte';
     import { type Flash, type BreadcrumbItem } from '@/types';
-    import { Button } from '@/components/ui/button';
+    import { Button, buttonVariants } from '@/components/ui/button';
     import { Input } from '@/components/ui/input';
     import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
     import { Badge } from '@/components/ui/badge';
@@ -10,9 +10,9 @@
     import { Search, Plus, SquarePen, Eye, EllipsisVertical, Funnel, Download } from 'lucide-svelte';
     import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
     import { type Pagination, type Product } from '@/types/products';
-    import { Link } from '@inertiajs/svelte';
+    import { Link, router } from '@inertiajs/svelte';
     import PaginationUi from '@/components/general/Pagination.svelte';
-    import TextLink from '@/components/TextLink.svelte';
+    import DeleteConfirmDialog from '@/components/confirm/DeleteConfirmDialog.svelte';
 
     export let filters: { search?: string; status?: string };
     export let products: {
@@ -235,6 +235,21 @@
                                                             Edit
                                                         </DropdownMenuItem>
                                                     </Link>
+                                                    <DeleteConfirmDialog
+                                                        onConfirm={async () => router.delete(
+                                                            route('products.destroy', product.id), {
+                                                                preserveScroll: true,
+                                                                preserveState: true
+                                                            })
+                                                        }
+                                                        itemName={product.name}
+                                                        title="Delete Job Card"
+                                                        description={`This will permanently delete <b>${product.name}</b>. This action cannot be undone.`}
+                                                        buttonText="Delete"
+                                                        triggerClass={"w-full xs:w-auto justify-center xs:justify-start"} 
+                                                        buttonVariant='destructive'
+                                                        
+                                                    />
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
                                         </TableCell>

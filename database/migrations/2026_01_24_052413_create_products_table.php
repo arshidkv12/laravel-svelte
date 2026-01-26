@@ -20,6 +20,7 @@ return new class extends Migration
 
             $table->string('name');
             $table->text('description')->nullable();
+            $table->string('sku')->nullable();
             $table->string('image')->nullable();
             $table->string('barcode')->nullable()->unique();
 
