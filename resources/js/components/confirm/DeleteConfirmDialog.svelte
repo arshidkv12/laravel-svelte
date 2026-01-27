@@ -22,7 +22,7 @@
   export let triggerClass = "";
   export let disabled = false;
   export let btnSize: "sm" | "default" | "lg" | "icon" | "icon-sm" | "icon-lg" = 'sm';
-  export let buttonVariant: "destructive" | "default" | "outline" | "secondary" | "ghost" | "link" | undefined  = "destructive";
+  export let buttonVariant: "destructive" | "default" | "outline" | "secondary" | "ghost" | "link" | undefined  = "outline";
 
   let isDeleting = false;
   let isOpen = false;
@@ -40,8 +40,10 @@
 
 <AlertDialog bind:open={isOpen}>
   <AlertDialogTrigger 
-    class={cn(`gap-1 sm:gap-2 text-sm md:text-base cursor-pointer ${triggerClass}`, 
-      buttonVariants({ variant: buttonVariant, size: btnSize }))} 
+      class={cn(buttonVariants({ variant: buttonVariant, size: btnSize }),
+        `w-full justify-start text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 text-sm cursor-pointer`,
+        triggerClass 
+      )} 
       {disabled}
     >
       <Trash2 class="h-4 w-4" />

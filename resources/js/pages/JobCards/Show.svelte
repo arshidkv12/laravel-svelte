@@ -440,24 +440,15 @@
                         </CardHeader>
                         <CardContent class="space-y-3">
                             <Link href={`/job-cards/${jobCard.id}/edit`}>
-                                <Button class="w-full gap-2 bg-blue-600 hover:bg-blue-700 text-white mb-4 cursor-pointer">
+                                <Button class="w-full gap-3 justify-start bg-blue-600 hover:bg-blue-700 text-white mb-4 cursor-pointer">
                                     <SquarePen class="h-4 w-4 " />
                                     Edit Job Card
                                 </Button>
                             </Link>
-                            
-                            <Button 
-                                variant="outline" 
-                                class="w-full gap-2 cursor-pointer"
-                                onclick={handlePrint}
-                            >
-                                <Printer class="h-4 w-4" />
-                                Print Job Card
-                            </Button>
 
                             <Button 
                                 onclick={(e) => {e.preventDefault(); history.back()}}
-                                variant="outline" class="w-full gap-2 cursor-pointer">
+                                variant="outline" class="w-full gap-3 justify-start cursor-pointer">
                                 <ArrowLeft class="h-4 w-4" />
                                 Back
                             </Button>
@@ -466,10 +457,11 @@
                                     preserveScroll: true})
                                 }
                                 itemName={jobCard.item}
+                                btnSize={'default'}
                                 title="Delete Job Card"
                                 description={`This will permanently delete <b>#${jobCard.job_no}</b>. This action cannot be undone.`}
                                 buttonText="Delete"
-                                triggerClass="w-full xs:w-auto justify-center xs:justify-start"
+                                triggerClass="cursor-pointer"
                             />
                         </CardContent>
                     </Card>
@@ -574,32 +566,3 @@
         </div>
     </div>
 </AppLayout>
-
-<style>
-    @media print {
-        body * {
-            visibility: hidden;
-        }
-        .print\:shadow-none,
-        .print\:shadow-none * {
-            visibility: visible;
-        }
-        .print\:shadow-none {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            box-shadow: none !important;
-            border: 1px solid #e5e7eb !important;
-        }
-        .print\:hidden {
-            display: none !important;
-        }
-        .print\:block {
-            display: block !important;
-        }
-        .print\:bg-white {
-            background-color: white !important;
-        }
-    }
-</style>

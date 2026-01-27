@@ -137,16 +137,7 @@
                             <Trash2 class="h-4 w-4" />
                             Delete
                         </Button> -->
-                        <DeleteConfirmDialog
-                            onConfirm={async () => router.delete(route('customers.destroy', customer.id), {
-                                preserveScroll: true})
-                            }
-                            itemName={customer.name}
-                            title="Delete Customer"
-                            description={`This will permanently delete <b>${customer.name}</b> and all associated job cards. This action cannot be undone.`}
-                            buttonText="Delete"
-                            triggerClass="xs:w-auto justify-center xs:justify-start"
-                        />
+                       
                     </div>
                 </div>
                 <Separator />
@@ -399,7 +390,18 @@
                                 </Button>
                             </div>
                         </CardContent>
-                    </Card>                    
+                    </Card>   
+                    
+                    <DeleteConfirmDialog
+                        onConfirm={async () => router.delete(route('customers.destroy', customer.id), {
+                            preserveScroll: true})
+                        }
+                        itemName={customer.name}
+                        title="Delete Customer"
+                        description={`This will permanently delete <b>${customer.name}</b> and all associated job cards. This action cannot be undone.`}
+                        buttonText="Delete"
+                        triggerClass="xs:w-auto justify-center xs:justify-start cursor-pointer"
+                    />
                 </div>
             </div>
 

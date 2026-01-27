@@ -245,12 +245,11 @@
                                                             })
                                                         }
                                                         itemName={product.name}
-                                                        title="Delete Job Card"
+                                                        btnSize={'default'}
+                                                        title="Delete Product"
                                                         description={`This will permanently delete <b>${product.name}</b>. This action cannot be undone.`}
                                                         buttonText="Delete"
-                                                        triggerClass={"w-full xs:w-auto justify-center xs:justify-start"} 
-                                                        buttonVariant='destructive'
-                                                        
+                                                        buttonVariant='outline'
                                                     />
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
