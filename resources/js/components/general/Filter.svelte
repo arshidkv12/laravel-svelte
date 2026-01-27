@@ -37,10 +37,6 @@
     const statusMap = _.keyBy(statusOptions, 'value');
     const getLabel = (val:any) => statusMap[val]?.label ?? 'Select Status';
 
-    $effect(() => {
-        localFilters = { ...filters };
-    });
-
     const hasActiveFilters = $derived.by(() => {
         return Object.values(localFilters).some(
             value => value !== '' && value !== null && value !== undefined

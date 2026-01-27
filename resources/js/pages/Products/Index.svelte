@@ -193,9 +193,11 @@
                 </div>
 
                 <!-- Pagination -->
-                <PaginationUi links={products.links}  
+                <PaginationUi 
+                    links={products.links}  
                     currentPage={products.current_page} 
                     lastPage={products.last_page}
+                    {filters}
                 />
 
             </CardContent>

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { type Filters } from '@/types';
     import { router } from '@inertiajs/svelte';
 
     interface Link {
@@ -11,9 +12,10 @@
         currentPage: number;
         lastPage: number;
         links: Link[];
+        filters: Filters
     }
 
-    let { currentPage, lastPage, links } : Props = $props();
+    let { currentPage, lastPage, links, filters } : Props = $props();
 
 </script>
 {#if lastPage > 1}
@@ -32,7 +34,7 @@
             link.url &&
             router.get(
             link.url,
-            {},
+            filters,
             {
                 preserveState: true,
                 preserveScroll: true,  

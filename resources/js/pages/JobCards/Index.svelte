@@ -62,7 +62,11 @@
   <!-- Filters Card -->
   <Card class="shadow-none border-none pb-0">
       <CardContent>
-          <Filter routePath='job-cards.index' {filters} statusOptions={jobStatusOptions} />
+          <Filter 
+            routePath='job-cards.index' 
+            {filters} 
+            statusOptions={jobStatusOptions} 
+          />
       </CardContent>
   </Card>
 
@@ -87,9 +91,11 @@
     {/if}
 
     <!-- Pagination -->
-    <Pagination links={jobCards.links}  
+    <Pagination 
+      links={jobCards.links}  
       currentPage={jobCards.current_page} 
       lastPage={jobCards.last_page}
+      {filters}
     />
     
   </div>
