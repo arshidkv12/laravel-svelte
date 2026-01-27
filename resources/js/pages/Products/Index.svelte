@@ -98,7 +98,7 @@
                 </p>
             </div>
             <Link href="/products/create">
-                <Button class="gap-2">
+                <Button class="gap-2 cursor-pointer">
                     <Plus class="h-4 w-4" />
                     Add Product
                 </Button>

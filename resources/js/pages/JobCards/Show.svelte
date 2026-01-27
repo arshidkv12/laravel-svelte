@@ -150,13 +150,13 @@
 </svelte:head>
 
 <AppLayout {breadcrumbs}>
-    <div class="min-h-screen bg-gray-50 print:bg-white">
-        <div class="p-4 md:p-6 mx-auto print:p-0">
+    <div class="min-h-screen bg-gray-50">
+        <div class="p-4 md:p-6 mx-auto">
             <!-- Header -->
-            <div class="mb-8 print:mb-4">
-                <div class="flex items-center justify-between mb-6 print:mb-4">
+            <div class="mb-8">
+                <div class="flex items-center justify-between mb-6">
                     <div class="space-y-1">
-                        <div class="flex items-center gap-3 print:hidden">
+                        <div class="flex items-center gap-3">
                             <Button 
                                 onclick={(e) => {e.preventDefault(); history.back()}}
                                 variant="ghost" 
@@ -169,7 +169,7 @@
                         </div>
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                             <div>
-                                <h1 class="text-lg font-bold text-gray-900 print:text-lg">
+                                <h1 class="text-lg font-bold text-gray-900">
                                     Job Card #{jobCard.job_no}
                                 </h1>
                                 <p class="text-sm text-gray-500">
@@ -180,38 +180,25 @@
                                 <Badge class={`px-3 py-1.5 ${getStatusInfo.color} font-medium`}>
                                     {getStatusInfo.label}
                                 </Badge>
-                                <div class="print:hidden">
-                                    <Link href={`/job-cards/${jobCard.id}/edit`} >
-                                        <Button 
-                                            variant="outline"
-                                            size="sm"
-                                            class="gap-2 cursor-pointer"
-                                        >
-                                            <SquarePen class="h-4 w-4" />
-                                            Edit
-                                        </Button>
-                                    </Link>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <Separator class="print:hidden" />
             </div>
 
             <!-- Main Content -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 print:grid-cols-2 print:gap-4">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Left Column - Job Details -->
-                <div class="lg:col-span-2 space-y-6 print:space-y-4">
+                <div class="lg:col-span-2 space-y-6">
                     <!-- Job Details Card -->
-                    <Card class="border border-gray-200 shadow-sm print:shadow-none print:border">
+                    <Card class="border border-gray-200 shadow-sm">
                         <CardHeader>
                             <CardTitle class="flex items-center gap-2">
                                 <Briefcase class="h-5 w-5 text-blue-600" />
                                 Job Details
                             </CardTitle>
                         </CardHeader>
-                        <CardContent class="space-y-6 print:space-y-4">
+                        <CardContent class="space-y-6">
                             <!-- Item & Status -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="space-y-2">
@@ -432,9 +419,9 @@
                 </div>
 
                 <!-- Right Column - Actions & Timeline -->
-                <div class="space-y-6 print:space-y-4">
+                <div class="space-y-6">
                     <!-- Actions Card -->
-                    <Card class="border border-gray-200 shadow-sm print:hidden">
+                    <Card class="border border-gray-200 shadow-sm">
                         <CardHeader>
                             <CardTitle>Actions</CardTitle>
                         </CardHeader>
@@ -467,7 +454,7 @@
                     </Card>
 
                     <!-- Job Information Card -->
-                    <Card class="border border-gray-200 shadow-sm print:shadow-none print:border">
+                    <Card class="border border-gray-200 shadow-sm">
                         <CardHeader>
                             <CardTitle>Job Information</CardTitle>
                         </CardHeader>
@@ -508,7 +495,7 @@
                     </Card>
 
                     <!-- Timeline Card -->
-                    <Card class="border border-gray-200 shadow-sm print:shadow-none print:border">
+                    <Card class="border border-gray-200 shadow-sm">
                         <CardHeader>
                             <CardTitle>Timeline</CardTitle>
                         </CardHeader>
@@ -555,7 +542,7 @@
                     </Card>
 
                     <!-- Print Footer (only visible when printing) -->
-                    <div class="hidden print:block mt-8 pt-4 border-t">
+                    <div class="hidden mt-8 pt-4 border-t">
                         <div class="text-center text-sm text-gray-500">
                             <p>Job Card #{jobCard.id} • Generated on {formatDate(new Date().toISOString())}</p>
                             <p class="mt-1">{window.location.origin}/job-cards/{jobCard.id}</p>

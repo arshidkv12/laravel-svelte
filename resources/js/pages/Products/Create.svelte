@@ -90,6 +90,7 @@
     <Form  action={route('products.store')} method="post">
         {#snippet children({ errors, processing }: BaseFormSnippetProps)}
         <div class="space-y-6 p-4 md:p-6">
+            
             <!-- Header -->
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
@@ -100,14 +101,14 @@
                 </div>
                 <div class="flex items-center gap-2">
                     <Link href="/products">
-                        <Button variant="outline" class="gap-2">
+                        <Button variant="outline" class="gap-2 cursor-pointer">
                             <ArrowLeft class="h-4 w-4" />
                             Cancel
                         </Button>
                     </Link>
                     <Button 
                         type="submit"
-                        class="gap-2 bg-blue-600 hover:bg-blue-700"
+                        class="gap-2 bg-blue-600 hover:bg-blue-700 cursor-pointer"
                         disabled={processing}
                     >
                         <Save class="h-4 w-4" />
@@ -388,7 +389,7 @@
                             <CardContent class="space-y-3">
                                 <Button 
                                     type="submit"
-                                    class="w-full gap-2 bg-blue-600 hover:bg-blue-700"
+                                    class="w-full gap-2 bg-blue-600 cursor-pointer hover:bg-blue-700"
                                     disabled={processing}
                                 >
                                     <Save class="h-4 w-4" />
@@ -396,7 +397,7 @@
                                 </Button>
                                 
                                 <Link href="/products" class="block">
-                                    <Button variant="outline" class="w-full gap-2">
+                                    <Button variant="outline" class="w-full gap-2 cursor-pointer">
                                         <ArrowLeft class="h-4 w-4" />
                                         Cancel & Return
                                     </Button>
