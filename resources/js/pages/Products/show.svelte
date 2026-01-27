@@ -1,32 +1,28 @@
 <script lang="ts">
     import AppLayout from '@/layouts/AppLayout.svelte';
     import { Button } from '@/components/ui/button';
-    import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+    import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
     import { Badge } from '@/components/ui/badge';
     import { Separator } from '@/components/ui/separator';
     import {
         ArrowLeft,
-        Edit,
-        Printer,
+        SquarePen,
         Copy,
         Package,
-        DollarSign,
         Percent,
         Hash,
         Barcode,
-        Calendar,
-        CheckCircle,
-        XCircle,
-        AlertCircle,
+        CircleCheckBig,
+        CircleX,
+        CircleAlert,
         ExternalLink,
         ChevronRight,
-
-        Coins
-
+        FileText,
+        CreditCard,
+        Box
     } from 'lucide-svelte';
     import { type BreadcrumbItem } from '@/types';
-    import { Link, router } from '@inertiajs/svelte';
-    import DeleteConfirmDialog from '@/components/confirm/DeleteConfirmDialog.svelte';
+    import Check from '@lucide/svelte/icons/check';
 
     interface Product {
         id: number;
@@ -43,13 +39,9 @@
         updated_at: string;
     }
 
-    let { product }: { product: Product } = $props();
+    let { product, currencySymbol = '$' }: { product: Product; currencySymbol?: string } = $props();
 
-    const breadcrumbs: BreadcrumbItem[] = [
-        {
-            title: 'Dashboard',
-            href: '/dashboard',
-        },
+    const breadcrumbs: BreadcrumbItem[] = $derived([
         {
             title: 'Products',
             href: '/products',
@@ -58,33 +50,13 @@
             title: product.name,
             href: `/products/${product.id}`,
         },
-    ];
+    ]);
 
-    // Formatting functions
+    // Formatting function for generic currency
     function formatCurrency(amount: number | string): string {
         const num = typeof amount === 'string' ? parseFloat(amount) : Number(amount);
-        if (isNaN(num)) return '$0.00';
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        }).format(num);
-    }
-
-    function formatDate(dateString: string): string {
-        if (!dateString) return 'N/A';
-        try {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', {
-                weekday: 'short',
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric'
-            });
-        } catch {
-            return 'Invalid date';
-        }
+        if (isNaN(num)) return `${currencySymbol}0.00`;
+        return `${currencySymbol}${num.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
     }
 
     // Calculate price with tax
@@ -94,46 +66,14 @@
         return price + (price * tax) / 100;
     });
 
-    // Stock status
+
     const stockStatus = $derived.by(() => {
         const quantity = Number(product.quantity) || 0;
-        if (quantity <= 0) return { text: 'Out of Stock', variant: 'destructive' as const, icon: XCircle };
-        if (quantity <= 10) return { text: 'Low Stock', variant: 'outline' as const, icon: AlertCircle };
-        return { text: 'In Stock', variant: 'secondary' as const, icon: CheckCircle };
+        if (quantity <= 0) return { text: 'Out of Stock', variant: 'destructive' as const, icon: CircleX };
+        if (quantity <= 10) return { text: 'Low Stock', variant: 'outline' as const, icon: CircleAlert };
+        return { text: 'In Stock', variant: 'secondary' as const, icon: CircleCheckBig };
     });
 
-    // Product status
-   type Status = {
-        text: string;
-        variant: 'secondary' | 'destructive';
-        icon: typeof CheckCircle | typeof XCircle;
-    };
-
-    const productStatus = $derived.by(() => {
-        const isActive = product.status === '1' || product.status === true;
-
-        return isActive
-            ? { text: 'Active', variant: 'secondary', icon: CheckCircle }
-            : { text: 'Inactive', variant: 'destructive', icon: XCircle };
-    });
-
-    const StatusIcon = $derived( productStatus.icon);
-
-    // Copy to clipboard
-    async function copyToClipboard(text: string) {
-        try {
-            await navigator.clipboard.writeText(text);
-            // You can add toast notification here if needed
-            console.log('Copied to clipboard:', text);
-        } catch (err) {
-            console.error('Failed to copy:', err);
-        }
-    }
-
-    // Print function
-    function printProduct() {
-        window.print();
-    }
 </script>
 
 <AppLayout {breadcrumbs}>
@@ -153,21 +93,26 @@
                                 <ArrowLeft class="h-4 w-4" />
                                 Back
                             </Button>
-                            
                         </div>
                         
                         <div class="space-y-2">
-                            {#if product.sku}
-                            <div class="flex items-center gap-3">
-                                <span class="text-sm text-gray-500 px-3 py-1 bg-gray-100 rounded-full">
-                                    SKU: {product.sku}
-                                </span>
+                            <h1 class="text-2xl md:text-3xl font-bold text-gray-900">{product.name}</h1>
+                            
+                            <div class="flex items-center gap-3 flex-wrap">
+                                {#if product.sku}
+                                    <Badge variant="outline" class="gap-1">
+                                        <Package class="h-3 w-3" />
+                                        SKU: {product.sku}
+                                    </Badge>
+                                {/if}
+                                
+                                {#if product.barcode && product.barcode.toString().trim() !== ''}
+                                    <Badge variant="outline" class="gap-1">
+                                        <Barcode class="h-3 w-3" />
+                                        Barcode: {product.barcode}
+                                    </Badge>
+                                {/if}
                             </div>
-                            {/if}
-                            <p class="text-md text-gray-600 flex items-center gap-2">
-                                <Package class="h-5 w-5 text-gray-400" />
-                                Product ID: #{product.id.toString().padStart(5, '0')}
-                            </p>
                         </div>
                     </div>
 
@@ -176,7 +121,7 @@
                             href={`/products/${product.id}/edit`}
                             class="gap-2 bg-blue-600 hover:bg-blue-700"
                         >
-                            <Edit class="h-4 w-4" />
+                            <SquarePen class="h-4 w-4" />
                             Edit Product
                         </Button>
                     </div>
@@ -192,7 +137,7 @@
                     <!-- Product Information Card -->
                     <Card class="border border-gray-200 shadow-sm">
                         <CardHeader class="bg-gradient-to-r from-blue-50 to-blue-100/50">
-                            <CardTitle class="flex items-center gap-3 pt-2">
+                            <CardTitle class="flex items-center gap-3">
                                 <div class="p-2 bg-blue-100 rounded-lg">
                                     <Package class="h-5 w-5 text-blue-600" />
                                 </div>
@@ -200,63 +145,71 @@
                             </CardTitle>
                         </CardHeader>
                         <CardContent class="p-6 space-y-6">
-                            <!-- Basic Info -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <p class="text-sm font-medium text-gray-500 mb-1">Product Name</p>
-                                    <p class="text-xl font-semibold text-gray-900">{product.name}</p>
-                                </div>
-                                {#if product.sku}
-                                    <div>
-                                        <p class="text-sm font-medium text-gray-500 mb-1">SKU</p>
-                                        <p class="text-xl font-semibold text-gray-900">{product.sku}</p>
-                                    </div>
-                                {/if}
+                            <!-- Product Name -->
+                            <div>
+                                <p class="text-sm font-medium text-gray-500 mb-1">Product Name</p>
+                                <p class="text-xl font-semibold text-gray-900">{product.name}</p>
                             </div>
 
-                            <!-- Description -->
-                            {#if product.description && product.description.trim() !== ''}
-                                <div>
-                                    <p class="text-sm font-medium text-gray-500 mb-2">Description</p>
-                                    <div class="bg-gray-50 rounded-lg p-4 border">
-                                        <p class="text-gray-800 whitespace-pre-line">{product.description}</p>
+                            <!-- SKU Details -->
+                            {#if product.sku}
+                                <div class="space-y-3">
+                                    <div class="flex items-center gap-2">
+                                        <Package class="h-5 w-5 text-gray-500" />
+                                        <p class="text-sm font-medium text-gray-500">SKU Details</p>
+                                    </div>
+                                    <div class="bg-gray-100 p-4 rounded-lg">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <code class="font-mono text-lg font-semibold">{product.sku}</code>
+                                                <p class="text-xs text-gray-500 mt-1">Stock Keeping Unit</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             {/if}
 
-                            <!-- Timeline -->
-                            <div>
-                                <p class="text-sm font-medium text-gray-500 mb-4">Timeline</p>
-                                <div class="space-y-4">
-                                    <div class="flex items-center gap-4">
-                                        <div class="flex-1">
-                                            <div class="flex items-center justify-between mb-1">
-                                                <span class="font-medium text-gray-900">Created</span>
-                                                <span class="text-sm text-gray-500">{formatDate(product.created_at)}</span>
-                                            </div>
-                                            <div class="h-0.25 bg-gray-200 rounded-full"></div>
-                                        </div>
+                            <!-- Barcode Details -->
+                            {#if product.barcode && product.barcode.toString().trim() !== ''}
+                                <div class="space-y-3">
+                                    <div class="flex items-center gap-2">
+                                        <Barcode class="h-5 w-5 text-gray-500" />
+                                        <p class="text-sm font-medium text-gray-500">Barcode Details</p>
                                     </div>
-                                    <div class="flex items-center gap-4">
-                                        <div class="flex-1">
-                                            <div class="flex items-center justify-between mb-1">
-                                                <span class="font-medium text-gray-900">Last Updated</span>
-                                                <span class="text-sm text-gray-500">{formatDate(product.updated_at)}</span>
+                                    <div class="bg-gray-100 p-4 rounded-lg">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <code class="font-mono text-lg font-semibold">{product.barcode}</code>
+                                                <p class="text-xs text-gray-500 mt-1">Scan this barcode</p>
                                             </div>
-                                            <div class="h-0.25 bg-gray-200 rounded-full"></div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            {/if}
+
+                            <!-- Description Section - More Prominent -->
+                            {#if product.description && product.description.trim() !== ''}
+                                <div class="space-y-3">
+                                    <div class="flex items-center gap-2">
+                                        <FileText class="h-5 w-5 text-gray-500" />
+                                        <p class="text-sm font-medium text-gray-500">Description</p>
+                                    </div>
+                                    <div class="bg-gray-50 rounded-lg p-4 border">
+                                        <p class="text-gray-800 whitespace-pre-line leading-relaxed">
+                                            {product.description}
+                                        </p>
+                                    </div>
+                                </div>
+                            {/if}
                         </CardContent>
                     </Card>
 
                     <!-- Pricing & Inventory Details -->
                     <Card class="border border-gray-200 shadow-sm">
                         <CardHeader class="bg-gradient-to-r from-green-50 to-green-100/50">
-                            <CardTitle class="pt-2 flex items-center gap-3">
+                            <CardTitle class="flex items-center gap-3">
                                 <div class="p-2 bg-green-100 rounded-lg">
-                                    <Coins class="h-5 w-5 text-green-600" />
+                                    <CreditCard class="h-5 w-5 text-green-600" />
                                 </div>
                                 <span>Pricing & Inventory</span>
                             </CardTitle>
@@ -266,7 +219,7 @@
                                 <!-- Pricing Section -->
                                 <div class="space-y-6">
                                     <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                                        <DollarSign class="h-5 w-5 text-green-600" />
+                                        <CreditCard class="h-5 w-5 text-green-600" />
                                         Pricing Details
                                     </h3>
                                     <div class="space-y-4">
@@ -300,7 +253,7 @@
                                 <!-- Inventory Section -->
                                 <div class="space-y-6">
                                     <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                                        <Package class="h-5 w-5 text-blue-600" />
+                                        <Box class="h-5 w-5 text-blue-600" />
                                         Inventory Details
                                     </h3>
                                     <div class="space-y-4">
@@ -311,33 +264,29 @@
                                             </span>
                                             <div class="flex items-center gap-2">
                                                 <span class="text-2xl font-bold text-gray-900">{product.quantity}</span>
-                                                <Badge variant={stockStatus.variant} class="gap-2">
+                                                <Badge variant={stockStatus.variant}>
                                                     {stockStatus.text}
                                                 </Badge>
                                             </div>
                                         </div>
                                         
-                                        {#if product.barcode && product.barcode.toString().trim() !== ''}
-                                            <div>
-                                                <p class="text-sm text-gray-600 mb-2 flex items-center gap-2">
-                                                    <Barcode class="h-4 w-4" />
-                                                    Barcode
-                                                </p>
-                                                <div class="bg-gray-100 p-3 rounded-lg">
-                                                    <div class="flex items-center justify-between">
-                                                        <code class="font-mono text-lg font-semibold">{product.barcode}</code>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            onclick={() => copyToClipboard(product.barcode!.toString())}
-                                                            class="h-8 w-8 p-0"
-                                                        >
-                                                            <Copy class="h-4 w-4" />
-                                                        </Button>
+                                        <!-- Stock Status Indicator -->
+                                        <div class="mt-4">
+                                            <div class="flex items-center justify-between text-sm mb-2">
+                                                <span class="text-gray-600">Stock Level</span>
+                                                <span class="font-medium">{product.quantity} units</span>
+                                            </div>
+                                            {#if Number(product.quantity) <= 10}
+                                                <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                                                    <div class="flex items-center gap-2">
+                                                        <CircleAlert class="h-4 w-4 text-red-500" />
+                                                        <span class="text-sm text-red-700 font-medium">
+                                                            Low stock warning
+                                                        </span>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        {/if}
+                                            {/if}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -350,7 +299,7 @@
                             <CardHeader class="bg-gradient-to-r from-purple-50 to-purple-100/50">
                                 <CardTitle class="flex items-center gap-3">
                                     <div class="p-2 bg-purple-100 rounded-lg">
-                                        <Package class="h-5 w-5 text-purple-600" />
+                                        <Box class="h-5 w-5 text-purple-600" />
                                     </div>
                                     <span>Product Image</span>
                                 </CardTitle>
@@ -393,18 +342,16 @@
                             <div class="space-y-3">
                                 <div class="flex justify-between items-center">
                                     <span class="text-sm text-gray-500">Status</span>
-                                    <!-- <Badge variant={productStatus.variant} class="gap-2">
-                                        <StatusIcon class="h-3 w-3" />
-                                        {productStatus.text}
-                                    </Badge> -->
+                                    <Badge variant={product.status === '1' || product.status === true ? 'secondary' : 'destructive'}>
+                                        {product.status === '1' || product.status === true ? 'Active' : 'Inactive'}
+                                    </Badge>
                                 </div>
                                 <Separator />
                                 <div class="flex justify-between items-center">
                                     <span class="text-sm text-gray-500">Stock Status</span>
-                                    <!-- <Badge variant={stockStatus.variant} class="gap-2">
-                                        <StockIcon class="h-3 w-3" />
+                                    <Badge variant={stockStatus.variant}>
                                         {stockStatus.text}
-                                    </Badge> -->
+                                    </Badge>
                                 </div>
                                 <Separator />
                                 <div class="flex justify-between items-center">
@@ -418,20 +365,6 @@
                                     <span class="text-sm text-gray-500">Available Stock</span>
                                     <span class="font-medium text-gray-900">
                                         {product.quantity} units
-                                    </span>
-                                </div>
-                                <Separator />
-                                <div class="flex justify-between items-center">
-                                    <span class="text-sm text-gray-500">Created</span>
-                                    <span class="font-medium text-gray-900">
-                                        {formatDate(product.created_at)}
-                                    </span>
-                                </div>
-                                <Separator />
-                                <div class="flex justify-between items-center">
-                                    <span class="text-sm text-gray-500">Last Updated</span>
-                                    <span class="font-medium text-gray-900">
-                                        {formatDate(product.updated_at)}
                                     </span>
                                 </div>
                             </div>
@@ -448,23 +381,24 @@
                                 href={`/products/${product.id}/edit`}
                                 class="w-full gap-3 justify-start bg-blue-600 hover:bg-blue-700"
                             >
-                                <Edit class="h-4 w-4" />
+                                <SquarePen class="h-4 w-4" />
                                 Edit Product
                             </Button>
                             
-                            <DeleteConfirmDialog
-                                onConfirm={async () => router.delete(
-                                    route('products.destroy', product.id), {
-                                        preserveScroll: true,
-                                        preserveState: true
-                                    })
-                                }
-                                itemName={product.name}
-                                title="Delete Product"
-                                description={`This will permanently delete <b>${product.name}</b>. This action cannot be undone.`}
-                                buttonText="Delete"
-                                buttonVariant='outline'
-                            />
+                            
+                            <Button
+                                variant="outline"
+                                class="w-full gap-3 justify-start text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                                onclick={() => {
+                                    if (confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
+                                        // Add delete action here
+                                        // $page.delete(route('products.destroy', product.id))
+                                    }
+                                }}
+                            >
+                                <CircleX class="h-4 w-4" />
+                                Delete Product
+                            </Button>
                         </CardContent>
                     </Card>
 
@@ -503,5 +437,3 @@
         </div>
     </div>
 </AppLayout>
-
- 
