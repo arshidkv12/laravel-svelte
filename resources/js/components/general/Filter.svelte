@@ -4,12 +4,12 @@
     import { Label } from '@/components/ui/label';
     import { Calendar } from '@/components/ui/calendar';
     import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-    import { Separator } from '@/components/ui/separator';
     import { Badge } from '@/components/ui/badge';
-    import { Search, CalendarIcon, X, Filter } from 'lucide-svelte';
+    import { Search, CalendarIcon, X, Funnel } from 'lucide-svelte';
     import { format } from 'date-fns';
-    import { page, router } from '@inertiajs/svelte';
+    import { router } from '@inertiajs/svelte';
     import * as Select from '@/components/ui/select';
+    import { throttle } from 'lodash';
 
     let props = $props<{
         filters?: {
@@ -20,6 +20,7 @@
             category?: string;
             [key: string]: any;
         };
+        routePath: string;
         statusOptions?: { value: string; label: string }[];
         categoryOptions?: { value: string; label: string }[];
         placeholder?: string;
@@ -33,7 +34,6 @@
     const placeholder = $state(props.placeholder || 'Search...');
     const enableDateRange = $state(props.enableDateRange ?? true);
     const enableStatusFilter = $state(props.enableStatusFilter ?? true);
-    const enableCategoryFilter = $state(props.enableCategoryFilter ?? true);
 
     let localFilters = $state({ ...filters });
     let isAdvancedOpen = $state(false);
@@ -50,16 +50,11 @@
         );
     });
 
-     const activeFilters = $derived(() => {
-        return Object.entries(localFilters)
-            .filter(([key, value]) => value && value !== '')
-            .map(([key, value]) => ({ key, value }));
-    });
-
     const activeFilterCount = $derived.by(() => {
         return Object.values(localFilters).filter(v => v && v !== '').length;
     });
 
+    const throttledApplyFilters = throttle(applyFilters, 1000); 
 
     function formatDate(dateString?: string): string {
         if (!dateString) return 'Select date';
@@ -71,7 +66,7 @@
     }
 
 
-    function applyFilters() {
+    function applyFilters() { 
         const cleanFilters: Record<string, any> = {};
         
         Object.entries(localFilters).forEach(([key, value]) => {
@@ -166,7 +161,7 @@
                 type="text"
                 placeholder={placeholder}
                 bind:value={localFilters.search}
-                onkeypress={handleKeyPress}
+                oninput={throttledApplyFilters}
                 class="pl-9"
             />
         </div>
@@ -175,9 +170,9 @@
         <Button
             variant={isAdvancedOpen ? "secondary" : "outline"}
             onclick={() => isAdvancedOpen = !isAdvancedOpen}
-            class="gap-2"
+            class="gap-2 cursor-pointer"
         >
-            <Filter class="h-4 w-4" />
+            <Funnel class="h-4 w-4" />
             {isAdvancedOpen ? 'Hide Filters' : 'Filters'}
             {#if hasActiveFilters}
                 <Badge variant="secondary" class="ml-1 h-5 w-5 p-0 flex items-center justify-center">
@@ -188,11 +183,11 @@
 
         <!-- Apply & Reset Buttons -->
         <div class="flex gap-2">
-            <Button onclick={applyFilters} class="gap-2">
+            <Button onclick={applyFilters} class="gap-2 cursor-pointer">
                 Apply
             </Button>
             {#if hasActiveFilters}
-                <Button variant="outline" onclick={resetFilters} class="gap-2">
+                <Button variant="outline" onclick={resetFilters} class="gap-2 cursor-pointer">
                     <X class="h-4 w-4" />
                     Clear All
                 </Button>
@@ -212,7 +207,7 @@
                             variant="ghost"
                             size="sm"
                             onclick={() => clearFilter(key)}
-                            class="h-4 w-4 p-0 hover:bg-transparent"
+                            class="h-4 w-4 p-0 hover:bg-transparent cursor-pointer"
                         >
                             <X class="h-3 w-3" />
                         </Button>
@@ -286,7 +281,7 @@
                             onValueChange={(value) => localFilters.status = value}
                         >
                             <Select.Trigger>
-                                Select status
+                                {localFilters.status ? localFilters.status : 'Select status'}
                             </Select.Trigger>
                             <Select.Content>
                                 <Select.Item value="">All Statuses</Select.Item>

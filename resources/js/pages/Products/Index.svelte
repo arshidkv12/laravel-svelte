@@ -1,22 +1,17 @@
 <script lang="ts">
     import AppLayout from '@/layouts/AppLayout.svelte';
-    import { type Flash, type BreadcrumbItem } from '@/types';
-    import { Button, buttonVariants } from '@/components/ui/button';
-    import { Input } from '@/components/ui/input';
+    import { type BreadcrumbItem } from '@/types';
+    import { Button } from '@/components/ui/button';
     import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-    import { Badge } from '@/components/ui/badge';
     import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-    import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
     import { Search, Plus, SquarePen, Eye, EllipsisVertical, Funnel, Download } from 'lucide-svelte';
     import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-    import { type Pagination, type Product } from '@/types/products';
     import { Link, router } from '@inertiajs/svelte';
     import PaginationUi from '@/components/general/Pagination.svelte';
     import DeleteConfirmDialog from '@/components/confirm/DeleteConfirmDialog.svelte';
     import Filter from '@/components/general/Filter.svelte';
 
     let { products, filters, statusOptions } = $props();
-
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -28,36 +23,6 @@
             href: '/products',
         },
     ];
-
-    const getStatusVariant = (status: string) => {
-        switch (status) {
-            case 'active': return 'success';
-            case 'inactive': return 'secondary';
-            case 'draft': return 'outline';
-            default: return 'secondary';
-        }
-    };
-
-
-    const handleStatusChange = (value: string) => {
-        filters.status = value === 'all' ? undefined : value;
-        updateFilters();
-    };
-
-    const updateFilters = () => {
-        const params = new URLSearchParams();
-        if (filters.search) params.set('search', filters.search);
-        if (filters.status) params.set('status', filters.status);
-        
-        window.location.href = `/products?${params.toString()}`;
-        // Or using Inertia.get() if you prefer SPA navigation
-        // Inertia.get(`/products?${params.toString()}`);
-    };
-
-    const resetFilters = () => {
-        filters = {};
-        window.location.href = '/products';
-    };
 
     const exportProducts = () => {
         // Handle export logic
@@ -86,30 +51,8 @@
 
         <!-- Filters Card -->
         <Card class="shadow-none border-none py-0">
-            <!-- <CardHeader>
-                <CardTitle>Filters</CardTitle>
-                <CardDescription>
-                    Filter and search through your products
-                </CardDescription>
-            </CardHeader> -->
             <CardContent>
-                <!-- <div class="flex flex-col sm:flex-row gap-4">
-                    <div class="flex-1 relative">
-                        <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                        <Input
-                            type="text"
-                            placeholder="Search products by name..."
-                            bind:value={searchValue}
-                            class="pl-9"
-                        />
-                    </div>
-
-                    <Button variant="outline" onclick={resetFilters} class="gap-2">
-                        <Funnel class="h-4 w-4" />
-                        Clear Filters
-                    </Button>
-                </div> -->
-                <Filter {filters} {statusOptions} />
+                <Filter routePath='products.index' {filters} {statusOptions} />
             </CardContent>
         </Card>
 
@@ -232,11 +175,7 @@
                                                         {filters.search ? 'Try adjusting your search or filters' : 'Get started by adding your first product'}
                                                     </p>
                                                 </div>
-                                                {#if filters.search}
-                                                    <Button variant="outline" size="sm" onclick={resetFilters}>
-                                                        Clear search
-                                                    </Button>
-                                                {:else}
+                                                {#if !filters.search}
                                                     <Link href="/products/create">
                                                         <Button size="sm">
                                                             <Plus class="mr-2 h-4 w-4" />
