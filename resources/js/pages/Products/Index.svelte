@@ -232,7 +232,7 @@
                                                         </DropdownMenuItem>
                                                     </Link>
                                                     <Link href={`/products/${product.id}/edit`}>
-                                                        <DropdownMenuItem>
+                                                        <DropdownMenuItem class="mb-1">
                                                             <SquarePen class="mr-2 h-4 w-4" />
                                                             Edit
                                                         </DropdownMenuItem>

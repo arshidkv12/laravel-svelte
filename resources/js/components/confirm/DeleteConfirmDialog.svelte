@@ -40,11 +40,12 @@
 
 <AlertDialog bind:open={isOpen}>
   <AlertDialogTrigger 
-      class={cn(buttonVariants({ variant: buttonVariant, size: btnSize }),
-        `w-full justify-start text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 text-sm cursor-pointer`,
-        triggerClass 
-      )} 
-      {disabled}
+    type="button"
+    class={cn(buttonVariants({ variant: buttonVariant, size: btnSize }),
+      `w-full justify-start text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 text-sm cursor-pointer`,
+      triggerClass 
+    )} 
+    {disabled}
     >
       <Trash2 class="h-4 w-4" />
       {buttonText}

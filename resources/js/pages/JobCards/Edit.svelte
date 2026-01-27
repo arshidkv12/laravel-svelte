@@ -2,7 +2,7 @@
     import AppLayout from '@/layouts/AppLayout.svelte';
     import { type Flash, type BreadcrumbItem } from '@/types';
     import { onMount } from 'svelte';
-    import { Form, Link, page } from '@inertiajs/svelte';
+    import { Form, Link, page, router } from '@inertiajs/svelte';
     import { toast } from 'svelte-sonner';
     import { Button } from '@/components/ui/button';
     import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -30,6 +30,7 @@
     import StatusIcon from '@/components/job/StatusIcon.svelte';
     import { type JobStatus } from '@/lib/helper/status';
     import CreateCustomerModal from '@/components/customer/CreateCustomerModal.svelte';
+    import DeleteConfirmDialog from '@/components/confirm/DeleteConfirmDialog.svelte';
 
     let status = $state<string>('pending');
     let disableFormSubmit = $state(false);
@@ -137,7 +138,7 @@
                                 </Button>
                             </div>
                             <h1 class="text-lg font-bold text-gray-900">
-                                Edit Job Card: {jobCard.item}
+                                Edit Job Card: #{jobCard.job_no}
                             </h1>
                             <p class="text-sm text-gray-500">
                                 Update the details of this job card
@@ -329,7 +330,7 @@
                                 <div class="flex items-center gap-3">
                                     <Button
                                         type="submit"
-                                        disabled={processing}
+                                        disabled={processing || disableFormSubmit}
                                         class="w-full gap-2 bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
                                     >
                                         {#if processing}
@@ -356,8 +357,8 @@
                             <CardContent class="space-y-3">
                                 <Button
                                     type="submit"
-                                    disabled={processing}
-                                    class="w-full gap-2 bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
+                                    disabled={processing || disableFormSubmit}
+                                    class="w-full gap-3 justify-start cursor-pointer bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
                                 >
                                     {#if processing}
                                         <div class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
@@ -368,34 +369,25 @@
                                     {/if}
                                 </Button>
                                 
-                                <Button
+                                <Button 
                                     onclick={(e) => {e.preventDefault(); history.back()}}
-                                    variant="outline"
-                                    class="w-full gap-2 mb-4 cursor-pointer"
-                                >
+                                    variant="outline" class="w-full gap-3 justify-start cursor-pointer">
                                     <ArrowLeft class="h-4 w-4" />
                                     Cancel
                                 </Button>
 
                                 <!-- Delete Button -->
-                                <Form 
-                                    method="delete" 
-                                    action={route('job-cards.destroy', jobCard.id)}
-                                    on:submit={(e) => {
-                                        if (!confirm('Are you sure you want to delete this job card? This action cannot be undone.')) {
-                                            e.preventDefault();
-                                        }
-                                    }}
-                                >
-                                    <Button
-                                        type="submit"
-                                        variant="destructive"
-                                        class="w-full gap-2 cursor-pointer"
-                                    >
-                                        <Trash2 class="h-4 w-4" />
-                                        Delete Job Card
-                                    </Button>
-                                </Form>
+                                <DeleteConfirmDialog
+                                    onConfirm={async () => router.delete(route('job-cards.destroy', jobCard.id), {
+                                        preserveScroll: true})
+                                    }
+                                    itemName={jobCard.item}
+                                    btnSize={'default'}
+                                    title="Delete Job Card"
+                                    description={`This will permanently delete <b>#${jobCard.job_no}</b>. This action cannot be undone.`}
+                                    buttonText="Delete"
+                                    triggerClass="cursor-pointer"
+                                />
                             </CardContent>
                         </Card>
 
