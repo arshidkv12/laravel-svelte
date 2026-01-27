@@ -16,7 +16,7 @@
         filters = $bindable(),
         routePath,
         statusOptions,
-        placeholder,
+        placeholder = 'Search records',
         enableDateRange = true,
         enableStatusFilter = true,
     } = $props<{
@@ -177,7 +177,7 @@
 
         <!-- Apply & Reset Buttons -->
         <div class="flex gap-2">
-            <Button onclick={applyFilters} class="gap-2 cursor-pointer">
+            <Button onclick={applyFilters} class="gap-2 cursor-pointer bg-blue-600 hover:bg-blue-700">
                 Apply
             </Button>
             {#if hasActiveFilters}

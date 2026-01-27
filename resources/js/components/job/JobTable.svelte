@@ -61,7 +61,7 @@
           <Button 
             variant="ghost" 
             class="cursor-pointer"
-            onclick={()=>changeSort('job_no')}
+            onclick={()=>changeSort('created_at')}
           >
             Date
             <SortIcon direction={getSortIcon('created_at')} />

@@ -2,7 +2,7 @@
     import AppLayout from '@/layouts/AppLayout.svelte';
     import { type Flash, type BreadcrumbItem, type Filters } from '@/types';
     import { onMount } from 'svelte';
-    import { page } from '@inertiajs/svelte';
+    import { Link, page } from '@inertiajs/svelte';
     import JobTable from '@/components/job/JobTable.svelte';
     import MobileJobTable from '@/components/job/MobileJobTable.svelte';
     import { toast } from 'svelte-sonner';
@@ -11,6 +11,8 @@
     import CardContent from '@/components/ui/card/card-content.svelte';
     import Filter from '@/components/general/Filter.svelte';
     import { type JobCardsPagination, type JobStatusOption } from '@/types/job-card';
+    import Button from '@/components/ui/button/button.svelte';
+    import { Plus } from 'lucide-svelte';
 
     let { jobCards, jobStatusOptions, filters, sort_by, sort_dir } = $props<{
         jobCards: JobCardsPagination;
@@ -24,7 +26,8 @@
   // svelte-ignore state_referenced_locally
   let localFilters = $state<Filters>({ ...filters });
 
-  $effect(() => {   
+  $effect(() => { 
+    localFilters = { ...filters };  
     const flash = $page.flash as Flash;
     if (flash?.message) {  
         if (flash.type === 'success') {
@@ -47,8 +50,6 @@
     return () => window.removeEventListener('resize', handleResize);
   });
 
-  
-
 
   const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -64,6 +65,22 @@
 </svelte:head>
 
 <AppLayout {breadcrumbs}>
+
+  <!-- Header -->
+  <div class="p-4 md:p-6 md:pb-0 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div>
+          <h1 class="text-3xl font-bold tracking-tight">Job Cards</h1>
+          <p class="text-muted-foreground mt-1">
+              Manage your job cards
+          </p>
+      </div>
+      <Link href="/products/create">
+          <Button class="gap-2 cursor-pointer bg-blue-600 hover:bg-blue-700">
+              <Plus class="h-4 w-4" />
+              Add Job Card
+          </Button>
+      </Link>
+  </div>
   
   <!-- Filters Card -->
   <Card class="shadow-none border-none pb-0">
