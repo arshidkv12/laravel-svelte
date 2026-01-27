@@ -9,7 +9,7 @@
     import { format } from 'date-fns';
     import { router } from '@inertiajs/svelte';
     import * as Select from '@/components/ui/select';
-    import { throttle } from 'lodash';
+    import _, { throttle } from 'lodash';
     import { type Filters } from '@/types';
 
     let props = $props<{
@@ -33,6 +33,9 @@
     let isAdvancedOpen = $state(false);
     let dateFromPopover = $state(false);
     let dateToPopover = $state(false);
+
+    const statusMap = _.keyBy(statusOptions, 'value');
+    const getLabel = (val:any) => statusMap[val]?.label ?? 'Select Status';
 
     $effect(() => {
         localFilters = { ...filters };
@@ -234,6 +237,7 @@
                                         if(!v) return;
                                         localFilters.date_from =format(v.toString(), 'yyyy-MM-dd');
                                         dateToPopover = false;
+                                        applyFilters();
                                     }}
                                 />
                             </PopoverContent>
@@ -258,6 +262,7 @@
                                         if(!v) return;
                                         localFilters.date_to =format(v.toString(), 'yyyy-MM-dd');
                                         dateToPopover = false;
+                                        applyFilters();
                                     }}
                                 />
                             </PopoverContent>
@@ -272,10 +277,13 @@
                         <Select.Root 
                             type='single'
                             value={localFilters.status || ''} 
-                            onValueChange={(value) => localFilters.status = value}
+                            onValueChange={(value) => {
+                                localFilters.status = value; 
+                                applyFilters();
+                            }}
                         >
                             <Select.Trigger>
-                                {localFilters.status ? localFilters.status : 'Select status'}
+                                {localFilters.status ? getLabel(localFilters.status) : 'Select status'}
                             </Select.Trigger>
                             <Select.Content>
                                 <Select.Item value="">All Statuses</Select.Item>
