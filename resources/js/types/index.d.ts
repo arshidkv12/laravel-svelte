@@ -43,3 +43,12 @@ export type Flash = {
     message?: string;
     type?: 'success' | 'error' | 'info';
 };
+
+export interface Filters {
+    search?: string;
+    date_from?: string;
+    date_to?: string;
+    status?: string;
+    category?: string;
+    [key: string]: string | number | undefined;
+}

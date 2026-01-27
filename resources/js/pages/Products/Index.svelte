@@ -1,6 +1,6 @@
 <script lang="ts">
     import AppLayout from '@/layouts/AppLayout.svelte';
-    import { type BreadcrumbItem } from '@/types';
+    import { type BreadcrumbItem, type Filters} from '@/types';
     import { Button } from '@/components/ui/button';
     import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
     import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -65,10 +65,10 @@
                         Showing {products.from} to {products.to} of {products.total} products
                     </CardDescription>
                 </div>
-                <Button variant="outline" size="sm" onclick={exportProducts} class="gap-2">
+                <!-- <Button variant="outline" size="sm" onclick={exportProducts} class="gap-2">
                     <Download class="h-4 w-4" />
-                    Export
-                </Button>
+                    Exportx
+                </Button> -->
             </CardHeader>
             <CardContent>
                 <div class="rounded-md border overflow-hidden">

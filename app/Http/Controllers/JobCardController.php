@@ -19,24 +19,40 @@ class JobCardController extends Controller
      */
     public function index(Request $request)
     { 
-        $jobCards = JobCard::with('customer')
-            ->latest()
-            ->when($request->search, function ($q) use ($request) {
-                $q->where(function ($q) use ($request) {
-                    $q->where('job_no', 'like', '%' . $request->search . '%')
-                    ->orWhereHas('customer', function ($q) use ($request) {
-                        $q->where('name', 'like', '%' . $request->search . '%')
-                            ->orWhere('phone', 'like', '%' . $request->search . '%');
-                    });
+        $query = JobCard::query();
+
+        if ($request->has('search') && $request->search) {
+            $query->where(function ($query) use ($request) {
+                $query->where('job_no', 'like', '%' . $request->search . '%')
+                ->orWhereHas('customer', function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('phone', 'like', '%' . $request->search . '%');
                 });
-            })
-            ->when($request->status, fn ($q) => $q->where('status', $request->status))
-            ->paginate(25)
-            ->withQueryString();
+            });
+        }
+
+        if ($request->has('date_from') && $request->date_from) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+        
+        if ($request->has('date_to') && $request->date_to) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+        
+        if ($request->has('status') && $request->status) {
+            $query->where('status', $request->status);
+        }
+    
+        $jobCards = $query
+            ->orderBy('id', 'desc')
+            ->paginate(25);
+
+        $jobCards->load('customer');
 
         return Inertia::render('JobCards/Index', [
             'filters' => $request->only(['search', 'status']),
             'jobCards' => $jobCards,
+            'jobStatusOptions' => JobCardStatus::options()
         ]);
     }
 

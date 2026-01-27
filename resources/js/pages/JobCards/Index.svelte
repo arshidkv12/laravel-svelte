@@ -1,46 +1,23 @@
 <script lang="ts">
     import AppLayout from '@/layouts/AppLayout.svelte';
-    import { type Flash, type BreadcrumbItem } from '@/types';
+    import { type Flash, type BreadcrumbItem, type Filters } from '@/types';
     import { onMount } from 'svelte';
-    import { Link, page, router } from '@inertiajs/svelte';
+    import { page } from '@inertiajs/svelte';
     import JobTable from '@/components/job/JobTable.svelte';
     import MobileJobTable from '@/components/job/MobileJobTable.svelte';
-    import { throttle } from 'lodash';
     import { toast } from 'svelte-sonner';
     import Pagination from '@/components/general/Pagination.svelte';
+    import Card from '@/components/ui/card/card.svelte';
+    import CardContent from '@/components/ui/card/card-content.svelte';
+    import Filter from '@/components/general/Filter.svelte';
+    import { type JobCardsPagination, type JobStatusOption } from '@/types/job-card';
 
-    type JobCard = {
-      id: number;
-      job_no: string;
-      item: string;
-      phone: string;
-      status: string;
-      delivery_date: string;
-      created_at_formatted: string;
-      delivery_date_formatted: string;
-      customer: {
-        id: number;
-        name: string;
-        phone: string;
-      };
-    };
-
-    type JobCardsPagination = {
-      data: JobCard[];
-      current_page: number;
-      last_page: number;
-      links: any[];
-      total: number;
-      from: number;
-      to: number;
-    };
-
-    let { jobCards } = $props<{
+    let { jobCards, jobStatusOptions, filters } = $props<{
       jobCards: JobCardsPagination;
+      jobStatusOption: JobStatusOption[];
+      filters?: Filters
     }>();
 
-  let search = $state('');
-  let status = $state('');
   let isMobile = $state(false);
 
   $effect(() => {   
@@ -66,15 +43,6 @@
     return () => window.removeEventListener('resize', handleResize);
   });
 
-  function applyFilters() {
-    router.get(
-      '/job-cards',
-      { search, status },
-      { preserveState: true, replace: true }
-    );
-  }
-
-  const throttledApplyFilters = throttle(applyFilters, 300); 
 
   const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -83,16 +51,6 @@
     },
   ];
 
-  $effect(() => {
-    if (status !== undefined) {
-      router.get(
-        '/job-cards',
-        { search, status },
-        { preserveState: true, replace: true }
-      );
-    }
-  });
-
 </script>
 
 <svelte:head>
@@ -100,39 +58,15 @@
 </svelte:head>
 
 <AppLayout {breadcrumbs}>
+  
+  <!-- Filters Card -->
+  <Card class="shadow-none border-none pb-0">
+      <CardContent>
+          <Filter routePath='job-cards.index' {filters} statusOptions={jobStatusOptions} />
+      </CardContent>
+  </Card>
+
   <div class="p-4 md:p-6 space-y-6">
-    <!-- Filters -->
-    <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-      <input
-        type="text"
-        placeholder="Search job / customer"
-        bind:value={search}
-        oninput={throttledApplyFilters}
-        class="border rounded px-3 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-400"
-      />
-
-      <select
-        bind:value={status}
-        class="border rounded px-3 py-2 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-blue-400"
-      >
-        <option value="">All Status</option>
-        <option value="pending">Pending</option>
-        <option value="in_progress">In Progress</option>
-        <option value="waiting_parts">Waiting Parts</option>
-        <option value="completed">Completed</option>
-        <option value="delivered">Delivered</option>
-        <option value="cancelled">Cancelled</option>
-      </select>
-      
-      <Link 
-        href="/job-cards/create" 
-        class="px-4 py-2 bg-blue-600 text-white rounded shadow hover:bg-blue-700 transition w-full sm:w-auto text-center"
-      >
-        + New Job
-      </Link>
-    </div>
-
-
     <!-- Results Count -->
     {#if jobCards.total > 0}
         <div class="flex items-center justify-between mb-4">

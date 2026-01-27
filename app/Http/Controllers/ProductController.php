@@ -44,9 +44,8 @@ class ProductController extends Controller
             ->paginate(25);
 
         return Inertia::render('Products/Index', [
-            'filters' => $request->only(['search', 'status']),
             'products' => $products,
-            'filters' => $request->only(['search', 'date_from', 'date_to', 'status', 'category_id']),
+            'filters' => $request->only(['search', 'date_from', 'date_to', 'status']),
             'statusOptions' => $statusOptions
         ]);
     }

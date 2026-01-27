@@ -10,16 +10,10 @@
     import { router } from '@inertiajs/svelte';
     import * as Select from '@/components/ui/select';
     import { throttle } from 'lodash';
+    import { type Filters } from '@/types';
 
     let props = $props<{
-        filters?: {
-            search?: string;
-            date_from?: string;
-            date_to?: string;
-            status?: string;
-            category?: string;
-            [key: string]: any;
-        };
+        filters?: Filters,
         routePath: string;
         statusOptions?: { value: string; label: string }[];
         categoryOptions?: { value: string; label: string }[];
@@ -75,7 +69,7 @@
             }
         });
 
-        router.get(route('products.index'), localFilters, {
+        router.get(route(props.routePath), localFilters, {
             preserveState: true,
             replace: true,
             preserveScroll: true
@@ -89,7 +83,7 @@
             localFilters[key] = '';
         });
 
-        router.get(route('products.index'), localFilters, {
+        router.get(route(props.routePath), localFilters, {
             preserveState: true,
             replace: true,
             preserveScroll: true
@@ -100,7 +94,7 @@
     function clearFilter(key: string) {
         localFilters = { ...localFilters, [key]: '' };
 
-        router.get(route('products.index'), localFilters, {
+        router.get(route(props.routePath), localFilters, {
             preserveState: true,
             replace: true,
             preserveScroll: true
