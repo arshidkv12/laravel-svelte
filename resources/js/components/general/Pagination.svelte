@@ -1,6 +1,7 @@
 <script lang="ts">
     import { type Filters } from '@/types';
     import { router } from '@inertiajs/svelte';
+    import { onMount } from 'svelte';
 
     interface Link {
         url: string | null;
@@ -12,11 +13,16 @@
         currentPage: number;
         lastPage: number;
         links: Link[];
-        filters: Filters
+        filters: Filters,
+        sort_by:string;
+        sort_dir:string;
     }
 
-    let { currentPage, lastPage, links, filters } : Props = $props();
-
+    let { currentPage, lastPage, links, filters = $bindable(), sort_by, sort_dir } : Props = $props();
+    $effect(()=>{
+        filters['sort_by'] = sort_by;
+        filters['sort_dir'] = sort_dir;
+    });
 </script>
 {#if lastPage > 1}
 <div class="flex flex-col sm:flex-row items-center justify-between pt-4 gap-4">
@@ -33,13 +39,13 @@
         onclick={() =>
             link.url &&
             router.get(
-            link.url,
-            filters,
-            {
-                preserveState: true,
-                preserveScroll: true,  
-                replace: true
-            }
+                link.url,
+                filters,
+                {
+                    preserveState: true,
+                    preserveScroll: true,  
+                    replace: true
+                }
             )
         }
         class="

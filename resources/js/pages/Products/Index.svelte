@@ -11,7 +11,7 @@
     import DeleteConfirmDialog from '@/components/confirm/DeleteConfirmDialog.svelte';
     import Filter from '@/components/general/Filter.svelte';
 
-    let { products, filters, statusOptions } = $props();
+    let { products, filters, statusOptions, sort_by, sort_dir } = $props();
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -197,7 +197,9 @@
                     links={products.links}  
                     currentPage={products.current_page} 
                     lastPage={products.last_page}
-                    {filters}
+                    filters={filters}
+                    {sort_by}
+                    {sort_dir}
                 />
 
             </CardContent>

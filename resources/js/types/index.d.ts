@@ -49,6 +49,7 @@ export interface Filters {
     date_from?: string;
     date_to?: string;
     status?: string;
-    category?: string;
+    sort_by?: string;
+    sort_dir?: string;
     [key: string]: string | number | undefined;
 }

@@ -42,17 +42,38 @@ class JobCardController extends Controller
         if ($request->has('status') && $request->status) {
             $query->where('status', $request->status);
         }
+
+        $allowedSorts = [
+            'id',
+            'job_no',
+            'created_at',
+            'updated_at',
+            'delivery_date',
+            'status',
+            'total',
+        ];
+
+        $sortBy  = request('sort_by', 'id');
+        $sortDir = request('sort_dir', 'desc');
+
+        if (! in_array($sortBy, $allowedSorts, true)) {
+            $sortBy = 'id';
+        }
+
+        $sortDir = $sortDir === 'asc' ? 'asc' : 'desc';
     
         $jobCards = $query
-            ->orderBy('id', 'desc')
+            ->orderBy($sortBy, $sortDir)
             ->paginate(25);
 
         $jobCards->load('customer');
 
         return Inertia::render('JobCards/Index', [
-            'filters' => $request->only(['search', 'status']),
+            'filters' => $request->only(['search', 'status', 'date_from', 'date_to']),
             'jobCards' => $jobCards,
-            'jobStatusOptions' => JobCardStatus::options()
+            'jobStatusOptions' => JobCardStatus::options(),
+            'sort_by' => $sortBy, 
+            'sort_dir' => $sortDir
         ]);
     }
 

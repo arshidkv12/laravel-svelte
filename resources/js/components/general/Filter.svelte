@@ -12,8 +12,15 @@
     import _, { throttle } from 'lodash';
     import { type Filters } from '@/types';
 
-    let props = $props<{
-        filters?: Filters,
+    let {
+        filters = $bindable(),
+        routePath,
+        statusOptions,
+        placeholder,
+        enableDateRange = true,
+        enableStatusFilter = true,
+    } = $props<{
+        filters?: Filters;
         routePath: string;
         statusOptions?: { value: string; label: string }[];
         categoryOptions?: { value: string; label: string }[];
@@ -23,18 +30,12 @@
         enableCategoryFilter?: boolean;
     }>();
 
-    const filters = $state({ ...(props.filters || {}) });
-    const statusOptions = $state([...(props.statusOptions || [])]);
-    const placeholder = $state(props.placeholder || 'Search...');
-    const enableDateRange = $state(props.enableDateRange ?? true);
-    const enableStatusFilter = $state(props.enableStatusFilter ?? true);
-
     let localFilters = $state({ ...filters });
     let isAdvancedOpen = $state(false);
     let dateFromPopover = $state(false);
     let dateToPopover = $state(false);
 
-    const statusMap = _.keyBy(statusOptions, 'value');
+    const statusMap = $derived(_.keyBy(statusOptions, 'value'));
     const getLabel = (val:any) => statusMap[val]?.label ?? 'Select Status';
 
     const hasActiveFilters = $derived.by(() => {
@@ -68,7 +69,7 @@
             }
         });
 
-        router.get(route(props.routePath), localFilters, {
+        router.get(route(routePath), localFilters, {
             preserveState: true,
             replace: true,
             preserveScroll: true
@@ -82,7 +83,7 @@
             localFilters[key] = '';
         });
 
-        router.get(route(props.routePath), localFilters, {
+        router.get(route(routePath), localFilters, {
             preserveState: true,
             replace: true,
             preserveScroll: true
@@ -93,7 +94,7 @@
     function clearFilter(key: string) {
         localFilters = { ...localFilters, [key]: '' };
 
-        router.get(route(props.routePath), localFilters, {
+        router.get(route(routePath), localFilters, {
             preserveState: true,
             replace: true,
             preserveScroll: true
@@ -258,7 +259,6 @@
                                         if(!v) return;
                                         localFilters.date_to =format(v.toString(), 'yyyy-MM-dd');
                                         dateToPopover = false;
-                                        applyFilters();
                                     }}
                                 />
                             </PopoverContent>

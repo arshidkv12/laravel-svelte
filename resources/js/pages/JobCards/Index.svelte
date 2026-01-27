@@ -12,13 +12,17 @@
     import Filter from '@/components/general/Filter.svelte';
     import { type JobCardsPagination, type JobStatusOption } from '@/types/job-card';
 
-    let { jobCards, jobStatusOptions, filters } = $props<{
-      jobCards: JobCardsPagination;
-      jobStatusOption: JobStatusOption[];
-      filters?: Filters
+    let { jobCards, jobStatusOptions, filters, sort_by, sort_dir } = $props<{
+        jobCards: JobCardsPagination;
+        jobStatusOptions: JobStatusOption[];
+        filters?: Filters,
+        sort_by:string;
+        sort_dir: string;
     }>();
 
   let isMobile = $state(false);
+  // svelte-ignore state_referenced_locally
+  let localFilters = $state<Filters>({ ...filters });
 
   $effect(() => {   
     const flash = $page.flash as Flash;
@@ -43,6 +47,8 @@
     return () => window.removeEventListener('resize', handleResize);
   });
 
+  
+
 
   const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -64,7 +70,7 @@
       <CardContent>
           <Filter 
             routePath='job-cards.index' 
-            {filters} 
+            filters={filters}
             statusOptions={jobStatusOptions} 
           />
       </CardContent>
@@ -84,7 +90,13 @@
     <!-- Conditional rendering based on screen size -->
     {#if !isMobile}
       <!-- Desktop Table -->
-      <JobTable jobCards={jobCards} />
+      <JobTable 
+        routePath={'job-cards.index'}
+        {sort_by} 
+        {sort_dir} 
+        jobCards={jobCards} 
+        bind:filters={localFilters}
+      />
     {:else}
       <!-- Mobile Cards -->
       <MobileJobTable jobCards={jobCards}/>
@@ -95,7 +107,9 @@
       links={jobCards.links}  
       currentPage={jobCards.current_page} 
       lastPage={jobCards.last_page}
-      {filters}
+      bind:filters={localFilters}
+      {sort_by} 
+      {sort_dir} 
     />
     
   </div>

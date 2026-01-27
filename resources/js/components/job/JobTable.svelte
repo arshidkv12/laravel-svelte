@@ -1,42 +1,86 @@
 <script lang="ts">
-    import { Link } from '@inertiajs/svelte';
+    import { Link, router } from '@inertiajs/svelte';
     import User from 'lucide-svelte/icons/user';
     import Phone from 'lucide-svelte/icons/phone';
-    import Eye from 'lucide-svelte/icons/eye';
     import SquarePen from 'lucide-svelte/icons/square-pen';
     import { getJobStatusClasses, type JobStatus } from '@/lib/helper/status';
     import StatusIcon from './StatusIcon.svelte';
     import { Button } from '../ui/button';
     import { ChevronRight } from 'lucide-svelte';
+    import { type JobCardsPagination } from '@/types/job-card';
+    import { type Filters } from '@/types';
+    import SortIcon from '../general/SortIcon.svelte';
 
-    export let jobCards: {
-        data: Array<{
-          id: number;
-          job_no: string;
-          item: string;
-          status: string;
-          created_at_formatted: string;
-          delivery_date_formatted?: string | null;
-          customer: {
-              id: number;
-              name: string;
-              phone?: string | null;
-          };
-        }>;
+    let { jobCards, filters = $bindable(), sort_by, sort_dir, routePath } = $props<{ 
+      jobCards: JobCardsPagination; 
+      filters: Filters,
+      sort_by: string;
+      sort_dir: string;
+      routePath: string;
+    }>();
+
+    const getSortIcon = (field:string): string => {
+      if (sort_by !== field) return 'none';
+      return sort_dir;
     };
+
+    function changeSort(field:string) { 
+        
+        Object.entries(filters).forEach(([key, value]) => {
+            if (value !== '' && value !== null && value !== undefined) {
+                filters[key] = value;
+            }
+        });
+
+        filters['sort_by'] = field;
+        filters['sort_dir'] = sort_dir === 'asc' ? 'desc': 'asc';
+        router.get(route(routePath), filters, {
+            preserveState: true,
+            replace: true,
+            preserveScroll: true
+        });
+    }
+
 </script>
 
 <div class="overflow-x-auto border rounded-xl shadow-md">
   <table class="w-full text-sm">
     <thead class="bg-gray-50">
       <tr class="border-b">
-        <th class="p-4 text-left font-medium text-gray-700">Job No</th>
-        <th class="p-4 text-left font-medium text-gray-700">Date</th>
+        <th class="p-4 text-left font-medium text-gray-700">
+          <Button 
+            variant="ghost" 
+            class="cursor-pointer"
+            onclick={()=>changeSort('job_no')}
+          >
+              Job No
+            <SortIcon direction={getSortIcon('job_no')} />
+          </Button>
+        </th>
+        <th class="p-4 text-left font-medium text-gray-700">
+          <Button 
+            variant="ghost" 
+            class="cursor-pointer"
+            onclick={()=>changeSort('job_no')}
+          >
+            Date
+            <SortIcon direction={getSortIcon('created_at')} />
+          </Button>
+        </th>
         <th class="p-4 text-left font-medium text-gray-700">Item</th>
         <th class="p-4 text-left font-medium text-gray-700">Customer</th>
         <th class="p-4 text-left font-medium text-gray-700">Phone</th>
         <th class="p-4 text-left font-medium text-gray-700">Status</th>
-        <th class="p-4 text-left font-medium text-gray-700">Delivery</th>
+        <th class="p-4 text-left font-medium text-gray-700">
+          <Button 
+            variant="ghost" 
+            class="cursor-pointer"
+            onclick={()=>changeSort('delivery_date')}
+          >
+            Delivery
+            <SortIcon direction={getSortIcon('delivery_date')} />
+          </Button>
+        </th>
         <th class="p-4 text-right font-medium text-gray-700">Action</th>
       </tr>
     </thead>
