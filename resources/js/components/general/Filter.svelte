@@ -60,7 +60,7 @@
         return Object.values(localFilters).filter(v => v && v !== '').length;
     });
 
-    // Format date for display
+
     function formatDate(dateString?: string): string {
         if (!dateString) return 'Select date';
         try {
@@ -76,11 +76,11 @@
         
         Object.entries(localFilters).forEach(([key, value]) => {
             if (value !== '' && value !== null && value !== undefined) {
-                cleanFilters[key] = value;
+                localFilters[key] = value;
             }
         });
 
-        router.get(route('products.index'), cleanFilters, {
+        router.get(route('products.index'), localFilters, {
             preserveState: true,
             replace: true,
             preserveScroll: true
@@ -89,23 +89,23 @@
 
 
     function resetFilters() {
-        const cleanFilters = { ...localFilters };
-        Object.keys(cleanFilters).forEach(key => {
-            cleanFilters[key] = '';
+        localFilters = { ...localFilters };
+        Object.keys(localFilters).forEach(key => {
+            localFilters[key] = '';
         });
 
-        router.get(route('products.index'), cleanFilters, {
+        router.get(route('products.index'), localFilters, {
             preserveState: true,
             replace: true,
             preserveScroll: true
         });
     }
 
-    // Clear specific filter
-    function clearFilter(key: string) {
-        const newFilters = { ...localFilters, [key]: '' };
 
-        router.get(route('products.index'), newFilters, {
+    function clearFilter(key: string) {
+        localFilters = { ...localFilters, [key]: '' };
+
+        router.get(route('products.index'), localFilters, {
             preserveState: true,
             replace: true,
             preserveScroll: true
@@ -241,7 +241,11 @@
                                 <Calendar
                                     type="single"
                                     captionLayout="dropdown"
-                                    bind:value={localFilters.date_to}
+                                    onValueChange={(v) => {
+                                        if(!v) return;
+                                        localFilters.date_from =format(v.toString(), 'yyyy-MM-dd');
+                                        dateToPopover = false;
+                                    }}
                                 />
                             </PopoverContent>
                         </Popover>
@@ -261,6 +265,11 @@
                                     type="single"
                                     class="rounded-md border shadow-sm"
                                     captionLayout="dropdown"
+                                    onValueChange={(v) => {
+                                        if(!v) return;
+                                        localFilters.date_to =format(v.toString(), 'yyyy-MM-dd');
+                                        dateToPopover = false;
+                                    }}
                                 />
                             </PopoverContent>
                         </Popover>
