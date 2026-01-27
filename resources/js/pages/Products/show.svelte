@@ -7,7 +7,6 @@
     import {
         ArrowLeft,
         SquarePen,
-        Copy,
         Package,
         Percent,
         Hash,
@@ -22,7 +21,6 @@
         Box
     } from 'lucide-svelte';
     import { type BreadcrumbItem } from '@/types';
-    import Check from '@lucide/svelte/icons/check';
 
     interface Product {
         id: number;

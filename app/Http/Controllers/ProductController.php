@@ -11,17 +11,43 @@ class ProductController extends Controller
     
     public function index(Request $request)
     {
-        $products = Product::query()
-            ->when($request->search, function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%');
-            })
+        $query = Product::query();
+
+        if ($request->has('search') && $request->search) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                ->orWhere('sku', 'like', '%' . $request->search . '%')
+                ->orWhere('barcode', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        if ($request->has('date_from') && $request->date_from) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+        
+        if ($request->has('date_to') && $request->date_to) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+        
+        if ($request->has('status') && $request->status) {
+            $query->where('status', $request->status);
+        }
+    
+    
+        $statusOptions = [
+            ['value' => '1', 'label' => 'Active'],
+            ['value' => '0', 'label' => 'Inactive'],
+        ];
+
+        $products = $query
             ->orderBy('id', 'desc')
-            ->paginate(25)
-            ->withQueryString();
+            ->paginate(25);
 
         return Inertia::render('Products/Index', [
             'filters' => $request->only(['search', 'status']),
             'products' => $products,
+            'filters' => $request->only(['search', 'date_from', 'date_to', 'status', 'category_id']),
+            'statusOptions' => $statusOptions
         ]);
     }
 

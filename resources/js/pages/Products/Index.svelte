@@ -13,17 +13,10 @@
     import { Link, router } from '@inertiajs/svelte';
     import PaginationUi from '@/components/general/Pagination.svelte';
     import DeleteConfirmDialog from '@/components/confirm/DeleteConfirmDialog.svelte';
+    import Filter from '@/components/general/Filter.svelte';
 
-    export let filters: { search?: string; status?: string };
-    export let products: {
-        data: Product[];
-        links: Pagination['links'];
-        current_page: number;
-        last_page: number;
-        total: number;
-        from: number;
-        to: number;
-    };
+    let { products, filters, statusOptions } = $props();
+
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -36,16 +29,6 @@
         },
     ];
 
-    let searchValue = filters.search || '';
-    let statusValue = filters.status || 'all';
-
-    const statusOptions = [
-        { value: 'all', label: 'All Status' },
-        { value: 'active', label: 'Active', variant: 'success' },
-        { value: 'inactive', label: 'Inactive', variant: 'secondary' },
-        { value: 'draft', label: 'Draft', variant: 'outline' },
-    ];
-
     const getStatusVariant = (status: string) => {
         switch (status) {
             case 'active': return 'success';
@@ -55,10 +38,6 @@
         }
     };
 
-    // const handleSearch = debounce((value: string) => {
-    //     filters.search = value;
-    //     updateFilters();
-    // }, 300);
 
     const handleStatusChange = (value: string) => {
         filters.status = value === 'all' ? undefined : value;
@@ -114,7 +93,7 @@
                 </CardDescription>
             </CardHeader> -->
             <CardContent>
-                <div class="flex flex-col sm:flex-row gap-4">
+                <!-- <div class="flex flex-col sm:flex-row gap-4">
                     <div class="flex-1 relative">
                         <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                         <Input
@@ -124,28 +103,13 @@
                             class="pl-9"
                         />
                     </div>
-                    
-                    <!-- <Select value={statusValue} on:change={(e) => {
-                        statusValue = e.detail;
-                        handleStatusChange(e.detail);
-                    }}>
-                        <SelectTrigger class="w-full sm:w-[180px]">
-                            <SelectValue placeholder="Status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {#each statusOptions as option}
-                                <SelectItem value={option.value}>
-                                    {option.label}
-                                </SelectItem>
-                            {/each}
-                        </SelectContent>
-                    </Select> -->
 
                     <Button variant="outline" onclick={resetFilters} class="gap-2">
                         <Funnel class="h-4 w-4" />
                         Clear Filters
                     </Button>
-                </div>
+                </div> -->
+                <Filter {filters} {statusOptions} />
             </CardContent>
         </Card>
 
