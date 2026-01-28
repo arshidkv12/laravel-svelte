@@ -1,45 +1,24 @@
 <script lang="ts">
-    import { Link, router } from '@inertiajs/svelte';
-    import User from 'lucide-svelte/icons/user';
-    import Phone from 'lucide-svelte/icons/phone';
-    import SquarePen from 'lucide-svelte/icons/square-pen';
-    import { getJobStatusClasses, type JobStatus } from '@/lib/helper/status';
-    import StatusIcon from './StatusIcon.svelte';
-    import { Button } from '../ui/button';
-    import { ChevronRight } from 'lucide-svelte';
-    import { type JobCardsPagination } from '@/types/job-card';
-    import { type Filters } from '@/types';
-    import SortIcon from '../general/SortIcon.svelte';
+  import { Link, router } from '@inertiajs/svelte';
+  import User from 'lucide-svelte/icons/user';
+  import Phone from 'lucide-svelte/icons/phone';
+  import SquarePen from 'lucide-svelte/icons/square-pen';
+  import { getJobStatusClasses, type JobStatus } from '@/lib/helper/status';
+  import StatusIcon from './StatusIcon.svelte';
+  import { Button } from '../ui/button';
+  import { ChevronRight } from 'lucide-svelte';
+  import { type JobCardsPagination } from '@/types/job-card';
+  import { type Filters } from '@/types';
+  import SortIcon from '../general/SortIcon.svelte';
+  import { changeSort, getSortIcon } from '@/lib/helper/sortUtils';
 
-    let { jobCards, filters = $bindable(), sort_by, sort_dir, routePath } = $props<{ 
-      jobCards: JobCardsPagination; 
-      filters: Filters,
-      sort_by: string;
-      sort_dir: string;
-      routePath: string;
-    }>();
-
-    const getSortIcon = (field:string): string => {
-      if (sort_by !== field) return 'none';
-      return sort_dir;
-    };
-
-    function changeSort(field:string) { 
-        
-        Object.entries(filters).forEach(([key, value]) => {
-            if (value !== '' && value !== null && value !== undefined) {
-                filters[key] = value;
-            }
-        });
-
-        filters['sort_by'] = field;
-        filters['sort_dir'] = sort_dir === 'asc' ? 'desc': 'asc';
-        router.get(route(routePath), filters, {
-            preserveState: true,
-            replace: true,
-            preserveScroll: true
-        });
-    }
+  let { jobCards, filters = $bindable(), sort_by, sort_dir, routePath } = $props<{ 
+    jobCards: JobCardsPagination; 
+    filters: Filters,
+    sort_by: string;
+    sort_dir: string;
+    routePath: string;
+  }>();
 
 </script>
 
@@ -51,20 +30,20 @@
           <Button 
             variant="ghost" 
             class="cursor-pointer"
-            onclick={()=>changeSort('job_no')}
+            onclick={()=>changeSort('job_no', filters, sort_by, sort_dir, 'job-cards.index')}
           >
               Job No
-            <SortIcon direction={getSortIcon('job_no')} />
+            <SortIcon direction={getSortIcon('job_no', sort_by, sort_dir)} />
           </Button>
         </th>
         <th class="p-4 text-left font-medium text-gray-700">
           <Button 
             variant="ghost" 
             class="cursor-pointer"
-            onclick={()=>changeSort('created_at')}
+            onclick={()=>changeSort('created_at', filters, sort_by, sort_dir, 'job-cards.index')}
           >
             Date
-            <SortIcon direction={getSortIcon('created_at')} />
+            <SortIcon direction={getSortIcon('created_at', sort_by, sort_dir)} />
           </Button>
         </th>
         <th class="p-4 text-left font-medium text-gray-700">Item</th>
@@ -75,10 +54,10 @@
           <Button 
             variant="ghost" 
             class="cursor-pointer"
-            onclick={()=>changeSort('delivery_date')}
+            onclick={()=>changeSort('delivery_date', filters, sort_by, sort_dir, 'job-cards.index')}
           >
             Delivery
-            <SortIcon direction={getSortIcon('delivery_date')} />
+            <SortIcon direction={getSortIcon('delivery_date', sort_by, sort_dir)} />
           </Button>
         </th>
         <th class="p-4 text-right font-medium text-gray-700">Action</th>

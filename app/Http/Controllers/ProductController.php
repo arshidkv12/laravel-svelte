@@ -29,24 +29,41 @@ class ProductController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
         
-        if ($request->has('status') && $request->status) {
+        if ($request->has('status') && !is_null($request->status)) {
             $query->where('status', $request->status);
         }
-    
     
         $statusOptions = [
             ['value' => '1', 'label' => 'Active'],
             ['value' => '0', 'label' => 'Inactive'],
         ];
 
+        $allowedSorts = [
+            'id',
+            'created_at',
+            'updated_at',
+            'quantity',
+        ];
+
+        $sortBy  = request('sort_by', 'id');
+        $sortDir = request('sort_dir', 'desc');
+
+        if (! in_array($sortBy, $allowedSorts, true)) {
+            $sortBy = 'id';
+        }
+
+        $sortDir = $sortDir === 'asc' ? 'asc' : 'desc';
+
         $products = $query
-            ->orderBy('id', 'desc')
+            ->orderBy($sortBy, $sortDir)
             ->paginate(25);
 
         return Inertia::render('Products/Index', [
             'products' => $products,
             'filters' => $request->only(['search', 'date_from', 'date_to', 'status']),
-            'statusOptions' => $statusOptions
+            'statusOptions' => $statusOptions,
+            'sort_by' => $sortBy, 
+            'sort_dir' => $sortDir
         ]);
     }
 

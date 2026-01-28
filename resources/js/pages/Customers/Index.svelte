@@ -33,6 +33,10 @@
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
+            title: 'Dashboard',
+            href: '/dashboard',
+        },
+        {
         title: 'Customers',
         href: '/customers',
         },

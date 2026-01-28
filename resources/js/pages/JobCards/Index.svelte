@@ -53,6 +53,10 @@
 
   const breadcrumbs: BreadcrumbItem[] = [
     {
+      title: 'Dashboard',
+      href: '/dashboard',
+    },
+    {
       title: 'Job Cards',
       href: '/job-cards',
     },
@@ -87,7 +91,7 @@
       <CardContent>
           <Filter 
             routePath='job-cards.index' 
-            filters={filters}
+            filters={localFilters}
             statusOptions={jobStatusOptions} 
           />
       </CardContent>

@@ -1,17 +1,33 @@
 <script lang="ts">
     import AppLayout from '@/layouts/AppLayout.svelte';
-    import { type BreadcrumbItem, type Filters} from '@/types';
+    import { type Flash, type BreadcrumbItem, type Filters} from '@/types';
     import { Button } from '@/components/ui/button';
     import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
     import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
     import { Search, Plus, SquarePen, Eye, EllipsisVertical, Funnel, Download } from 'lucide-svelte';
     import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-    import { Link, router } from '@inertiajs/svelte';
+    import { Link, page, router } from '@inertiajs/svelte';
     import PaginationUi from '@/components/general/Pagination.svelte';
     import DeleteConfirmDialog from '@/components/confirm/DeleteConfirmDialog.svelte';
     import Filter from '@/components/general/Filter.svelte';
+    import { toast } from 'svelte-sonner';
+    import SortIcon from '@/components/general/SortIcon.svelte';
+    import { changeSort, getSortIcon } from '@/lib/helper/sortUtils';
 
     let { products, filters, statusOptions, sort_by, sort_dir } = $props();
+    // svelte-ignore state_referenced_locally
+    let localFilters = $state<Filters>({ ...filters });
+
+    $effect(() => {   
+        const flash = $page.flash as Flash;
+        if (flash?.message) {  
+            if (flash.type === 'success') {
+                toast.success(flash.message);
+            } else if (flash.type === 'error') {
+                toast.error(flash.message);
+            }
+        }
+    });
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -42,7 +58,7 @@
                 </p>
             </div>
             <Link href="/products/create">
-                <Button class="gap-2 cursor-pointer">
+                <Button class="gap-2 cursor-pointer bg-blue-600 hover:bg-blue-700">
                     <Plus class="h-4 w-4" />
                     Add Product
                 </Button>
@@ -52,7 +68,11 @@
         <!-- Filters Card -->
         <Card class="shadow-none border-none py-0">
             <CardContent>
-                <Filter routePath='products.index' {filters} {statusOptions} />
+                <Filter 
+                routePath='products.index' 
+                bind:filters={localFilters} 
+                {statusOptions} 
+            />
             </CardContent>
         </Card>
 
@@ -79,7 +99,16 @@
                                     <TableHead class="pl-4 min-w-[120px]">Created</TableHead>
                                     <TableHead class="min-w-[180px]">Product Name</TableHead>
                                     <TableHead class="min-w-[100px]">Price</TableHead>
-                                    <TableHead class="text-center min-w-[80px]">Stock</TableHead>
+                                    <TableHead class="text-center min-w-[80px]">
+                                        <Button 
+                                            variant="ghost" 
+                                            class="cursor-pointer"
+                                            onclick={()=>changeSort('quantity', filters, sort_by, sort_dir, 'products.index')}
+                                        >
+                                            Stock
+                                            <SortIcon direction={getSortIcon('quantity', sort_by, sort_dir)} />
+                                        </Button>
+                                    </TableHead>
                                     <TableHead class="min-w-[100px]">Status</TableHead>
                                     <TableHead class="w-20 text-center">Actions</TableHead>
                                 </TableRow>
@@ -127,7 +156,7 @@
                                         <TableCell class="text-center">
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger >
-                                                    <Button variant="ghost" size="sm">
+                                                    <Button variant="ghost" size="sm" class="cursor-pointer">
                                                         <EllipsisVertical class="h-4 w-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
@@ -197,7 +226,7 @@
                     links={products.links}  
                     currentPage={products.current_page} 
                     lastPage={products.last_page}
-                    filters={filters}
+                    bind:filters={localFilters} 
                     {sort_by}
                     {sort_dir}
                 />
