@@ -21,7 +21,14 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
+        Inertia::flash([
+            'message' => 'Invoice successfully',
+            'type' => 'success'
+        ]);
+        
+        return redirect()
+            ->route('invoices.index');
     }
 
     public function create(Request $request){

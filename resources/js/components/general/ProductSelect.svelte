@@ -114,6 +114,7 @@
             oninput={onSearchInput}
             onkeydown={(e) => {
                 if (e.key === 'Enter') {
+                    e.preventDefault();
                     searchproducts(true);
                 }}
             }

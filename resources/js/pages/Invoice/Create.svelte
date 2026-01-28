@@ -58,7 +58,7 @@
     <div class="container mx-auto p-4">
         <Form
             method="post" 
-            action={route('job-cards.store')} 
+            action={route('invoices.store')} 
             class="space-y-6">
             {#snippet children({ errors, processing }: BaseFormSnippetProps)}
         
@@ -204,7 +204,7 @@
                                 <TableCell>
                                     <Input
                                         type="number"
-                                        min="1"
+                                        min="0"
                                         bind:value={item.tax}
                                         oninput={(e) => {
                                             item.total = updateItemTotal(item.quantity, item.unit_price, item.tax);
@@ -303,15 +303,17 @@
                     <Card>
                     <CardContent class="pt-6">
                         <div class="space-y-3">
-                        <Button class="w-full" size="lg" onclick={() => {
-                            console.log('Save invoice:', { invoice, items });
-                        }}>
+                        <Button class="w-full" type="submit" disabled={processing}>
                             <Save class="h-4 w-4 mr-2" />
-                            Save Invoice
+                             {#if processing}
+                                <div class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                                Saving...
+                            {:else}
+                                <Save class="h-4 w-4" />
+                                Save Invoice
+                            {/if}
                         </Button>
-                        <Button class="w-full" variant="outline" size="lg">
-                            Save as Draft
-                        </Button>
+                        
                         </div>
                     </CardContent>
                     </Card>
