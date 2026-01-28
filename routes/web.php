@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\JobCardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UploadController;
@@ -31,7 +32,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('upload.store');
     Route::delete('/upload-job-files', [UploadController::class, 'destroy'])
         ->name('upload.destroy');
+    Route::get('/products/search', [ProductController::class, 'search'])
+        ->name('products.search');
     Route::resource('products', ProductController::class); 
+    Route::resource('invoices', InvoiceController::class); 
 });
 
 require __DIR__ . '/settings.php';

@@ -10,6 +10,7 @@ export interface Product {
     created_at: string;
     updated_at: string;
     created_at_formatted: string;
+    label: string;
 }
 
 export interface Pagination {

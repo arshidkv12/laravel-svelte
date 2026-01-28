@@ -143,4 +143,26 @@ class ProductController extends Controller
         $product->delete();
         return redirect()->back();
     }
+
+    /**
+     * Search
+     */
+    public function search(Request $request)
+    {
+        $q = $request->get('q');
+
+        return Product::query()
+            ->select('id', 'name', 'sku', 'price')
+            ->when($q, fn ($query) =>
+                $query->where('name', 'like', "%{$q}%")
+                    ->orWhere('sku', 'like', "%{$q}%")
+                    ->orWhere('barcode', '=', $q)
+            )
+            ->where('quantity', '>', 0)
+            ->where('status', 1)
+            ->orderBy('name')
+            ->limit(10)
+            ->get()
+            ->makeHidden(['image_url', 'created_at_formatted']);
+    }
 }

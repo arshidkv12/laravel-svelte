@@ -5,7 +5,7 @@
     import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
     import { type NavItem } from '@/types';
     import { Link } from '@inertiajs/svelte';
-    import { BookOpen, Folder, LayoutGrid, Clipboard, UsersIcon, Package } from 'lucide-svelte';
+    import { BookOpen, Folder, LayoutGrid, Clipboard, UsersIcon, Package, ReceiptText } from 'lucide-svelte';
     import AppLogo from './AppLogo.svelte';
 
     const mainNavItems: NavItem[] = [
@@ -28,6 +28,11 @@
             title: 'Products',
             href: '/products',
             icon: Package,
+        },
+        {
+            title: 'Invoices',
+            href: '/invoices',
+            icon: ReceiptText,
         },
     ];
 

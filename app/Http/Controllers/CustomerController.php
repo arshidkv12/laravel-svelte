@@ -60,7 +60,7 @@ class CustomerController extends Controller
         }
 
         return redirect()
-            ->back();
+            ->route('customers.index');
     }
 
     /**

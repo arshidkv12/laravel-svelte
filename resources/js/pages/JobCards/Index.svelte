@@ -78,7 +78,7 @@
               Manage your job cards
           </p>
       </div>
-      <Link href="/products/create">
+      <Link href="/job-cards/create">
           <Button class="gap-2 cursor-pointer bg-blue-600 hover:bg-blue-700">
               <Plus class="h-4 w-4" />
               Add Job Card
