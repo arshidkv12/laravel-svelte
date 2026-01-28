@@ -15,6 +15,7 @@
     import { type BaseFormSnippetProps } from '@/types/forms';
     import ProductSelect from '@/components/general/ProductSelect.svelte';
     import { type Product } from '@/types/products';
+    import _, { uniqueId } from 'lodash';
     
     let { customers, csrf_token, initCustomerId } = $props();
     let customer_id = $derived(initCustomerId);
@@ -24,24 +25,21 @@
         { title: 'Create Invoice', href: '/invoices/create' },
     ];
 
-    let selectedProduct = $state<Product>();
+    let invoice = $state({
+        client_id: '',
+        invoice_number: '',
+        issue_date: format(new Date(), 'yyyy-MM-dd'),
+        due_date: format(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'),
+        status: 'draft',
+        notes: ''
+    });
 
-  // Simple state - no complex computed properties
-  let invoice = $state({
-    client_id: '',
-    invoice_number: '',
-    issue_date: format(new Date(), 'yyyy-MM-dd'),
-    due_date: format(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'),
-    status: 'draft',
-    notes: ''
-  });
+    let status = $state('draft');
 
-  let status = $state('draft');
-
-  let items = $state([
-    { id: 1, description: '', quantity: 1, unit_price: 0, total: 0 }
-  ]);
-  let nextId = 2;
+    let items = $state([
+        { id: uniqueId('p-'), name: '', quantity: 1, unit_price: 0, total: 0, tax: 0}
+    ]);
+    let nextId = 2;
 </script>
 
 <AppLayout {breadcrumbs}>
@@ -123,20 +121,37 @@
                             Invoice Items
                         </CardTitle>
                         <Button type="button" size="sm" onclick={() => {
-                        items = [...items, { id: nextId++, description: '', quantity: 1, unit_price: 0, total: 0 }];
+                            items = [...items, { id: uniqueId('p-'), name: '', quantity: 1, unit_price: 0, tax: 0, total: 0 }];
                         }}>
                         <Plus class="h-4 w-4 mr-2" />
                         Add Item
                         </Button>
                     </CardHeader>
                     <CardContent>
-                        <ProductSelect  bind:selectedProduct={selectedProduct}/>
+                        <ProductSelect onSelect={(product:Product)=>{
+                            let index;
+                            const existingIndex = items.findIndex(item => item.id === String(product.id));
+                            if (existingIndex >= 0) {
+                                items[existingIndex].quantity += 1;
+                                items[existingIndex].total = items[existingIndex].quantity * items[existingIndex].unit_price;
+                            } else {
+                                items = [...items, { 
+                                    id: String(product.id), 
+                                    name: product.name, 
+                                    quantity: 1, 
+                                    unit_price: product.price, 
+                                    total: product.price, 
+                                    tax: product.tax, 
+                                }];
+                            }
+                        }} />
                         <Table>
                         <TableHeader>
                             <TableRow>
                             <TableHead>Description</TableHead>
                             <TableHead class="w-24">Quantity</TableHead>
                             <TableHead class="w-32">Unit Price</TableHead>
+                            <TableHead class="w-32">Tax %</TableHead>
                             <TableHead class="w-32">Total</TableHead>
                             <TableHead class="w-12"></TableHead>
                             </TableRow>
@@ -146,7 +161,7 @@
                             <TableRow>
                                 <TableCell>
                                 <Input
-                                    bind:value={item.description}
+                                    bind:value={item.name}
                                     placeholder="Item description"
                                 />
                                 </TableCell>
@@ -156,8 +171,8 @@
                                     min="1"
                                     bind:value={item.quantity}
                                     oninput={(e) => {
-                                    item.total = item.quantity * item.unit_price;
-                                    items = items;
+                                        item.total = item.quantity * item.unit_price;
+                                        items = items;
                                     }}
                                 />
                                 </TableCell>
@@ -168,16 +183,22 @@
                                     step="0.01"
                                     bind:value={item.unit_price}
                                     oninput={(e) => {
-                                    item.total = item.quantity * item.unit_price;
-                                    items = items;
+                                        item.total = item.quantity * item.unit_price;
+                                        items = items;
                                     }}
                                 />
                                 </TableCell>
+                                <TableCell>
+                                    <Input
+                                        type="number"
+                                        min="1"
+                                        bind:value={item.tax}
+                                    />
+                                </TableCell>
                                 <TableCell class="font-medium">
-                                ${item.total.toFixed(2)}
+                                {Number(item.total).toFixed(2)}
                                 </TableCell>
                                 <TableCell>
-                                {#if items.length > 1}
                                     <Button
                                     type="button"
                                     variant="ghost"
@@ -188,7 +209,6 @@
                                     >
                                     <Trash2 class="h-4 w-4 text-red-500" />
                                     </Button>
-                                {/if}
                                 </TableCell>
                             </TableRow>
                             {/each}
@@ -244,19 +264,19 @@
                         <div class="flex justify-between">
                             <span class="text-gray-600">Subtotal</span>
                             <span class="font-medium">
-                            ${items.reduce((sum, item) => sum + item.total, 0).toFixed(2)}
+                            {Number(items.reduce((sum, item) => sum + item.total, 0)).toFixed(2)}
                             </span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-600">Tax (10%)</span>
+                            <span class="text-gray-600">GST</span>
                             <span class="font-medium">
-                            ${(items.reduce((sum, item) => sum + item.total, 0) * 0.1).toFixed(2)}
+                            {Number(items.reduce((sum, item) => sum + item.tax, 0)).toFixed(2)}
                             </span>
                         </div>
                         <div class="flex justify-between pt-2 border-t">
                             <span class="text-lg font-semibold">Total</span>
                             <span class="text-lg font-bold">
-                            ${(items.reduce((sum, item) => sum + item.total, 0) * 1.1).toFixed(2)}
+                            {Number(items.reduce((sum, item) => sum + item.total, 0) * 1.1).toFixed(2)}
                             </span>
                         </div>
                         </div>

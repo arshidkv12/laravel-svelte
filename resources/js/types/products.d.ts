@@ -4,13 +4,13 @@ export interface Product {
     description?: string;
     sku?: string;
     price: number;
+    tax: number;
     quantity: number;
     status: 'active' | 'inactive' | 'draft';
     image?: string;
     created_at: string;
     updated_at: string;
     created_at_formatted: string;
-    label: string;
 }
 
 export interface Pagination {

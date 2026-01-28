@@ -1,39 +1,21 @@
 <script lang="ts">
     import CheckIcon from "@lucide/svelte/icons/check";
-    import ChevronsUpDownIcon from "@lucide/svelte/icons/chevrons-up-down";
-    import { onMount, tick } from "svelte";
-
-    import * as Command from "@/components/ui/command";
-    import * as Popover from "@/components/ui/popover";
-    import { Button, buttonVariants } from "@/components/ui/button";
-    import { cn } from "@/lib/utils";
     import Input from "../ui/input/input.svelte";
     import { type Product } from "@/types/products";
+    import { cn } from "@/lib/utils";
+    import { onMount } from "svelte";
+    import { XIcon } from "lucide-svelte";
 
-    let { selectedProduct = null } = $props<{ selectedProduct?: Product }>();
+    let { onSelect } = $props<{ 
+        onSelect: (product: Product) => void;
+    }>();
 
-    let open = $state(false);
-    let triggerRef: HTMLButtonElement | null = $state(null);
+    let placeholder = "Search product by name or barcode...";
+    let showResults = $state(false);
     let loading = $state(false);
-    
+    let searchQuery = $state("");
     let products = $state<Product[]>([]);
-
-    const selectedLabel = $derived( 
-        selectedProduct && selectedProduct.sku ? selectedProduct.name + '-' + selectedProduct.sku : ''
-    );
-
-
-    function close() {
-        open = false;
-        tick().then(() => triggerRef?.focus());
-    }
-
-    function onSelectedProduct(selectedProduct: Product) {
-        selectedProduct = selectedProduct;
-        close();
-    }
-
-    let timeout: ReturnType<typeof setTimeout>;
+    let containerRef: HTMLDivElement | null = $state(null);
 
     async function searchproducts(query: string) {
         if (!query.trim()) {
@@ -42,6 +24,7 @@
         }
 
         loading = true;
+        products = [];
         
         try {
             const res = await fetch(
@@ -56,70 +39,148 @@
             );
 
             if (res.ok) {
-                products = await res.json();
-                console.log(products)
-            } else {
-                console.error('Search failed:', res.status);
-                products = [];
+                const data = await res.json();
+                products = Array.isArray(data) ? data : [];
             }
         } catch (e) {
             console.error('Search error:', e);
-            products = [];
         } finally {
             loading = false;
         }
     }
 
+    let timeout: ReturnType<typeof setTimeout>;
+    
     function onSearchInput(e: Event) {
+        showResults = true;
         const q = (e.currentTarget as HTMLInputElement).value;
+        searchQuery = q;
         
         clearTimeout(timeout);
         timeout = setTimeout(() => {
             searchproducts(q);
         }, 300);
     }
+
+    function handleSelectProduct(product: Product) {
+        onSelect(product);
+        searchQuery = ""; // Clear search after selection
+        products = [];
+        showResults = false;
+    }
+
+    function clearSearch() {
+        searchQuery = "";
+        products = [];
+        showResults = false;
+    }
+
+    // Close results when clicking outside
+    function handleClickOutside(e: MouseEvent) {
+        if (containerRef && !containerRef.contains(e.target as Node)) {
+            showResults = false;
+        }
+    }
+
+    // Handle keyboard events
+    function handleKeyDown(e: KeyboardEvent) {
+        if (e.key === 'Escape') {
+            showResults = false;
+        }
+    }
+
+    onMount(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('keydown', handleKeyDown);
+        
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('keydown', handleKeyDown);
+            clearTimeout(timeout);
+        };
+    });
 </script>
 
-<Popover.Root bind:open>
-  <Popover.Trigger class={cn(buttonVariants({ variant: "outline"}), "w-full justify-between")}>
-      <span>{selectedLabel || "Select a product..."}</span>
-      <ChevronsUpDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-  </Popover.Trigger>
-
-  <Popover.Content class="w-[320px] p-0" align="start">
-    <Command.Root>
-      <Command.Input
-        placeholder="Search product..."
-        oninput={onSearchInput}
-      />
-
-      <Command.List>
-        {#if loading}
-          <Command.Loading class="p-4">Searching...</Command.Loading>
-        {/if}
-
-        <Command.Empty>
-          {loading ? "Searching..." : ""}
-          {!loading && products.length < 1 ? "No product found." : ""}
-        </Command.Empty>
-
-        <Command.Group>
-          {#each products as product}
-            <Command.Item
-              value={product.name}
-              onSelect={() => onSelectedProduct(product)}
-            >
-              <CheckIcon
+<div class="product-search-container relative" bind:this={containerRef}>
+    <!-- Search Input -->
+    <div class="relative">
+        <Input
+            type="text"
+            placeholder={placeholder}
+            bind:value={searchQuery}
+            oninput={onSearchInput}
+            class="pr-10"
+            autocomplete="off"
+        />
+        
+        <!-- Clear button -->
+        {#if searchQuery}
+            <button
+                type="button"
+                onclick={clearSearch}
                 class={cn(
-                  "mr-2 h-4 w-4",
-                  selectedProduct && selectedProduct.id === product.id ? "opacity-100" : "opacity-0"
+                    "absolute right-2 top-1/2 transform -translate-y-1/2",
+                    "text-gray-400 hover:text-gray-600 transition-colors",
+                    "h-5 w-5 flex items-center justify-center"
                 )}
-              />
-              {product.name}
-            </Command.Item>
-          {/each}
-        </Command.Group>
-      </Command.List>
-    </Command.Root>
-  </Popover.Content>
-</Popover.Root>
+                title="Clear search"
+            >
+                <XIcon class="h-4 w-4" />
+            </button>
+        {/if}
+    </div>
+
+    <!-- Results Dropdown -->
+    {#if showResults}
+        <div class="absolute top-full left-0 right-0 mt-1 z-50">
+            <div class="border border-gray-200 rounded-md shadow-lg bg-white max-h-60 overflow-y-auto">
+                {#if loading}
+                    <div class="p-4 text-sm text-gray-500 text-center">
+                        Searching...
+                    </div>
+                {:else if products.length === 0 && searchQuery.trim()}
+                    <div class="p-4 text-sm text-gray-500 text-center">
+                        No products found for "{searchQuery}"
+                    </div>
+                {:else if products.length > 0}
+                    <div class="py-1">
+                        {#each products as product (product.id)}
+                            <button
+                                type="button"
+                                onclick={() => handleSelectProduct(product)}
+                                class={cn(
+                                    "w-full text-left px-3 py-2 hover:bg-gray-100",
+                                    "flex items-center gap-2 transition-colors"
+                                )}
+                            >
+                                <CheckIcon
+                                    class={cn(
+                                        "h-4 w-4 shrink-0 opacity-0"
+                                    )}
+                                />
+                                <div class="flex-1 min-w-0">
+                                    <div class="font-medium truncate">{product.name}</div>
+                                    <div class="text-xs text-gray-500 flex flex-col sm:flex-row sm:gap-2">
+                                        {#if product.sku}
+                                            <span>SKU: {product.sku}</span>
+                                        {/if}
+                                        {#if product.price}
+                                            <span>Price: {product.price}</span>
+                                        {/if}
+                                        {#if product.quantity}
+                                            <span>Stock: {product.quantity}</span>
+                                        {/if}
+                                    </div>
+                                </div>
+                            </button>
+                        {/each}
+                    </div>
+                {:else}
+                    <div class="p-4 text-sm text-gray-500 text-center">
+                        Type to search products
+                    </div>
+                {/if}
+            </div>
+        </div>
+    {/if}
+</div>

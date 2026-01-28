@@ -152,7 +152,7 @@ class ProductController extends Controller
         $q = $request->get('q');
 
         return Product::query()
-            ->select('id', 'name', 'sku', 'price')
+            ->select('id', 'name', 'sku', 'price', 'quantity', 'tax')
             ->when($q, fn ($query) =>
                 $query->where('name', 'like', "%{$q}%")
                     ->orWhere('sku', 'like', "%{$q}%")
