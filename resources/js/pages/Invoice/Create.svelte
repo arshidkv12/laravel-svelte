@@ -68,9 +68,9 @@
                 <p class="text-gray-600">Fill in the details below to create a new invoice</p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 <!-- Left Column - Invoice Details -->
-                <div class="lg:col-span-2 space-y-6">
+                <div class="lg:col-span-3 space-y-6">
                     <!-- Client Information Card -->
                     <Card>
                     <CardHeader>
@@ -166,7 +166,7 @@
                             <TableHead>Description</TableHead>
                             <TableHead class="w-24">Quantity</TableHead>
                             <TableHead class="w-32">Unit Price</TableHead>
-                            <TableHead class="w-32">Tax %</TableHead>
+                            <TableHead class="w-24">Tax %</TableHead>
                             <TableHead class="w-32">Total</TableHead>
                             <TableHead class="w-12"></TableHead>
                             </TableRow>
@@ -249,7 +249,7 @@
                 </div>
 
                 <!-- Right Column - Summary -->
-                <div class="space-y-6">
+                <div class="lg:col-span-1 space-y-6">
                     <!-- Status Card -->
                     <Card>
                     <CardHeader>
@@ -257,8 +257,8 @@
                     </CardHeader>
                     <CardContent>
                         <Select.Root type="single" bind:value={status}>
-                            <Select.Trigger>
-                                Select status
+                            <Select.Trigger class="w-full">
+                               {status ? status : "Select status"}
                             </Select.Trigger>
                             <Select.Content>
                                 <Select.Item value="draft">Draft</Select.Item>
