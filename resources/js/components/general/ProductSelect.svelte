@@ -17,8 +17,8 @@
     let products = $state<Product[]>([]);
     let containerRef: HTMLDivElement | null = $state(null);
 
-    async function searchproducts(query: string) {
-        if (!query.trim()) {
+    async function searchproducts(enterPress = false) {
+        if (!searchQuery.trim()) {
             products = [];
             return;
         }
@@ -28,7 +28,7 @@
         
         try {
             const res = await fetch(
-                `/products/search?q=${encodeURIComponent(query)}`,
+                `/products/search?q=${encodeURIComponent(searchQuery)}`,
                 {
                     headers: {
                         'Accept': 'application/json',
@@ -41,6 +41,9 @@
             if (res.ok) {
                 const data = await res.json();
                 products = Array.isArray(data) ? data : [];
+                if(enterPress && products.length > 0){
+                    handleSelectProduct(products[0]);
+                }
             }
         } catch (e) {
             console.error('Search error:', e);
@@ -58,13 +61,13 @@
         
         clearTimeout(timeout);
         timeout = setTimeout(() => {
-            searchproducts(q);
+            searchproducts();
         }, 300);
     }
 
     function handleSelectProduct(product: Product) {
         onSelect(product);
-        searchQuery = ""; // Clear search after selection
+        searchQuery = ""; 
         products = [];
         showResults = false;
     }
@@ -109,6 +112,11 @@
             placeholder={placeholder}
             bind:value={searchQuery}
             oninput={onSearchInput}
+            onkeydown={(e) => {
+                if (e.key === 'Enter') {
+                    searchproducts(true);
+                }}
+            }
             class="pr-10"
             autocomplete="off"
         />

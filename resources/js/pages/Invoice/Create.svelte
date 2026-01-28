@@ -16,6 +16,7 @@
     import ProductSelect from '@/components/general/ProductSelect.svelte';
     import { type Product } from '@/types/products';
     import _, { uniqueId } from 'lodash';
+    import Dice_1 from 'lucide-svelte/icons/dice-1';
     
     let { customers, csrf_token, initCustomerId } = $props();
     let customer_id = $derived(initCustomerId);
@@ -40,6 +41,12 @@
     let items = $state([
         { id: uniqueId('p-'), name: '', quantity: 1, unit_price: 0, total: 0, tax: 0}
     ]);
+
+    function subTotal(quantity: number, unit_price:number, tax: number = 1){
+        const total = quantity * unit_price;
+        const taxAmount = total * (tax / 100);
+        return total + taxAmount;
+    }
 </script>
 
 <AppLayout {breadcrumbs}>
@@ -129,19 +136,22 @@
                     </CardHeader>
                     <CardContent>
                         <ProductSelect onSelect={(product:Product)=>{
-                            let index;
                             const existingIndex = items.findIndex(item => item.id === String(product.id));
                             if (existingIndex >= 0) {
                                 items[existingIndex].quantity += 1;
-                                items[existingIndex].total = items[existingIndex].quantity * items[existingIndex].unit_price;
+                                items[existingIndex].total = subTotal(
+                                    items[existingIndex].quantity, 
+                                    items[existingIndex].unit_price, 
+                                    items[existingIndex].tax
+                                );
                             } else {
                                 items = [...items, { 
                                     id: String(product.id), 
                                     name: product.name, 
                                     quantity: 1, 
                                     unit_price: product.price, 
-                                    total: product.price, 
                                     tax: product.tax, 
+                                    total: subTotal(1, product.price, product.tax)
                                 }];
                             }
                         }} />
@@ -171,8 +181,9 @@
                                     min="1"
                                     bind:value={item.quantity}
                                     oninput={(e) => {
-                                        item.total = item.quantity * item.unit_price;
-                                        items = items;
+                                        const subtotal = item.quantity * item.unit_price;
+                                        const taxAmount = subtotal * (item.tax / 100);
+                                        item.total = subtotal + taxAmount;
                                     }}
                                 />
                                 </TableCell>
@@ -183,8 +194,9 @@
                                     step="0.01"
                                     bind:value={item.unit_price}
                                     oninput={(e) => {
-                                        item.total = item.quantity * item.unit_price;
-                                        items = items;
+                                        const subtotal = item.quantity * item.unit_price;
+                                        const taxAmount = subtotal * (item.tax / 100);
+                                        item.total = subtotal + taxAmount;
                                     }}
                                 />
                                 </TableCell>
@@ -193,6 +205,11 @@
                                         type="number"
                                         min="1"
                                         bind:value={item.tax}
+                                        oninput={(e) => {
+                                            const subtotal = item.quantity * item.unit_price;
+                                            const taxAmount = subtotal * (item.tax / 100);
+                                            item.total = subtotal + taxAmount;
+                                        }}
                                     />
                                 </TableCell>
                                 <TableCell class="font-medium">
