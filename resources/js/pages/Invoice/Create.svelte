@@ -16,7 +16,6 @@
     import ProductSelect from '@/components/general/ProductSelect.svelte';
     import { type Product } from '@/types/products';
     import _, { uniqueId } from 'lodash';
-    import Dice_1 from 'lucide-svelte/icons/dice-1';
     
     let { customers, csrf_token, initCustomerId } = $props();
     let customer_id = $derived(initCustomerId);
@@ -42,10 +41,16 @@
         { id: uniqueId('p-'), name: '', quantity: 1, unit_price: 0, total: 0, tax: 0}
     ]);
 
-    function subTotal(quantity: number, unit_price:number, tax: number = 1){
+    function calculateTotal(quantity: number, unit_price:number, tax: number = 1){
         const total = quantity * unit_price;
         const taxAmount = total * (tax / 100);
         return total + taxAmount;
+    }
+
+    function updateItemTotal(quantity: number, unit_price: number, tax: number) {
+        const subtotal = quantity * unit_price;
+        const tax_amount = subtotal * (tax / 100);
+        return subtotal + tax_amount;
     }
 </script>
 
@@ -139,7 +144,7 @@
                             const existingIndex = items.findIndex(item => item.id === String(product.id));
                             if (existingIndex >= 0) {
                                 items[existingIndex].quantity += 1;
-                                items[existingIndex].total = subTotal(
+                                items[existingIndex].total = calculateTotal(
                                     items[existingIndex].quantity, 
                                     items[existingIndex].unit_price, 
                                     items[existingIndex].tax
@@ -151,7 +156,7 @@
                                     quantity: 1, 
                                     unit_price: product.price, 
                                     tax: product.tax, 
-                                    total: subTotal(1, product.price, product.tax)
+                                    total: calculateTotal(1, product.price, product.tax)
                                 }];
                             }
                         }} />
@@ -181,9 +186,7 @@
                                     min="1"
                                     bind:value={item.quantity}
                                     oninput={(e) => {
-                                        const subtotal = item.quantity * item.unit_price;
-                                        const taxAmount = subtotal * (item.tax / 100);
-                                        item.total = subtotal + taxAmount;
+                                        item.total = updateItemTotal(item.quantity, item.unit_price, item.tax);
                                     }}
                                 />
                                 </TableCell>
@@ -194,9 +197,7 @@
                                     step="0.01"
                                     bind:value={item.unit_price}
                                     oninput={(e) => {
-                                        const subtotal = item.quantity * item.unit_price;
-                                        const taxAmount = subtotal * (item.tax / 100);
-                                        item.total = subtotal + taxAmount;
+                                        item.total = updateItemTotal(item.quantity, item.unit_price, item.tax);
                                     }}
                                 />
                                 </TableCell>
@@ -206,9 +207,7 @@
                                         min="1"
                                         bind:value={item.tax}
                                         oninput={(e) => {
-                                            const subtotal = item.quantity * item.unit_price;
-                                            const taxAmount = subtotal * (item.tax / 100);
-                                            item.total = subtotal + taxAmount;
+                                            item.total = updateItemTotal(item.quantity, item.unit_price, item.tax);
                                         }}
                                     />
                                 </TableCell>
@@ -281,19 +280,19 @@
                         <div class="flex justify-between">
                             <span class="text-gray-600">Subtotal</span>
                             <span class="font-medium">
-                            {Number(items.reduce((sum, item) => sum + item.total, 0)).toFixed(2)}
+                            {Number(items.reduce((sum, item) => sum + (item.unit_price * item.quantity ), 0)).toFixed(2)}
                             </span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-600">GST</span>
                             <span class="font-medium">
-                            {Number(items.reduce((sum, item) => sum + item.tax, 0)).toFixed(2)}
+                            {Number(items.reduce((sum, item) => sum + (item.tax/100 * item.unit_price * item.quantity ), 0)).toFixed(2)}
                             </span>
                         </div>
                         <div class="flex justify-between pt-2 border-t">
                             <span class="text-lg font-semibold">Total</span>
                             <span class="text-lg font-bold">
-                            {Number(items.reduce((sum, item) => sum + item.total, 0) * 1.1).toFixed(2)}
+                            {Number(items.reduce((sum, item) => sum + item.total, 0)).toFixed(2)}
                             </span>
                         </div>
                         </div>
