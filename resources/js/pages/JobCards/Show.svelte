@@ -71,7 +71,7 @@
 
     const breadcrumbs: BreadcrumbItem[] = $derived([
         { title: 'Job Cards', href: '/job-cards' },
-        { title: jobCard.item || `Job Card #${jobCard.id}`, href: `/job-cards/${jobCard.id}` },
+        { title: `ID - ${jobCard.id}`, href: `/job-cards/${jobCard.id}` },
     ]);
 
     let getStatusInfo = $derived(jobStatusOptions.find((s:JobStatusOption)=> s.value === jobCard.status) || jobStatusOptions[0]);
@@ -106,9 +106,6 @@
         });
     }
 
-    function handlePrint() {
-        window.print();
-    }
 
     function getDaysUntilDelivery(): string {
         if (!jobCard.delivery_date) return 'No date set';

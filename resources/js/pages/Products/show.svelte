@@ -45,7 +45,7 @@
             href: '/products',
         },
         {
-            title: product.name,
+            title: `ID - ${product.id}`,
             href: `/products/${product.id}`,
         },
     ]);

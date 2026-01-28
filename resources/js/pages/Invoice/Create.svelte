@@ -21,6 +21,7 @@
     let customer_id = $derived(initCustomerId);
 
     const breadcrumbs = [
+        { title: 'Dashboard', href: '/dashboard' },
         { title: 'Invoices', href: '/invoices' },
         { title: 'Create Invoice', href: '/invoices/create' },
     ];
@@ -39,7 +40,6 @@
     let items = $state([
         { id: uniqueId('p-'), name: '', quantity: 1, unit_price: 0, total: 0, tax: 0}
     ]);
-    let nextId = 2;
 </script>
 
 <AppLayout {breadcrumbs}>

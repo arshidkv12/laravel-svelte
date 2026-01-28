@@ -9,11 +9,9 @@
     import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
     import { Separator } from '@/components/ui/separator';
     import { 
-        User, 
         Phone, 
         Mail, 
         MapPin, 
-        Calendar, 
         SquarePen, 
         ArrowLeft,
         FileText,
@@ -23,9 +21,6 @@
         Check,
         Plus,
         ChevronRight,
-
-        Trash2
-
     } from 'lucide-svelte';
     import { Link, page, router } from '@inertiajs/svelte';
     import { toast } from 'svelte-sonner';
@@ -55,7 +50,7 @@
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Customers', href: '/customers' },
-        { title: customer.name, href: `/customers/${customer.id}` },
+        { title: `ID - ${customer.id}`, href: `/customers/${customer.id}` },
     ];
 
     onMount(() => {
