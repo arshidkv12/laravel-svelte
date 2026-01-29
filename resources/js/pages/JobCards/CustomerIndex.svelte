@@ -293,8 +293,9 @@
 
                         <!-- Status Filter -->
                         <div class="space-y-2">
-                            <label class="text-sm font-medium text-gray-700">Status</label>
+                            <label for="selectedStatus" class="text-sm font-medium text-gray-700">Status</label>
                             <select
+                                name="selectedStatus"
                                 bind:value={selectedStatus}
                                 class="w-full h-10 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
                             >
