@@ -2,7 +2,7 @@
     import AppLayout from '@/layouts/AppLayout.svelte';
     import { type Flash, type BreadcrumbItem } from '@/types';
     import { onMount } from 'svelte';
-    import { page } from '@inertiajs/svelte';
+    import { Link, page } from '@inertiajs/svelte';
     import { toast } from 'svelte-sonner';
 
     import { Button } from '@/components/ui/button';
@@ -257,7 +257,7 @@
                     
                     <div class="flex items-center gap-3">
                         <Button 
-                            href={`/job-cards/new${customer ? `?customer_id=${customer.id}` : ''}`}
+                            href={`/job-cards/create${customer ? `?customer_id=${customer.id}` : ''}`}
                             variant="default" 
                             class="gap-2 bg-blue-600 hover:bg-blue-700 text-white"
                         >
@@ -352,14 +352,14 @@
                                     ? 'No job cards have been created for this customer yet.'
                                     : 'No job cards have been created yet.'}
                         </p>
-                        <Button 
-                            href={`/job-cards/new${customer ? `?customer_id=${customer.id}` : ''}`}
-                            variant="default" 
-                            class="gap-2 bg-blue-600 hover:bg-blue-700"
-                        >
-                            <Plus class="h-4 w-4" />
-                            Create Your First Job Card
-                        </Button>
+                        <Link href={`/job-cards/create${customer ? `?customer_id=${customer.id}` : ''}`}>
+                            <Button variant="default" 
+                                class="gap-2 bg-blue-600 hover:bg-blue-700"
+                            >
+                                <Plus class="h-4 w-4" />
+                                Create Your First Job Card
+                            </Button>
+                        </Link>
                     </CardContent>
                 </Card>
             {:else}

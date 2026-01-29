@@ -82,15 +82,17 @@
                 <div class="flex items-center justify-between mb-6">
                     <div class="space-y-1">
                         <div class="flex items-center gap-3">
-                            <Button 
-                                href="/job-cards"
-                                variant="ghost" 
-                                size="sm"
-                                class="p-0 h-auto"
-                            >
-                                <ArrowLeft class="h-4 w-4 mr-2" />
-                                Back to Jobs
-                            </Button>
+                            <Link href={`/job-cards`}>
+                                <Button 
+                                    href="/job-cards"
+                                    variant="ghost" 
+                                    size="sm"
+                                    class="p-0 h-auto"
+                                >
+                                    <ArrowLeft class="h-4 w-4 mr-2" />
+                                    Back to Jobs
+                                </Button>
+                            </Link>
                         </div>
                         <h1 class="text-lg font-bold text-gray-900">
                             Create New Job Card

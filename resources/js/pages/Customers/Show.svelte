@@ -106,23 +106,24 @@
                     
                     <div class="flex flex-col sm:flex-row gap-3">
                         <div class="flex gap-2">
-                            <Button 
-                                href={`/job-cards/new?customer_id=${customer.id}`}
-                                variant="default" 
-                                class="gap-1 sm:gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm md:text-base flex-1 sm:flex-none"
-                            >
-                                <Plus class="h-4 w-4" />
-                                <span class="hidden sm:inline">New Job Card</span>
-                                <span class="sm:hidden">New Job</span>
-                            </Button>
-                            <Button 
-                                href={`/customers/${customer.id}/edit`} 
-                                variant="outline" 
-                                class="gap-1 sm:gap-2 text-sm md:text-base flex-1 sm:flex-none"
-                            >
-                                <SquarePen class="h-4 w-4" />
-                                Edit
-                            </Button>
+                            <Link href={`/job-cards/create?customer_id=${customer.id}`}>
+                                <Button variant="default" 
+                                    class="gap-1 sm:gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm md:text-base flex-1 sm:flex-none"
+                                >
+                                    <Plus class="h-4 w-4" />
+                                    <span class="hidden sm:inline">New Job Card</span>
+                                </Button>
+                            </Link>
+                            <Link href={`/customers/${customer.id}/edit`}>
+                                <Button 
+                                    href={`/customers/${customer.id}/edit`} 
+                                    variant="outline" 
+                                    class="gap-1 sm:gap-2 text-sm md:text-base flex-1 sm:flex-none"
+                                >
+                                    <SquarePen class="h-4 w-4" />
+                                    Edit
+                                </Button>
+                            </Link>
                         </div>
                         
                         <!-- <Button 
@@ -254,35 +255,36 @@
                             </CardTitle>
                         </CardHeader>
                         <CardContent class="space-y-3">
-                            <Button 
-                                href={`/job-cards/new?customer_id=${customer.id}`}
-                                variant="outline" 
-                                class="w-full justify-start gap-3 h-auto py-3"
-                            >
-                                <div class="p-2 bg-blue-50 rounded-lg">
-                                    <Briefcase class="h-4 w-4 text-blue-600" />
-                                </div>
-                                <div class="text-left flex-1">
-                                    <p class="font-medium text-gray-900">Create Job Card</p>
-                                    <p class="text-xs text-gray-500">Start a new job for this customer</p>
-                                </div>
-                                <ChevronRight class="h-4 w-4 text-gray-400" />
-                            </Button>
+                            <Link href={`/job-cards/create?customer_id=${customer.id}`}>
+                                <Button variant="outline" 
+                                    class="w-full justify-start gap-3 h-auto py-3 cursor-pointer"
+                                >
+                                    <div class="p-2 bg-blue-50 rounded-lg">
+                                        <Briefcase class="h-4 w-4 text-blue-600" />
+                                    </div>
+                                    <div class="text-left flex-1">
+                                        <p class="font-medium text-gray-900">Create Job Card</p>
+                                        <p class="text-xs text-gray-500">Start a new job for this customer</p>
+                                    </div>
+                                    <ChevronRight class="h-4 w-4 text-gray-400" />
+                                </Button>
+                            </Link>
 
-                            <Button 
-                                href={`/invoices/new?customer_id=${customer.id}`}
-                                variant="outline" 
-                                class="w-full justify-start gap-3 h-auto py-3"
-                            >
-                                <div class="p-2 bg-green-50 rounded-lg">
-                                    <Receipt class="h-4 w-4 text-green-600" />
-                                </div>
-                                <div class="text-left flex-1">
-                                    <p class="font-medium text-gray-900">Create Invoice</p>
-                                    <p class="text-xs text-gray-500">Generate a new invoice</p>
-                                </div>
-                                <ChevronRight class="h-4 w-4 text-gray-400" />
-                            </Button>
+                            <Link href={`/invoices/create?customer_id=${customer.id}`}>
+                                <Button 
+                                    variant="outline" 
+                                    class="w-full justify-start gap-3 h-auto py-3 mt-3 cursor-pointer"
+                                >
+                                    <div class="p-2 bg-green-50 rounded-lg">
+                                        <Receipt class="h-4 w-4 text-green-600" />
+                                    </div>
+                                    <div class="text-left flex-1">
+                                        <p class="font-medium text-gray-900">Create Invoice</p>
+                                        <p class="text-xs text-gray-500">Generate a new invoice</p>
+                                    </div>
+                                    <ChevronRight class="h-4 w-4 text-gray-400" />
+                                </Button>
+                            </Link>
                         </CardContent>
                     </Card>
                 </div>
