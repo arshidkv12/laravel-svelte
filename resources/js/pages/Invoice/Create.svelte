@@ -176,12 +176,14 @@
                             <TableRow>
                                 <TableCell>
                                 <Input
+                                    name="name[]"
                                     bind:value={item.name}
                                     placeholder="Item description"
                                 />
                                 </TableCell>
                                 <TableCell>
                                 <Input
+                                    name="quantity[]"
                                     type="number"
                                     min="1"
                                     bind:value={item.quantity}
@@ -192,6 +194,7 @@
                                 </TableCell>
                                 <TableCell>
                                 <Input
+                                    name="unit_price[]"
                                     type="number"
                                     min="0"
                                     step="0.01"
@@ -203,6 +206,7 @@
                                 </TableCell>
                                 <TableCell>
                                     <Input
+                                        name="tax[]"
                                         type="number"
                                         min="0"
                                         bind:value={item.tax}
