@@ -6,7 +6,13 @@ export const getSortIcon = (field:string, sort_by:string, sort_dir: string): str
     return sort_dir;
 };
 
-export function changeSort(field:string, filters: Filters, sort_by:string, sort_dir: string, routePath: string) { 
+export function changeSort(
+    filters: Filters, 
+    sort_by:string, 
+    sort_dir: string, 
+    routePath: string,
+    routePathArgsVal: string = ''
+) { 
     
     Object.entries(filters).forEach(([key, value]) => {
         if (value !== '' && value !== null && value !== undefined) {
@@ -14,9 +20,9 @@ export function changeSort(field:string, filters: Filters, sort_by:string, sort_
         }
     });
 
-    filters['sort_by'] = field;
+    filters['sort_by'] = sort_by;
     filters['sort_dir'] = sort_dir === 'asc' ? 'desc': 'asc';
-    router.get(route(routePath), filters, {
+    router.get(route(routePath, routePathArgsVal), filters, {
         preserveState: true,
         replace: true,
         preserveScroll: true

@@ -11,14 +11,22 @@
   import { type Filters } from '@/types';
   import SortIcon from '../general/SortIcon.svelte';
   import { changeSort, getSortIcon } from '@/lib/helper/sortUtils';
+    import { onMount } from 'svelte';
 
-  let { jobCards, filters = $bindable(), sort_by, sort_dir, routePath } = $props<{ 
+  let { jobCards, filters = $bindable(), sort_by, sort_dir, routePath, routePathArgs } = $props<{ 
     jobCards: JobCardsPagination; 
     filters: Filters,
     sort_by: string;
     sort_dir: string;
     routePath: string;
+    routePathArgs?: string;
   }>();
+
+  let routePathArgsVal = $state('');
+
+  onMount(()=>{
+    routePathArgsVal = routePathArgs;
+  });
 
 </script>
 
@@ -30,7 +38,7 @@
           <Button 
             variant="ghost" 
             class="cursor-pointer"
-            onclick={()=>changeSort('job_no', filters, sort_by, sort_dir, 'job-cards.index')}
+            onclick={()=>changeSort(filters, sort_by, sort_dir, routePath, routePathArgsVal)}
           >
               Job No
             <SortIcon direction={getSortIcon('job_no', sort_by, sort_dir)} />
@@ -40,7 +48,7 @@
           <Button 
             variant="ghost" 
             class="cursor-pointer"
-            onclick={()=>changeSort('created_at', filters, sort_by, sort_dir, 'job-cards.index')}
+            onclick={()=>changeSort(filters, sort_by, sort_dir, routePath, routePathArgsVal)}
           >
             Date
             <SortIcon direction={getSortIcon('created_at', sort_by, sort_dir)} />
@@ -54,7 +62,7 @@
           <Button 
             variant="ghost" 
             class="cursor-pointer"
-            onclick={()=>changeSort('delivery_date', filters, sort_by, sort_dir, 'job-cards.index')}
+            onclick={()=>changeSort( filters, sort_by, sort_dir, routePath, routePathArgsVal)}
           >
             Delivery
             <SortIcon direction={getSortIcon('delivery_date', sort_by, sort_dir)} />

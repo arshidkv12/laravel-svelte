@@ -316,33 +316,19 @@ class JobCardController extends Controller
      * Route: GET /customer-job-cards/{customer}?status=all&search=...
      */
     public function jobCardsByCustomer(Request $request, Customer $customer)
-    {
-        // Build query for job cards belonging to this customer
-        $query = JobCard::with('customer')
-            ->where('customer_id', $customer->id)
-            ->latest();
-        
-        // Apply status filter
-        if ($request->has('status') && $request->status !== 'all') {
-            $query->where('status', $request->status);
-        }
-        
-        // Apply search filter
+    { 
+        $query = JobCard::query() ->where('customer_id', $customer->id);
+
         if ($request->has('search') && $request->search) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%")
-                  ->orWhere('job_number', 'like', "%{$search}%");
+            $query->where(function ($query) use ($request) {
+                $query->where('job_no', 'like', '%' . $request->search . '%')
+                ->orWhereHas('customer', function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('phone', 'like', '%' . $request->search . '%');
+                });
             });
         }
-        
-        // Apply priority filter
-        if ($request->has('priority') && $request->priority !== 'all') {
-            $query->where('priority', $request->priority);
-        }
-        
-        // Apply date range filter
+
         if ($request->has('date_from') && $request->date_from) {
             $query->whereDate('created_at', '>=', $request->date_from);
         }
@@ -351,71 +337,42 @@ class JobCardController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
         
-        // Paginate results (15 per page)
-        $jobCards = $query->paginate(15)->withQueryString();
-        
-        // Transform data for Inertia/Svelte
-        $transformedJobCards = $jobCards->map(function ($jobCard) {
-            return [
-                'id' => $jobCard->id,
-                'job_number' => $jobCard->job_number,
-                'title' => $jobCard->title,
-                'description' => $jobCard->description,
-                'status' => $jobCard->status,
-                'priority' => $jobCard->priority,
-                'customer' => [
-                    'id' => $jobCard->customer->id,
-                    'name' => $jobCard->customer->name,
-                ],
-                'created_at' => $jobCard->created_at->toISOString(),
-                'updated_at' => $jobCard->updated_at->toISOString(),
-                'due_date' => $jobCard->due_date?->toISOString(),
-                'formatted_created_at' => $jobCard->created_at->format('M d, Y'),
-                'formatted_due_date' => $jobCard->due_date?->format('M d, Y'),
-            ];
-        });
-        
-        // Get customer stats
-        $customerStats = [
-            'total_job_cards' => $customer->jobCards()->count(),
-            'pending_jobs' => $customer->jobCards()->where('status', 'pending')->count(),
-            'in_progress_jobs' => $customer->jobCards()->where('status', 'in-progress')->count(),
-            'completed_jobs' => $customer->jobCards()->where('status', 'completed')->count(),
-            'cancelled_jobs' => $customer->jobCards()->where('status', 'cancelled')->count(),
+        if ($request->has('status') && $request->status) {
+            $query->where('status', $request->status);
+        }
+
+        $allowedSorts = [
+            'id',
+            'job_no',
+            'created_at',
+            'updated_at',
+            'delivery_date',
+            'status',
+            'total',
         ];
-        
-        // Get status counts for filter
-        $statusCounts = [
-            'all' => $customer->jobCards()->count(),
-            'pending' => $customer->jobCards()->where('status', 'pending')->count(),
-            'in-progress' => $customer->jobCards()->where('status', 'in-progress')->count(),
-            'completed' => $customer->jobCards()->where('status', 'completed')->count(),
-            'cancelled' => $customer->jobCards()->where('status', 'cancelled')->count(),
-            'on_hold' => $customer->jobCards()->where('status', 'on_hold')->count(),
-        ];
-        
-        // Return Inertia response
+
+        $sortBy  = request('sort_by', 'id');
+        $sortDir = request('sort_dir', 'desc');
+
+        if (! in_array($sortBy, $allowedSorts, true)) {
+            $sortBy = 'id';
+        }
+
+        $sortDir = $sortDir === 'asc' ? 'asc' : 'desc';
+    
+        $jobCards = $query
+            ->orderBy($sortBy, $sortDir)
+            ->paginate(25);
+
+        $jobCards->load('customer');
+
         return Inertia::render('JobCards/CustomerIndex', [
-            'jobCards' => $transformedJobCards,
-            'customer' => [
-                'id' => $customer->id,
-                'name' => $customer->name,
-                'email' => $customer->email,
-                'phone' => $customer->phone,
-                'address' => $customer->address,
-                'created_at' => $customer->created_at->toISOString(),
-                'formatted_created_at' => $customer->created_at->format('M d, Y'),
-            ],
-            'customerStats' => $customerStats,
-            'statusCounts' => $statusCounts,
-            'filters' => $request->only(['search', 'status', 'priority', 'date_from', 'date_to']),
-            'pagination' => [
-                'current_page' => $jobCards->currentPage(),
-                'from' => $jobCards->firstItem(),
-                'to' => $jobCards->lastItem(),
-                'total' => $jobCards->total(),
-                'links' => $jobCards->linkCollection()->toArray(),
-            ],
+            'filters' => $request->only(['search', 'status', 'date_from', 'date_to']),
+            'jobCards' => $jobCards,
+            'jobStatusOptions' => JobCardStatus::options(),
+            'sort_by' => $sortBy, 
+            'sort_dir' => $sortDir,
+            'customer' => $customer
         ]);
     }
 

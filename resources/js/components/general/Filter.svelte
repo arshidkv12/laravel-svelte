@@ -11,10 +11,12 @@
     import * as Select from '@/components/ui/select';
     import _, { throttle } from 'lodash';
     import { type Filters } from '@/types';
+    import { onMount } from 'svelte';
 
     let {
         filters = $bindable(),
         routePath,
+        routePathArg,
         statusOptions,
         placeholder = 'Search records',
         enableDateRange = true,
@@ -22,6 +24,7 @@
     } = $props<{
         filters?: Filters;
         routePath: string;
+        routePathArg?: string;
         statusOptions?: { value: string; label: string }[];
         categoryOptions?: { value: string; label: string }[];
         placeholder?: string;
@@ -34,6 +37,7 @@
     let isAdvancedOpen = $state(false);
     let dateFromPopover = $state(false);
     let dateToPopover = $state(false);
+    let routePathArgVal = $state("");
 
     const statusMap = $derived(_.keyBy(statusOptions, 'value'));
     const getLabel = (val:any) => statusMap[val]?.label ?? 'Select Status';
@@ -59,6 +63,9 @@
         }
     }
 
+    onMount(()=>{
+        routePathArgVal = routePathArg;
+    });
 
     function applyFilters() { 
         const cleanFilters: Record<string, any> = {};
@@ -69,7 +76,7 @@
             }
         });
 
-        router.get(route(routePath), localFilters, {
+        router.get(route(routePath, routePathArgVal), localFilters, {
             preserveState: true,
             replace: true,
             preserveScroll: true
@@ -83,7 +90,7 @@
             localFilters[key] = '';
         });
 
-        router.get(route(routePath), localFilters, {
+        router.get(route(routePath, routePathArgVal), localFilters, {
             preserveState: true,
             replace: true,
             preserveScroll: true
@@ -94,7 +101,7 @@
     function clearFilter(key: string) {
         localFilters = { ...localFilters, [key]: '' };
 
-        router.get(route(routePath), localFilters, {
+        router.get(route(routePath, routePathArgVal), localFilters, {
             preserveState: true,
             replace: true,
             preserveScroll: true
