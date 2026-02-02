@@ -131,7 +131,8 @@ class JobCardController extends Controller
         if ($validator->fails()) {
             Inertia::flash([
                 'message' => 'Please fix the errors.',
-                'type' => 'error'
+                'type' => 'error',
+                'initCustomerId' => request('customer_id')
             ]);
             return redirect()->back()
                 ->withErrors($validator)

@@ -16,9 +16,10 @@
     import ProductSelect from '@/components/general/ProductSelect.svelte';
     import { type Product } from '@/types/products';
     import _, { uniqueId } from 'lodash';
+    import { onMount } from 'svelte';
     
     let { customers, csrf_token, initCustomerId } = $props();
-    let customer_id = $derived(initCustomerId);
+    let customer_id = $state(0);
 
     const breadcrumbs = [
         { title: 'Dashboard', href: '/dashboard' },
@@ -52,6 +53,10 @@
         const tax_amount = subtotal * (tax / 100);
         return subtotal + tax_amount;
     }
+
+    onMount(()=>{
+        customer_id = initCustomerId;
+    });
 </script>
 
 <AppLayout {breadcrumbs}>

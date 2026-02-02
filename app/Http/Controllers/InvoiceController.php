@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Invoice;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -14,21 +15,6 @@ class InvoiceController extends Controller
     public function index()
     {
         //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        
-        Inertia::flash([
-            'message' => 'Invoice successfully',
-            'type' => 'success'
-        ]);
-        
-        return redirect()
-            ->route('invoices.index');
     }
 
     public function create(Request $request){
@@ -58,6 +44,36 @@ class InvoiceController extends Controller
     
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'invoice_date'      => 'required|date',
+            'due_date'          => 'nullable|date:invoice_date',
+            'customer_id'       => 'required|exists:customers,id',
+            'subtotal'          => 'required|numeric|min:0',
+            'tax_amount'        => 'nullable|numeric|min:0',
+            'discount_amount'   => 'nullable|numeric|min:0',
+            'total_amount'      => 'required|numeric|min:0',
+            'amount_paid'       => 'nullable|numeric|min:0',
+            'status'            => 'required|string',
+            'job_card_id'       => 'nullable|exists:job_cards,id',
+            'notes'             => 'nullable|string',
+        ]);
+        
+        Invoice::create($validated);
+
+
+        Inertia::flash([
+            'message' => 'Invoice successfully',
+            'type' => 'success'
+        ]);
+        
+        return redirect()
+            ->route('invoices.index');
+    }
 
     /**
      * Display the specified resource.

@@ -40,7 +40,7 @@
       
     let { customers, csrf_token, initCustomerId } = $props();
 
-    let customer_id = $derived(initCustomerId);
+    let customer_id = $state(0);
 
     $effect(() => {  
         const flash = $page.flash as Flash;
@@ -51,6 +51,10 @@
                 toast.error(flash.message);
             }
         }
+    });
+
+    onMount(()=>{
+        customer_id = initCustomerId;
     });
     
     const breadcrumbs: BreadcrumbItem[] = [

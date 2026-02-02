@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\OwnerScope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Invoice extends Model
 {
@@ -45,5 +47,22 @@ class Invoice extends Model
     public function jobCard()
     {
         return $this->belongsTo(JobCard::class);
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($invoice) {
+            $invoice->invoice_no = 'INV-' . str_pad(
+                Invoice::max('id') + rand(1, 10000),
+                5,
+                '0',
+                STR_PAD_LEFT
+            );
+            if (Auth::check() && empty($jobCard->user_id)) {
+                $invoice->user_id = Auth::id();
+            }
+        });
+        
+        static::addGlobalScope(new OwnerScope);
     }
 }
