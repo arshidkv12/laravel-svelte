@@ -21,8 +21,8 @@ return new class extends Migration
             // For product items
             $table->foreignId('product_id')->nullable()->constrained()->onDelete('set null');
             
-            // For custom items
-            $table->string('custom_name')->nullable();
+
+            $table->string('name')->nullable();
                         
             // Pricing
             $table->decimal('quantity', 10, 2)->default(1);

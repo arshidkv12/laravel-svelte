@@ -18,15 +18,12 @@ class InvoiceItem extends Model
         'item_type',
         'product_id',
         'service_id',
-        'custom_name',
-        'custom_description',
-        'description',
+        'name',
         'quantity',
         'unit_price',
         'unit',
         'tax_rate',
         'discount_percentage',
-        'sort_order',
     ];
 
     protected $casts = [

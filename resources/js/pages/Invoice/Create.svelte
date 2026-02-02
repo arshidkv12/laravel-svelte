@@ -29,8 +29,6 @@
 
     let invoice = $state({
         client_id: '',
-        invoice_number: '',
-        issue_date: format(new Date(), 'yyyy-MM-dd'),
         due_date: format(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'),
         status: 'draft',
         notes: ''
@@ -86,46 +84,11 @@
                     </CardHeader>
                     <CardContent class="space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="space-y-2">
-                            <Label class="text-sm font-medium">Select Customer *</Label>
-                            <CustomerSelect initCustomers={customers}  bind:modelValue={customer_id} />
-                            <InputError class="mt-1" message={errors.customer_id} />
-                        </div>
-
-                        <div class="space-y-2">
-                            <Label for="invoice_number">Invoice Number *</Label>
-                            <Input
-                            id="invoice_number"
-                            bind:value={invoice.invoice_number}
-                            placeholder="e.g., INV-2024-001"
-                            />
-                        </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="space-y-2">
-                            <Label for="issue_date">Issue Date *</Label>
-                            <div class="flex items-center gap-2">
-                            <Calendar class="h-4 w-4 text-gray-500" />
-                            <Input
-                                id="issue_date"
-                                type="date"
-                                bind:value={invoice.issue_date}
-                            />
+                            <div class="space-y-2">
+                                <Label class="text-sm font-medium">Select Customer *</Label>
+                                <CustomerSelect initCustomers={customers}  bind:modelValue={customer_id} />
+                                <InputError class="mt-1" message={errors.customer_id} />
                             </div>
-                        </div>
-
-                        <div class="space-y-2">
-                            <Label for="due_date">Due Date *</Label>
-                            <div class="flex items-center gap-2">
-                            <Calendar class="h-4 w-4 text-gray-500" />
-                            <Input
-                                id="due_date"
-                                type="date"
-                                bind:value={invoice.due_date}
-                            />
-                            </div>
-                        </div>
                         </div>
                     </CardContent>
                     </Card>
@@ -181,25 +144,27 @@
                             <TableRow>
                                 <TableCell>
                                 <Input
-                                    name="name[]"
+                                    name={`items[${item.id}].name`}
                                     bind:value={item.name}
                                     placeholder="Item description"
+                                    class={errors?.[`items.${item.id}.name`] ? 'border-red-500 focus:border-red-500' : ''}
                                 />
                                 </TableCell>
                                 <TableCell>
                                 <Input
-                                    name="quantity[]"
+                                    name={`items[${item.id}].quantity`}
                                     type="number"
                                     min="1"
                                     bind:value={item.quantity}
                                     oninput={(e) => {
                                         item.total = updateItemTotal(item.quantity, item.unit_price, item.tax);
                                     }}
+                                    class={errors?.[`items.${item.id}.quantity`] ? 'border-red-500 focus:border-red-500' : ''}
                                 />
                                 </TableCell>
                                 <TableCell>
                                 <Input
-                                    name="unit_price[]"
+                                    name={`items[${item.id}].unit_price`}
                                     type="number"
                                     min="0"
                                     step="0.01"
@@ -207,11 +172,12 @@
                                     oninput={(e) => {
                                         item.total = updateItemTotal(item.quantity, item.unit_price, item.tax);
                                     }}
+                                    class={errors?.[`items.${item.id}.unit_price`] ? 'border-red-500 focus:border-red-500' : ''}
                                 />
                                 </TableCell>
                                 <TableCell>
                                     <Input
-                                        name="tax[]"
+                                        name={`items[${item.id}].tax`}
                                         type="number"
                                         min="0"
                                         bind:value={item.tax}
@@ -219,6 +185,7 @@
                                             item.total = updateItemTotal(item.quantity, item.unit_price, item.tax);
                                         }}
                                     />
+                                    <input type="hidden" name={`items[${item.id}].item_type`}  value="product"/>
                                 </TableCell>
                                 <TableCell class="font-medium">
                                 {Number(item.total).toFixed(2)}
@@ -239,6 +206,7 @@
                             {/each}
                         </TableBody>
                         </Table>
+                        <InputError class="mt-1" message={errors.items} />
                     </CardContent>
                     </Card>
 
@@ -265,7 +233,7 @@
                         <CardTitle>Invoice Status</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <Select.Root type="single" bind:value={status}>
+                        <Select.Root type="single" bind:value={status} name="status">
                             <Select.Trigger class="w-full">
                                {status ? status : "Select status"}
                             </Select.Trigger>

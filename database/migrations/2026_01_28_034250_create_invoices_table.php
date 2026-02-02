@@ -16,9 +16,7 @@ return new class extends Migration
 
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
 
-            $table->string('invoice_number')->unique();
-            $table->date('invoice_date');
-            $table->date('due_date');
+            $table->string('invoice_no')->unique();
             $table->foreignId('customer_id')->constrained()->onDelete('cascade');
             
             // Financial totals
@@ -40,7 +38,6 @@ return new class extends Migration
             // Indexes
             $table->index('customer_id');
             $table->index('status');
-            $table->index('invoice_date');
         });
     }
 
