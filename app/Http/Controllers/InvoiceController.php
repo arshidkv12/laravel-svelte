@@ -47,10 +47,10 @@ class InvoiceController extends Controller
         return Inertia::render('Invoice/Index', [
             'invoices' => $invoices,
             'csrf_token' => csrf_token(),
-            // 'filters' => $request->only(['search', 'status']),
-            // 'statusOptions' => $statusOptions,
-            // 'sort_by' => $sortBy, 
-            // 'sort_dir' => $sortDir
+            'statusOptions' => [],
+            'filters' => $request->only(['search', 'status']),
+            'sort_by' => $sortBy, 
+            'sort_dir' => $sortDir
         ]);
         
     }
