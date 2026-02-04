@@ -161,7 +161,6 @@ class JobCardController extends Controller
 
         JobCardFile::insert($rows);
 
-
         Inertia::flash([
             'message' => 'Job card created successfully',
             'type' => 'success'
@@ -384,7 +383,6 @@ class JobCardController extends Controller
     public function destroy(JobCard $jobCard)
     {
         $jobCard->delete();
-
 
         Inertia::flash([
             'message' => 'Job card deleted successfully',

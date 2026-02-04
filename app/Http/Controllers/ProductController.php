@@ -90,7 +90,15 @@ class ProductController extends Controller
             'status.boolean' => 'Please select status',
         ]);
 
-        return Product::create($data);
+        Product::create($data);
+
+        Inertia::flash([
+            'message' => 'Product created successfully',
+            'type' => 'success'
+        ]);
+
+        return redirect()
+            ->route('products.index');
     }
 
 
@@ -130,7 +138,7 @@ class ProductController extends Controller
         $product->update($validated);
 
         Inertia::flash([
-            'message' => 'Customer created successfully',
+            'message' => 'Product updated successfully',
             'type' => 'success'
         ]);
 
@@ -141,7 +149,14 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
-        return redirect()->back();
+
+        Inertia::flash([
+            'message' => 'Product deleted successfully',
+            'type' => 'success'
+        ]);
+
+        return redirect()
+            ->route('products.index');
     }
 
     /**

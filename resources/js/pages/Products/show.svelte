@@ -20,7 +20,10 @@
         CreditCard,
         Box
     } from 'lucide-svelte';
-    import { type BreadcrumbItem } from '@/types';
+    import { type Flash, type BreadcrumbItem } from '@/types';
+    import { page, router } from '@inertiajs/svelte';
+    import { toast } from 'svelte-sonner';
+    import DeleteConfirmDialog from '@/components/confirm/DeleteConfirmDialog.svelte';
 
     interface Product {
         id: number;
@@ -71,6 +74,17 @@
         if (quantity <= 10) return { text: 'Low Stock', variant: 'outline' as const, icon: CircleAlert };
         return { text: 'In Stock', variant: 'secondary' as const, icon: CircleCheckBig };
     });
+
+    $effect(()=>{
+         const flash = $page.flash as Flash;
+        if (flash?.message) {  
+            if (flash.type === 'success') {
+                toast.success(flash.message);
+            } else if (flash.type === 'error') {
+                toast.error(flash.message);
+            }
+        }
+    })
 
 </script>
 
@@ -384,19 +398,20 @@
                             </Button>
                             
                             
-                            <Button
-                                variant="outline"
-                                class="w-full gap-3 justify-start text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
-                                onclick={() => {
-                                    if (confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
-                                        // Add delete action here
-                                        // $page.delete(route('products.destroy', product.id))
-                                    }
-                                }}
-                            >
-                                <CircleX class="h-4 w-4" />
-                                Delete Product
-                            </Button>
+                            <DeleteConfirmDialog
+                                onConfirm={async () => router.delete(
+                                    route('products.destroy', product.id), {
+                                        preserveScroll: true,
+                                        preserveState: true
+                                    })
+                                }
+                                itemName={product.name}
+                                btnSize={'default'}
+                                title="Delete Product"
+                                description={`This will permanently delete <b>${product.name}</b>. This action cannot be undone.`}
+                                buttonText="Delete"
+                                buttonVariant='outline'
+                            />
                         </CardContent>
                     </Card>
 
