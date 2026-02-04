@@ -96,14 +96,23 @@
                         <Table>
                             <TableHeader>
                                 <TableRow class="bg-gray-50">
-                                    <TableHead class="pl-4 min-w-[120px]">Created</TableHead>
+                                    <TableHead class="pl-4 min-w-[120px]">
+                                        <Button 
+                                            variant="ghost" 
+                                            class="cursor-pointer"
+                                            onclick={()=>changeSort( filters, 'created_at', sort_dir, 'products.index')}
+                                        >
+                                            Created
+                                            <SortIcon direction={getSortIcon('created_at', sort_by, sort_dir)} />
+                                        </Button>
+                                    </TableHead>
                                     <TableHead class="min-w-[180px]">Product Name</TableHead>
                                     <TableHead class="min-w-[100px]">Price</TableHead>
                                     <TableHead class="text-center min-w-[80px]">
                                         <Button 
                                             variant="ghost" 
                                             class="cursor-pointer"
-                                            onclick={()=>changeSort( filters, sort_by, sort_dir, 'products.index')}
+                                            onclick={()=>changeSort( filters, 'quantity', sort_dir, 'products.index')}
                                         >
                                             Stock
                                             <SortIcon direction={getSortIcon('quantity', sort_by, sort_dir)} />
