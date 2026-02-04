@@ -12,9 +12,47 @@ class InvoiceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $query = Invoice::query();
+
+        if ($request->has('search') && $request->search) {
+            $query->where(function ($query) use ($request) {
+                $query->orWhereHas('customer', function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('phone', 'like', '%' . $request->search . '%');
+                });
+            });
+        }
+
+        $allowedSorts = [
+            'id',
+            'created_at',
+            'updated_at',
+        ];
+
+        $sortBy  = request('sort_by', 'id');
+        $sortDir = request('sort_dir', 'desc');
+
+        if (! in_array($sortBy, $allowedSorts, true)) {
+            $sortBy = 'id';
+        }
+
+        $invoices = $query
+            ->with('customer')
+            ->orderBy($sortBy, $sortDir)
+            ->paginate(25);
+
+
+        return Inertia::render('Invoice/Index', [
+            'invoices' => $invoices,
+            'csrf_token' => csrf_token(),
+            // 'filters' => $request->only(['search', 'status']),
+            // 'statusOptions' => $statusOptions,
+            // 'sort_by' => $sortBy, 
+            // 'sort_dir' => $sortDir
+        ]);
+        
     }
 
     public function create(Request $request){
@@ -90,9 +128,14 @@ class InvoiceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Invoice $invoice)
     {
-        //
+        $invoice->load('customer');
+
+        return Inertia::render('JobCards/Show', [
+            'jobCard' => $invoice,
+            'customer' => $invoice->customer,  
+        ]);
     }
 
     /**

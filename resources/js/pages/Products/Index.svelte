@@ -103,7 +103,7 @@
                                         <Button 
                                             variant="ghost" 
                                             class="cursor-pointer"
-                                            onclick={()=>changeSort('quantity', filters, sort_by, sort_dir, 'products.index')}
+                                            onclick={()=>changeSort( filters, sort_by, sort_dir, 'products.index')}
                                         >
                                             Stock
                                             <SortIcon direction={getSortIcon('quantity', sort_by, sort_dir)} />

@@ -63,8 +63,9 @@ class JobCardController extends Controller
         $sortDir = $sortDir === 'asc' ? 'asc' : 'desc';
     
         $jobCards = $query
+            ->with('customer')
             ->orderBy($sortBy, $sortDir)
-            ->paginate(25);
+            ->paginate(2);
 
         $jobCards->load('customer');
 

@@ -128,6 +128,7 @@
       <!-- Desktop Table -->
       <JobTable 
         routePath={`customers.job-cards.index`}
+        routePathArgs={customer.id}
         {sort_by} 
         {sort_dir} 
         jobCards={jobCards} 
