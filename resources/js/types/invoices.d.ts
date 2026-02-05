@@ -32,6 +32,11 @@ export interface Pagination {
     to: number;
 }
 
+export interface InvoiceStatusOption {
+    value: string;
+    label: string;
+};
+
 export interface InvoiceItem {
     id: string;                     
     

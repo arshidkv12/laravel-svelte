@@ -15,16 +15,17 @@
     import { type BaseFormSnippetProps } from '@/types/forms';
     import ProductSelect from '@/components/general/ProductSelect.svelte';
     import { type Product } from '@/types/products';
-    import { type InvoiceItem, type Invoice } from '@/types/invoices';
+    import { type InvoiceItem, type Invoice, type InvoiceStatusOption } from '@/types/invoices';
     import _, { uniqueId } from 'lodash';
     import { onMount } from 'svelte';
     import { type Customer } from '@/types/customers';
     
-    let { customers, csrf_token, invoice, invoiceItems } = $props() as {
+    let { customers, csrf_token, invoice, invoiceItems, invoiceStatusOptions } = $props() as {
         customers: Customer[];
         csrf_token: string;
         invoice: Invoice;
-        invoiceItems: InvoiceItem[]
+        invoiceItems: InvoiceItem[],
+        invoiceStatusOptions: InvoiceStatusOption[]
     };    
 
     let customer_id = $state(0);
@@ -51,6 +52,7 @@
         const tax_amount = subtotal * (tax / 100);
         return subtotal + tax_amount;
     }
+
 
     onMount(()=>{
         items = invoiceItems;
@@ -127,7 +129,7 @@
                                 items[existingIndex].line_total = calculateTotal(
                                     items[existingIndex].quantity, 
                                     items[existingIndex].unit_price, 
-                                    items[existingIndex].tax_rate
+                                    items[existingIndex].tax_rate,
                                 );
                             } else {
                                 items = [...items, { 
@@ -136,6 +138,7 @@
                                     quantity: 1, 
                                     unit_price: product.price, 
                                     tax_rate: product.tax, 
+                                    product_id: product.id, 
                                     line_total: calculateTotal(1, product.price, product.tax)
                                 }];
                             }
@@ -248,13 +251,14 @@
                     <CardContent>
                         <Select.Root type="single" bind:value={status} name="status">
                             <Select.Trigger class="w-full">
-                               {status ? status : "Select status"}
+                                {invoiceStatusOptions.find((s: InvoiceStatusOption) => s.value === status)?.label 
+                                || 'Select Status'
+                                }
                             </Select.Trigger>
                             <Select.Content>
-                                <Select.Item value="draft">Draft</Select.Item>
-                                <Select.Item value="sent">Sent</Select.Item>
-                                <Select.Item value="paid">Paid</Select.Item>
-                                <Select.Item value="cancelled">Cancelled</Select.Item>
+                                {#each invoiceStatusOptions as option}
+                                <Select.Item value={option.value}>{option.label}</Select.Item>
+                                {/each}
                             </Select.Content>
                             </Select.Root>
                     </CardContent>

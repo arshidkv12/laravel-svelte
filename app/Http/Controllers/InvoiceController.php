@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\InvoiceStatus;
 use App\Models\Customer;
 use App\Models\Invoice;
 use Illuminate\Http\Request;
@@ -77,6 +78,7 @@ class InvoiceController extends Controller
         return Inertia::render('Invoice/Create', [
             'initCustomerId' => $customer_id,
             'customers' => $customers,
+            'invoiceStatusOptions' => InvoiceStatus::options(),
             'csrf_token' => csrf_token()
         ]);
     
@@ -189,6 +191,7 @@ class InvoiceController extends Controller
             'invoice' => $invoice,
             'invoiceItems' => $invoice->items()->get(), 
             'customers' => $customers,
+            'invoiceStatusOptions' => InvoiceStatus::options(),
             'csrf_token' => csrf_token()
         ]);
     }
