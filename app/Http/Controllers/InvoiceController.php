@@ -56,6 +56,13 @@ class InvoiceController extends Controller
             ->orderBy($sortBy, $sortDir)
             ->paginate(25);
 
+        $totals = (clone $query)
+                    // ->selectRaw('SUM(total_amount) as totalAmount, SUM(paid) as paidAmount')
+                    ->selectRaw('SUM(total_amount) as totalAmount')
+                    ->first();
+        
+        $totalAmount = $totals->totalAmount ?? 0;
+        $paidAmount  = $totals->paidAmount ?? 0;
 
         return Inertia::render('Invoice/Index', [
             'invoices' => $invoices,
@@ -63,7 +70,9 @@ class InvoiceController extends Controller
             'statusOptions' => InvoiceStatus::options(),
             'filters' => $request->only(['search', 'status']),
             'sort_by' => $sortBy, 
-            'sort_dir' => $sortDir
+            'sort_dir' => $sortDir,
+            'totalAmount' => $totalAmount,
+            'paidAmount' => $paidAmount
         ]);
         
     }

@@ -13,8 +13,9 @@
     import { toast } from 'svelte-sonner';
     import SortIcon from '@/components/general/SortIcon.svelte';
     import { changeSort, getSortIcon } from '@/lib/helper/sortUtils';
+    import Badge from '@/components/ui/badge/badge.svelte';
 
-    let { invoices, filters, statusOptions, sort_by, sort_dir } = $props();
+    let { invoices, filters, statusOptions, sort_by, sort_dir, totalAmount, paidAmount } = $props();
     // svelte-ignore state_referenced_locally
     let localFilters = $state<Filters>({ ...filters });
 
@@ -83,11 +84,22 @@
                     <CardTitle>Invoice List</CardTitle>
                     <CardDescription>
                         Showing {invoices.from} to {invoices.to} of {invoices.total} invoices
+                        <div class="mt-2 flex items-center gap-3">
+                            <Badge variant="outline" class="bg-background">
+                                Total: {totalAmount}
+                            </Badge>
+                            <Badge variant="outline" class="bg-green-50 text-green-700 border-green-200">
+                                Paid: {paidAmount}
+                            </Badge>
+                            <Badge variant="outline" class="bg-amber-50 text-amber-700 border-amber-200">
+                                Pending: {totalAmount - paidAmount}
+                            </Badge>
+                        </div>
                     </CardDescription>
                 </div>
                 <!-- <Button variant="outline" size="sm" onclick={exportInvoices} class="gap-2">
                     <Download class="h-4 w-4" />
-                    Exportx
+                    Export
                 </Button> -->
             </CardHeader>
             <CardContent>
@@ -96,7 +108,7 @@
                         <Table>
                             <TableHeader>
                                 <TableRow class="bg-gray-50">
-                                    <TableHead class="pl-4 min-w-[120px]">Invoice No</TableHead>
+                                    <TableHead class="pl-4 min-w-[60px]">Invoice No</TableHead>
                                     <TableHead class="pl-4 min-w-[120px]">Created</TableHead>
                                     <TableHead class="min-w-[180px]">Customer</TableHead>
                                     <TableHead class="min-w-[100px]">Total Amount</TableHead>
@@ -124,12 +136,15 @@
                                         <TableCell>
                                             <Link href={`/invoices/${invoice.id}`}>
                                                   <div class="flex items-center gap-3">
-                                                            <div class="p-2 bg-blue-50 rounded-lg">
+                                                        <div class="p-2 bg-blue-50 rounded-lg">
                                                                 <User class="h-3.5 w-3.5 text-blue-600" />
-                                                            </div>
-                                                            <div class="min-w-0">
-                                                            <div class="font-medium text-gray-900 max-w-[150px] truncate text-sm">
+                                                        </div>
+                                                        <div class="min-w-0">
+                                                            <div class="font-medium text-gray-900 max-w-[180px] truncate text-sm">
                                                                 {invoice.customer.name}
+                                                            </div>
+                                                            <div class="text-xs text-gray-500">
+                                                                Mob: {invoice.customer.phone}
                                                             </div>
                                                         </div>
                                                     </div>
