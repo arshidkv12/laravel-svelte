@@ -4,7 +4,7 @@
     import { Button } from '@/components/ui/button';
     import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
     import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-    import { Search, Plus, SquarePen, Eye, EllipsisVertical, Funnel, Download } from 'lucide-svelte';
+    import { Search, Plus, SquarePen, Eye, EllipsisVertical, Funnel, Download, User } from 'lucide-svelte';
     import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
     import { Link, page, router } from '@inertiajs/svelte';
     import PaginationUi from '@/components/general/Pagination.svelte';
@@ -96,21 +96,11 @@
                         <Table>
                             <TableHeader>
                                 <TableRow class="bg-gray-50">
-                                    <TableHead class="pl-4 min-w-[120px]">Invoice Number</TableHead>
+                                    <TableHead class="pl-4 min-w-[120px]">Invoice No</TableHead>
                                     <TableHead class="pl-4 min-w-[120px]">Created</TableHead>
-                                    <TableHead class="min-w-[180px]">Invoice Name</TableHead>
-                                    <TableHead class="min-w-[100px]">Price</TableHead>
-                                    <TableHead class="text-center min-w-[80px]">
-                                        <Button 
-                                            variant="ghost" 
-                                            class="cursor-pointer"
-                                            onclick={()=>changeSort( filters, sort_by, sort_dir, 'invoices.index')}
-                                        >
-                                            Stock
-                                            <SortIcon direction={getSortIcon('quantity', sort_by, sort_dir)} />
-                                        </Button>
-                                    </TableHead>
-                                    <TableHead class="min-w-[100px]">Status</TableHead>
+                                    <TableHead class="min-w-[180px]">Customer</TableHead>
+                                    <TableHead class="min-w-[100px]">Total Amount</TableHead>
+                                    <TableHead class="min-w-[100px]">Paid</TableHead>
                                     <TableHead class="w-20 text-center">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -133,32 +123,30 @@
                                         </TableCell>
                                         <TableCell>
                                             <Link href={`/invoices/${invoice.id}`}>
-                                                <div class="max-w-[250px] whitespace-normal">
-                                                    <p class="font-medium line-clamp-2" title={invoice.name}>
-                                                        {invoice.name}
-                                                    </p>
+                                                  <div class="flex items-center gap-3">
+                                                            <div class="p-2 bg-blue-50 rounded-lg">
+                                                                <User class="h-3.5 w-3.5 text-blue-600" />
+                                                            </div>
+                                                            <div class="min-w-0">
+                                                            <div class="font-medium text-gray-900 max-w-[150px] truncate text-sm">
+                                                                {invoice.customer.name}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                            </Link>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Link href={`/invoices/${invoice.id}`}>
+                                                <div class="font-medium">
+                                                    {invoice.total_amount || '-'}
                                                 </div>
                                             </Link>
                                         </TableCell>
                                         <TableCell>
                                             <Link href={`/invoices/${invoice.id}`}>
                                                 <div class="font-medium">
-                                                    <span class="md:hidden text-sm">Price: </span>
-                                                    {invoice.price || '-'}
+                                                    {invoice.paid || '-'}
                                                 </div>
-                                            </Link>
-                                        </TableCell>
-                                        <TableCell class="text-center">
-                                            <Link href={`/invoices/${invoice.id}`}>
-                                                <div>
-                                                    <span class="md:hidden text-sm">Stock: </span>
-                                                    {invoice.quantity}
-                                                </div>
-                                            </Link>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Link href={`/invoices/${invoice.id}`}>
-                                                {invoice.status ? 'Active' : 'Inactive'}
                                             </Link>
                                         </TableCell>
                                         <TableCell class="text-center">

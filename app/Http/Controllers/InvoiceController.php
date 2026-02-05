@@ -109,8 +109,30 @@ class InvoiceController extends Controller
         ],[
             'items.required'              => 'Please add items'
         ]);
+
+        $subtotal = 0;
+        $taxAmount = 0;
+
+        foreach ($validatedItems['items'] as $item) {
+            $lineTotal = $item['quantity'] * $item['unit_price'];
+            $subtotal += $lineTotal;
+
+            if (!empty($item['tax_rate'])) {
+                $taxAmount += $lineTotal * ($item['tax_rate'] / 100);
+            }
+        }
+
+        $discountAmount = $validated['discount_amount'] ?? 0;
+        $totalAmount    = $subtotal + $taxAmount - $discountAmount;
+        $amountPaid     = $validated['amount_paid'] ?? 0;
         
-        $invoice = Invoice::create($validated);
+        
+        $invoice = Invoice::create(array_merge($validated, [
+            'subtotal'      => $subtotal,
+            'tax_amount'    => $taxAmount,
+            'total_amount'  => $totalAmount,
+            // 'amount_paid'   => $amountPaid,
+        ]));
 
         foreach ($validatedItems['items'] as $item) {
             $invoice->items()->create($item);
@@ -139,12 +161,106 @@ class InvoiceController extends Controller
     }
 
     /**
+     * Edit invoice
+     */
+    public function edit(Invoice $invoice)
+    {
+        $customer = Customer::where('id', $invoice->customer_id)
+            ->get()
+            ->map(fn ($c) => [
+                'value' => $c->id,
+                'label' => "{$c->name} - {$c->phone}",
+            ]);
+
+        $customers = Customer::latest()
+            ->limit(5)          
+            ->get()             
+            ->map(fn ($c) => [
+                'value' => $c->id,
+                'label' => "{$c->name} - {$c->phone}",
+            ]);
+
+        $customers = $customer
+            ->merge($customers)
+            ->unique('value')
+            ->values();   
+
+        return Inertia::render('Invoice/Edit', [
+            'invoice' => $invoice,
+            'invoiceItems' => $invoice->items()->get(), 
+            'customers' => $customers,
+            'csrf_token' => csrf_token()
+        ]);
+    }
+
+
+    /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Invoice $invoice)
     {
-        //
+        $validated = $request->validate([
+            'customer_id'       => 'required|exists:customers,id',
+            'discount_amount'   => 'nullable|numeric|min:0',
+            'amount_paid'       => 'nullable|numeric|min:0',
+            'status'            => 'required|string',
+            'job_card_id'       => 'nullable|exists:job_cards,id',
+            'notes'             => 'nullable|string',
+        ]);
+
+        $validatedItems = $request->validate([
+            'items' => 'required|array|min:1',
+            'items.*.item_type'   => 'required|string',
+            'items.*.product_id'  => 'nullable|exists:products,id',
+            'items.*.service_id'  => 'nullable|exists:services,id',
+            'items.*.name'        => 'required|string',
+            'items.*.quantity'    => 'required|numeric|min:0',
+            'items.*.unit_price'  => 'required|numeric|min:0',
+            'items.*.unit'        => 'nullable|string',
+            'items.*.tax_rate'    => 'nullable|numeric|min:0',
+        ], [
+            'items.required' => 'Please add items'
+        ]);
+
+        $subtotal = 0;
+        $taxAmount = 0;
+
+        foreach ($validatedItems['items'] as $item) {
+            $lineTotal = $item['quantity'] * $item['unit_price'];
+            $subtotal += $lineTotal;
+
+            if (!empty($item['tax_rate'])) {
+                $taxAmount += $lineTotal * ($item['tax_rate'] / 100);
+            }
+        }
+
+        $discountAmount = $validated['discount_amount'] ?? 0;
+        $totalAmount    = $subtotal + $taxAmount - $discountAmount;
+        $amountPaid     = $validated['amount_paid'] ?? 0;
+
+        $invoice->update(array_merge($validated, [
+            'subtotal'      => $subtotal,
+            'tax_amount'    => $taxAmount,
+            'total_amount'  => $totalAmount,
+            // 'amount_paid'   => $amountPaid,
+        ]));
+
+        $invoice->items()->delete();
+
+        foreach ($validatedItems['items'] as $item) {
+            $invoice->items()->create($item);
+        }
+
+        Inertia::flash([
+            'message' => 'Invoice updated successfully',
+            'type' => 'success'
+        ]);
+
+        return redirect()->route('invoices.index');
     }
+
+
+    
 
     /**
      * Remove the specified resource from storage.

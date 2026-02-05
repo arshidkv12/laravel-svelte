@@ -15,24 +15,26 @@
     import { type BaseFormSnippetProps } from '@/types/forms';
     import ProductSelect from '@/components/general/ProductSelect.svelte';
     import { type Product } from '@/types/products';
+    import { type InvoiceItem, type Invoice } from '@/types/invoices';
     import _, { uniqueId } from 'lodash';
     import { onMount } from 'svelte';
-    import { type InvoiceItem } from '@/types/invoices';
+    import { type Customer } from '@/types/customers';
     
-    let { customers, csrf_token, initCustomerId } = $props();
+    let { customers, csrf_token, invoice, invoiceItems } = $props() as {
+        customers: Customer[];
+        csrf_token: string;
+        invoice: Invoice;
+        invoiceItems: InvoiceItem[]
+    };    
+
     let customer_id = $state(0);
+    let notes = $state('');
 
     const breadcrumbs = [
         { title: 'Dashboard', href: '/dashboard' },
         { title: 'Invoices', href: '/invoices' },
         { title: 'Create Invoice', href: '/invoices/create' },
     ];
-
-    let invoice = $state({
-        due_date: format(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'),
-        status: 'draft',
-        notes: ''
-    });
 
     let status = $state('draft');
 
@@ -51,16 +53,19 @@
     }
 
     onMount(()=>{
-        items = items.filter(i => i.id !== '0');
-        customer_id = initCustomerId;
+        items = invoiceItems;
+        customer_id = invoice.customer_id;
+        notes = invoice.notes ?? '';
+        status = invoice.status;
     });
+
 </script>
 
 <AppLayout {breadcrumbs}>
     <div class="container mx-auto p-4">
         <Form
-            method="post" 
-            action={route('invoices.store')} 
+            method="put" 
+            action={route('invoices.update', invoice.id)} 
             class="space-y-6">
             {#snippet children({ errors, processing }: BaseFormSnippetProps)}
         
@@ -100,7 +105,15 @@
                             Invoice Items
                         </CardTitle>
                         <Button type="button" size="sm" onclick={() => {
-                            items = [...items, { id: uniqueId('p-'), name: '', quantity: 1, unit_price: 0, tax_rate: 0, line_total: 0 }];
+                            items = [...items, { 
+                                id: uniqueId('p-'), 
+                                name: '', 
+                                quantity: 1, 
+                                unit_price: 0, 
+                                tax_rate: 0, 
+                                line_tax: 0,
+                                line_total: 0 
+                            }];
                         }}>
                         <Plus class="h-4 w-4 mr-2" />
                         Add Item
@@ -217,7 +230,7 @@
                     <CardContent>
                         <Textarea
                         name="notes"
-                        bind:value={invoice.notes}
+                        bind:value={notes}
                         placeholder="Additional notes or terms..."
                         rows={3}
                         />
@@ -269,7 +282,7 @@
                         <div class="flex justify-between pt-2 border-t">
                             <span class="text-lg font-semibold">Total</span>
                             <span class="text-lg font-bold">
-                            {Number(items.reduce((sum, item) => sum + item.line_total, 0)).toFixed(2)}
+                            {Number(items.reduce((sum, item) => sum + Number(item.line_total), 0)).toFixed(2)}
                             </span>
                         </div>
                         </div>
