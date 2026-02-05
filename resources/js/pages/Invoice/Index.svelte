@@ -110,7 +110,7 @@
                                         <TableCell class="pl-4">
                                             <Link href={`/invoices/${invoice.id}`}>
                                                 <div class="text-muted-foreground">
-                                                    {String(invoice.invoice_no).padStart(5, '0')}
+                                                    {invoice.invoice_no}
                                                 </div>
                                             </Link>
                                         </TableCell>
@@ -176,10 +176,10 @@
                                                                 preserveState: true
                                                             })
                                                         }
-                                                        itemName={invoice.name}
+                                                        itemName={invoice.invoice_no}
                                                         btnSize={'default'}
                                                         title="Delete Invoice"
-                                                        description={`This will permanently delete <b>${invoice.name}</b>. This action cannot be undone.`}
+                                                        description={`This will permanently delete <b>#${invoice.invoice_no}</b>. This action cannot be undone.`}
                                                         buttonText="Delete"
                                                         buttonVariant='outline'
                                                     />

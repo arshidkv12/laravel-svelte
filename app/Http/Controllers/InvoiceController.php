@@ -26,6 +26,18 @@ class InvoiceController extends Controller
             });
         }
 
+        if ($request->has('date_from') && $request->date_from) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+        
+        if ($request->has('date_to') && $request->date_to) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+        
+        if ($request->has('status') && $request->status) {
+            $query->where('status', $request->status);
+        }
+
         $allowedSorts = [
             'id',
             'created_at',
@@ -48,7 +60,7 @@ class InvoiceController extends Controller
         return Inertia::render('Invoice/Index', [
             'invoices' => $invoices,
             'csrf_token' => csrf_token(),
-            'statusOptions' => [],
+            'statusOptions' => InvoiceStatus::options(),
             'filters' => $request->only(['search', 'status']),
             'sort_by' => $sortBy, 
             'sort_dir' => $sortDir
@@ -268,8 +280,17 @@ class InvoiceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Invoice $invoice)
     {
-        //
+        $invoice->delete();
+
+        Inertia::flash([
+            'message' => 'Invoice deleted successfully',
+            'type' => 'success'
+        ]);
+
+        return redirect()
+            ->route('invoices.index');
     }
+    
 }

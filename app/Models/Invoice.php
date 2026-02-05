@@ -36,6 +36,10 @@ class Invoice extends Model
         'created_at_formatted',
     ];
 
+    public function getInvoiceNoAttribute($value)
+    {
+        return str_pad($value, 5, '0', STR_PAD_LEFT);
+    }
     
     public function getCreatedAtFormattedAttribute(): string
     {
