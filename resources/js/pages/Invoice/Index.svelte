@@ -96,6 +96,7 @@
                         <Table>
                             <TableHeader>
                                 <TableRow class="bg-gray-50">
+                                    <TableHead class="pl-4 min-w-[120px]">Invoice Number</TableHead>
                                     <TableHead class="pl-4 min-w-[120px]">Created</TableHead>
                                     <TableHead class="min-w-[180px]">Invoice Name</TableHead>
                                     <TableHead class="min-w-[100px]">Price</TableHead>
@@ -116,6 +117,13 @@
                             <TableBody>
                                 {#each invoices.data as invoice (invoice.id)}
                                     <TableRow class="hover:bg-muted/50">
+                                        <TableCell class="pl-4">
+                                            <Link href={`/invoices/${invoice.id}`}>
+                                                <div class="text-muted-foreground">
+                                                    {String(invoice.invoice_no).padStart(5, '0')}
+                                                </div>
+                                            </Link>
+                                        </TableCell>
                                         <TableCell class="pl-4">
                                             <Link href={`/invoices/${invoice.id}`}>
                                                 <div class="text-muted-foreground">

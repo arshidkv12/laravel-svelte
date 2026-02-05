@@ -16,7 +16,9 @@ return new class extends Migration
 
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
 
-            $table->string('invoice_no')->unique();
+            $table->unsignedInteger('invoice_no');
+            $table->unique(['user_id', 'invoice_no'], 'uniq_user_invoice');
+
             $table->foreignId('customer_id')->constrained()->onDelete('cascade');
             
             // Financial totals
@@ -27,10 +29,7 @@ return new class extends Migration
             
             // Status
             $table->string('status', 50)->default('draft');
-            
-            // References
-            $table->foreignId('job_card_id')->nullable()->constrained()->onDelete('set null');
-            
+                    
             // Metadata
             $table->text('notes')->nullable();
             $table->timestamps();

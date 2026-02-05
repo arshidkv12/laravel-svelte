@@ -23,7 +23,9 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
                 
-            $table->string('job_no')->unique();
+            $table->unsignedInteger('job_no');
+            $table->unique(['user_id', 'job_no'], 'uniq_user_jobcard');
+
             $table->string('item')->nullable();  
             $table->text('problem')->nullable();
 

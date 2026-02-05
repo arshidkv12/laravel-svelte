@@ -7,6 +7,7 @@ use App\Models\Scopes\OwnerScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class JobCard extends Model
 {
@@ -63,26 +64,17 @@ class JobCard extends Model
     protected static function booted()
     {
         static::creating(function ($jobCard) {
-            $jobCard->job_no = 'JC-' . str_pad(
-                JobCard::max('id') + rand(1, 10000),
-                5,
-                '0',
-                STR_PAD_LEFT
-            );
             if (Auth::check() && empty($jobCard->user_id)) {
                 $jobCard->user_id = Auth::id();
             }
-        });
 
-        static::created(function ($jobCard) {
-            $jobCard->job_no = 'JC-' . str_pad(
-                $jobCard->id,
-                5,
-                '0',
-                STR_PAD_LEFT
-            );
+            DB::transaction(function () use ($jobCard) {
+                $last = JobCard::where('user_id', $jobCard->user_id)
+                    ->lockForUpdate()
+                    ->max('job_no');
 
-            $jobCard->saveQuietly();
+                $jobCard->job_no = ($last ?? 0) + 1;
+            });
         });
         
         static::addGlobalScope(new OwnerScope);

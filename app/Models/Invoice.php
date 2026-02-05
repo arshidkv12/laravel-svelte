@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Scopes\OwnerScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class Invoice extends Model
 {
@@ -61,15 +62,17 @@ class Invoice extends Model
     protected static function booted()
     {
         static::creating(function ($invoice) {
-            $invoice->invoice_no = 'INV-' . str_pad(
-                Invoice::max('id') + rand(1, 10000),
-                5,
-                '0',
-                STR_PAD_LEFT
-            );
-            if (Auth::check() && empty($jobCard->user_id)) {
+            if (Auth::check() && empty($invoice->user_id)) {
                 $invoice->user_id = Auth::id();
             }
+
+            DB::transaction(function () use ($invoice) {
+                $last = Invoice::where('user_id', $invoice->user_id)
+                    ->lockForUpdate()
+                    ->max('invoice_no');
+
+                $invoice->invoice_no = ($last ?? 0) + 1;
+            });
         });
         
         static::addGlobalScope(new OwnerScope);
