@@ -54,7 +54,7 @@
     }
 
 
-    onMount(()=>{
+    onMount(()=>{ 
         items = invoiceItems;
         customer_id = invoice.customer_id;
         notes = invoice.notes ?? '';

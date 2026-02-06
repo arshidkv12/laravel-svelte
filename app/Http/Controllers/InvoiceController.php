@@ -177,9 +177,11 @@ class InvoiceController extends Controller
     {
         $invoice->load('customer');
 
-        return Inertia::render('JobCards/Show', [
-            'jobCard' => $invoice,
+        return Inertia::render('Invoice/Show', [
+            'invoice' => $invoice,
             'customer' => $invoice->customer,  
+            'invoiceStatusOptions' => InvoiceStatus::options(),
+            'invoiceItems' => $invoice->items()->get(), 
         ]);
     }
 
@@ -280,7 +282,7 @@ class InvoiceController extends Controller
             'type' => 'success'
         ]);
 
-        return redirect()->route('invoices.index');
+        return redirect()->route('invoices.show', $invoice);
     }
 
 
