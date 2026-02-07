@@ -11,7 +11,7 @@
     import { format } from 'date-fns';
     import CustomerSelect from '@/components/customer/CustomerSelect.svelte';
     import InputError from '@/components/InputError.svelte';
-    import { Form } from '@inertiajs/svelte';
+    import { Form, page } from '@inertiajs/svelte';
     import { type BaseFormSnippetProps } from '@/types/forms';
     import ProductSelect from '@/components/general/ProductSelect.svelte';
     import { type Product } from '@/types/products';
@@ -19,7 +19,8 @@
     import _, { uniqueId } from 'lodash';
     import { onMount } from 'svelte';
     import { type Customer } from '@/types/customers';
-    
+    import { type User as UserType } from '@/types';
+
     let { customers, csrf_token, invoice, invoiceItems, invoiceStatusOptions } = $props() as {
         customers: Customer[];
         csrf_token: string;
@@ -53,13 +54,14 @@
         return subtotal + tax_amount;
     }
 
-
     onMount(()=>{ 
         items = invoiceItems;
         customer_id = invoice.customer_id;
         notes = invoice.notes ?? '';
         status = invoice.status;
     });
+
+    const user = $page.props.auth.user as UserType;
 
 </script>
 
@@ -274,19 +276,19 @@
                         <div class="flex justify-between">
                             <span class="text-gray-600">Subtotal</span>
                             <span class="font-medium">
-                            {Number(items.reduce((sum, item) => sum + (item.unit_price * item.quantity ), 0)).toFixed(2)}
+                            {user.currency_symbol}{Number(items.reduce((sum, item) => sum + (item.unit_price * item.quantity ), 0)).toFixed(2)}
                             </span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-600">GST</span>
                             <span class="font-medium">
-                            {Number(items.reduce((sum, item) => sum + (item.tax_rate/100 * item.unit_price * item.quantity ), 0)).toFixed(2)}
+                            {user.currency_symbol}{Number(items.reduce((sum, item) => sum + (item.tax_rate/100 * item.unit_price * item.quantity ), 0)).toFixed(2)}
                             </span>
                         </div>
                         <div class="flex justify-between pt-2 border-t">
                             <span class="text-lg font-semibold">Total</span>
                             <span class="text-lg font-bold">
-                            {Number(items.reduce((sum, item) => sum + Number(item.line_total), 0)).toFixed(2)}
+                            {user.currency_symbol}{Number(items.reduce((sum, item) => sum + Number(item.line_total), 0)).toFixed(2)}
                             </span>
                         </div>
                         </div>

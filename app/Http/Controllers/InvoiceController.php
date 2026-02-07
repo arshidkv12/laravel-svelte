@@ -73,7 +73,6 @@ class InvoiceController extends Controller
         $totalAmount = $totals->totalAmount ?? 0;
         $paidAmount = $totals->paidAmount ?? 0;
 
-
         return Inertia::render('Invoice/Index', [
             'invoices' => $invoices,
             'csrf_token' => csrf_token(),

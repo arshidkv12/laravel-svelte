@@ -11,16 +11,15 @@
     import { page } from '@inertiajs/svelte';
     import { type Flash } from '@/types';
     import { toast } from 'svelte-sonner';
-    import { onMount } from 'svelte';
     import { Link } from '@/components/ui/breadcrumb';
-    
+    import { type User as UserType } from '@/types';
+
     let { invoice, customer, invoiceItems, invoiceStatusOptions } = $props() as {
         invoice: Invoice;
         customer: Customer;
         invoiceItems: InvoiceItem[];
         invoiceStatusOptions: InvoiceStatusOption[];
     };
-
 
     const breadcrumbs = $derived([
         { title: 'Dashboard', href: '/dashboard' },
@@ -48,7 +47,6 @@
     const taxTotal = $derived(invoiceItems.reduce((sum, item) => sum + ((item.quantity * item.unit_price) * (item.tax_rate / 100)), 0));
     const total = $derived(subtotal + taxTotal);
 
-
     $effect(() => {   
         const flash = $page.flash as Flash;
         if (flash?.message) {  
@@ -60,7 +58,9 @@
         }
     });
 
-</script>id
+    const user = $page.props.auth.user as UserType;
+
+</script>
 
 <AppLayout {breadcrumbs}>
     <div class="container mx-auto p-4">
@@ -115,52 +115,52 @@
                     <CardContent>
                         <div class="overflow-x-auto rounded-md border">
                             <Table>
-    <TableHeader class="bg-gray-50">
-        <TableRow>
-            <TableHead class="font-semibold w-2/3">Description</TableHead>
-            <TableHead class="font-semibold text-center w-16">Qty</TableHead>
-            <TableHead class="font-semibold text-center w-32">Unit Price</TableHead>
-            <TableHead class="font-semibold text-center w-24">Tax</TableHead>
-            <TableHead class="font-semibold text-right w-32">Total</TableHead>
-        </TableRow>
-    </TableHeader>
-    <TableBody>
-        {#each invoiceItems as item}
-            <TableRow class="hover:bg-gray-50">
-                <TableCell class="font-medium">
-                    <div class="pr-4">
-                        <div class="font-medium text-gray-900">{item.name}</div>
-                    </div>
-                </TableCell>
-                <TableCell class="text-center align-top">{item.quantity}</TableCell>
-                <TableCell class="text-center align-top">{Number(item.unit_price).toFixed(2)}</TableCell>
-                <TableCell class="text-center align-top">{item.tax_rate}%</TableCell>
-                <TableCell class="text-right align-top font-semibold">
-                    {Number(calculateItemTotal(item)).toFixed(2)}
-                </TableCell>
-            </TableRow>
-        {/each}
-        <!-- Summary Row -->
-        <TableRow class="bg-gray-50 border-t-2">
-            <TableCell colspan={3} class="text-right font-semibold">Subtotal</TableCell>
-            <TableCell colspan={2} class="text-right font-semibold">
-                ${Number(subtotal).toFixed(2)}
-            </TableCell>
-        </TableRow>
-        <TableRow class="bg-gray-50">
-            <TableCell colspan={3} class="text-right font-semibold">Tax</TableCell>
-            <TableCell colspan={2} class="text-right font-semibold">
-                ${Number(taxTotal).toFixed(2)}
-            </TableCell>
-        </TableRow>
-        <TableRow class="bg-gray-100 border-t-2">
-            <TableCell colspan={3} class="text-right text-lg font-bold">Total</TableCell>
-            <TableCell colspan={2} class="text-right text-lg font-bold text-primary">
-                ${Number(total).toFixed(2)}
-            </TableCell>
-        </TableRow>
-    </TableBody>
-</Table>
+                                <TableHeader class="bg-gray-50">
+                                    <TableRow>
+                                        <TableHead class="font-semibold w-2/3">Description</TableHead>
+                                        <TableHead class="font-semibold text-center w-16">Qty</TableHead>
+                                        <TableHead class="font-semibold text-center w-32">Unit Price</TableHead>
+                                        <TableHead class="font-semibold text-center w-24">Tax</TableHead>
+                                        <TableHead class="font-semibold text-right w-32">Total</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {#each invoiceItems as item}
+                                        <TableRow class="hover:bg-gray-50">
+                                            <TableCell class="font-medium">
+                                                <div class="pr-4">
+                                                    <div class="font-medium text-gray-900">{item.name}</div>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell class="text-center align-top">{item.quantity}</TableCell>
+                                            <TableCell class="text-center align-top">{Number(item.unit_price).toFixed(2)}</TableCell>
+                                            <TableCell class="text-center align-top">{item.tax_rate}%</TableCell>
+                                            <TableCell class="text-right align-top font-semibold">
+                                                {Number(calculateItemTotal(item)).toFixed(2)}
+                                            </TableCell>
+                                        </TableRow>
+                                    {/each}
+                                    <!-- Summary Row -->
+                                    <TableRow class="bg-gray-50 border-t-2">
+                                        <TableCell colspan={3} class="text-right font-semibold">Subtotal</TableCell>
+                                        <TableCell colspan={2} class="text-right font-semibold">
+                                            {user.currency_symbol}{subtotal}
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow class="bg-gray-50">
+                                        <TableCell colspan={3} class="text-right font-semibold">Tax</TableCell>
+                                        <TableCell colspan={2} class="text-right font-semibold">
+                                            {user.currency_symbol}{taxTotal}
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow class="bg-gray-100 border-t-2">
+                                        <TableCell colspan={3} class="text-right text-lg font-bold">Total</TableCell>
+                                        <TableCell colspan={2} class="text-right text-lg font-bold text-primary">
+                                            {user.currency_symbol}{Number(total).toFixed(2)}
+                                        </TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
                         </div>
                     </CardContent>
                 </Card>
