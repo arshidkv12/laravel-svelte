@@ -1,5 +1,4 @@
 <script lang="ts">
-    import DeleteUser from '@/components/DeleteUser.svelte';
     import HeadingSmall from '@/components/HeadingSmall.svelte';
     import InputError from '@/components/InputError.svelte';
     import { Button } from '@/components/ui/button';
@@ -94,6 +93,5 @@
             </Form>
         </div>
 
-        <DeleteUser />
     </SettingsLayout>
 </AppLayout>

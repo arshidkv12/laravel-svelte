@@ -13,16 +13,12 @@
             href: '/settings/profile',
         },
         {
+            title: 'Company',
+            href: '/settings/company',
+        },
+        {
             title: 'Password',
             href: '/settings/password',
-        },
-        {
-            title: 'Two-Factor',
-            href: '/settings/two-factor',
-        },
-        {
-            title: 'Appearance',
-            href: '/settings/appearance',
         },
     ];
 

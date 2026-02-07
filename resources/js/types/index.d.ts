@@ -30,6 +30,10 @@ export interface User {
     name: string;
     email: string;
     avatar?: string;
+    company_name?: string,
+    currency_symbol?: string,
+    company_logo?: string,
+    company_address?: string,
     email_verified_at: string | null;
     two_factor_confirmed_at: string | null;
     created_at: string;
