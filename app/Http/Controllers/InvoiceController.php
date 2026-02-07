@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\InvoiceStatus;
+use App\Enums\InvoiceStatus;
+use App\Enums\PaymentStatus;
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -51,18 +53,26 @@ class InvoiceController extends Controller
             $sortBy = 'id';
         }
 
-        $invoices = $query
+        $invoices = (clone $query)
             ->with('customer')
             ->orderBy($sortBy, $sortDir)
             ->paginate(25);
 
         $totals = (clone $query)
-                    // ->selectRaw('SUM(total_amount) as totalAmount, SUM(paid) as paidAmount')
-                    ->selectRaw('SUM(total_amount) as totalAmount')
-                    ->first();
-        
+            ->leftJoin('payments', function ($join) {
+                $join->on('payments.invoice_id', '=', 'invoices.id')
+                    ->where('payments.status', PaymentStatus::Completed);
+            })
+            ->selectRaw('
+                SUM(invoices.total_amount) as totalAmount,
+                COALESCE(SUM(payments.amount), 0) as paidAmount
+            ')
+            ->first();
+    
+
         $totalAmount = $totals->totalAmount ?? 0;
-        $paidAmount  = $totals->paidAmount ?? 0;
+        $paidAmount = $totals->paidAmount ?? 0;
+
 
         return Inertia::render('Invoice/Index', [
             'invoices' => $invoices,

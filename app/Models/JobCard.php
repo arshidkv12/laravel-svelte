@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\JobCardStatus;
+use App\Enums\JobCardStatus;
 use App\Models\Scopes\OwnerScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

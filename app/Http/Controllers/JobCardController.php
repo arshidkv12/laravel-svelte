@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\JobCardStatus;
+use App\Enums\JobCardStatus;
 use App\Models\Customer;
 use App\Models\JobCard;
 use App\Models\JobCardFile;

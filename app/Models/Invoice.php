@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\PaymentStatus;
 use App\Models\Scopes\OwnerScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -61,6 +62,27 @@ class Invoice extends Model
     public function jobCard()
     {
         return $this->belongsTo(JobCard::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    public function completedPayments()
+    {
+        return $this->payments()
+            ->where('status', PaymentStatus::Completed);
+    }
+
+    public function paidAmount(): float
+    {
+        return $this->completedPayments()->sum('amount');
+    }
+
+    public function balanceAmount(): float
+    {
+        return $this->total_amount - $this->paidAmount();
     }
 
     protected static function booted()
